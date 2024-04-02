@@ -22,6 +22,7 @@
 // @grant          GM_info
 // @require        https://cdn.jsdelivr.net/npm/protobufjs/dist/light/protobuf.min.js
 // @require        https://cdn.jsdelivr.net/npm/hls.js/dist/hls.light.min.js
+// @require        https://gist.githubusercontent.com/ilyhalight/6eb5bb4dffc7ca9e3c57d6933e2452f3/raw/7ab38af2228d0bed13912e503bc8a9ee4b11828d/gm-addstyle-polyfill.js
 // @match          *://*.youtube.com/*
 // @match          *://*.youtube-nocookie.com/*
 // @match          *://*.youtubekids.com/*
@@ -117,9 +118,11 @@
 // @match          *://*.newgrounds.com/*
 // @match          *://*.egghead.io/*
 // @match          *://*.youku.com/*
+// @match          *://*/*.mp4*
+// @exclude        file://*/*.mp4*
 // @connect        api.browser.yandex.ru
 // @namespace      vot
-// @version        1.5.1
+// @version        1.5.1.4
 // @icon           https://translate.yandex.ru/icons/favicon.ico
 // @author         sodapng, mynovelhost, Toil, SashaXser, MrSoczekXD
 // @homepageURL    https://github.com/ilyhalight/voice-over-translation/issues
@@ -1933,9 +1936,11 @@ async function getLanguage(player, response, title, description) {
   ];
 
   const cleanedDescription = description
-    .split("\n\n")
-    .filter((line) => !deletefilter.some((regex) => regex.test(line)))
-    .join("\n\n");
+    ? description
+        .split("\n\n")
+        .filter((line) => !deletefilter.some((regex) => regex.test(line)))
+        .join("\n\n")
+    : "";
 
   const cleanText = [title, cleanedDescription]
     .join(" ")
@@ -2303,6 +2308,10 @@ const getVideoId = (service, video) => {
       return url.pathname;
     case "youku":
       return url.pathname.match(/v_show\/id_[\w=]+/)?.[0];
+    // case "patreon":
+    //   return url.pathname.match(/posts\/([^/]+)/)?.[0];
+    case "directlink":
+      return url.pathname + url.search;
     default:
       return false;
   }
@@ -2389,7 +2398,7 @@ const VideoTranslationHelpObject = new protobuf.Type(
 
 const VideoTranslationRequest = new protobuf.Type("VideoTranslationRequest")
   .add(new protobuf.Field("url", 3, "string"))
-  .add(new protobuf.Field("deviceId", 4, "string")) // removed?
+  .add(new protobuf.Field("deviceId", 4, "string")) // used in mobile version
   .add(new protobuf.Field("firstRequest", 5, "bool")) // true for the first request, false for subsequent ones
   .add(new protobuf.Field("duration", 6, "double"))
   .add(new protobuf.Field("unknown2", 7, "int32")) // 1 1
@@ -3814,24 +3823,15 @@ const sites = () => {
       selector: ".column.has-text-centered",
     },
     {
-      additionalData: "mobile",
       host: "twitch",
       url: "https://twitch.tv/",
-      match: /^m.twitch.tv$/,
-      selector: "main > div > section > div > div > div",
-    },
-    {
-      host: "twitch",
-      url: "https://twitch.tv/",
-      match: (url) =>
-        url.host.includes("clips.twitch.tv") ||
-        (url.host.includes("player.twitch.tv") &&
-          url.searchParams.get("channel") === null) ||
-        (url.host.includes("twitch.tv") &&
-          (url.pathname.startsWith("/videos") ||
-            url.pathname.startsWith("/embed") ||
-            url.pathname.includes("/clip"))),
-      selector: ".video-ref",
+      match: [
+        /^m.twitch.tv$/,
+        /^www.twitch.tv$/,
+        /^clips.twitch.tv$/,
+        /^player.twitch.tv$/,
+      ],
+      selector: ".video-ref, main > div > section > div > div > div",
     },
     {
       host: "xvideos",
@@ -4066,6 +4066,20 @@ const sites = () => {
       match: /^v.youku.com$/,
       selector: "#ykPlayer",
     },
+    {
+      host: "directlink",
+      url: "any", // This is a stub. The present value is set using window.location.origin. Check "src/index.js:videoObserver.onVideoAdded.addListener" to get more info
+      match: (url) => /([^.]+).mp4/.test(url.pathname),
+      selector: null,
+    },
+    // пока рано
+    // {
+    //   host: "patreon",
+    //   url: "https://www.patreon.com/",
+    //   match: /^www.patreon.com$/,
+    //   selector:
+    //     'div[data-tag="post-card"] div[elevation="subtle"] > div > div > div > div',
+    // },
     // Нужно куда-то заливать данные о плейлисте
     // {
     //   host: "epicgames",
@@ -4400,7 +4414,7 @@ class VideoHandler {
     this.container = container;
     this.site = site;
     this.handleSrcChangedBound = this.handleSrcChanged.bind(this);
-    this.video.addEventListener("loadedmetadata", this.handleSrcChangedBound);
+    this.video.addEventListener("loadeddata", this.handleSrcChangedBound);
     this.stopTranslationBound = this.stopTranslation.bind(this);
     this.handleVideoEventBound = this.handleVideoEvent.bind(this);
     this.changeOpacityOnEventBound = this.changeOpacityOnEvent.bind(this);
@@ -4443,15 +4457,14 @@ class VideoHandler {
       proxyWorkerHost: votStorage.get("proxyWorkerHost", config/* proxyWorkerHost */.Pm),
     };
 
-    const dataEntries = await Promise.all(
-      Object.entries(dataPromises).map(async ([key, promise]) => [
-        key,
-        await promise,
-      ]),
+    this.data = Object.fromEntries(
+      await Promise.all(
+        Object.entries(dataPromises).map(async ([key, promise]) => [
+          key,
+          await promise,
+        ]),
+      ),
     );
-    this.data = Object.fromEntries(dataEntries);
-
-    this.videoData = await this.getVideoData();
 
     console.log("[db] data from db: ", this.data);
 
@@ -4471,14 +4484,16 @@ class VideoHandler {
     this.votButton.container.hidden = videoHasNoSource;
     if (videoHasNoSource) {
       this.votMenu.container.hidden = true;
+    } else {
+      this.videoData = await this.getVideoData();
+      this.setSelectMenuValues(
+        this.videoData.detectedLanguage,
+        this.data.responseLanguage ?? "ru",
+      );
     }
 
     await this.updateSubtitles();
     await this.changeSubtitlesLang("disabled");
-    this.setSelectMenuValues(
-      this.videoData.detectedLanguage,
-      this.data.responseLanguage ?? "ru",
-    );
     this.translateToLang = this.data.responseLanguage ?? "ru";
 
     this.initExtraEvents();
@@ -5429,20 +5444,24 @@ class VideoHandler {
     }
 
     addExtraEventListener(this.video, "emptied", () => {
+      if (
+        this.video.src &&
+        getVideoId(this.site.host, this.video) === this.videoData.videoId
+      )
+        return;
       debug/* default */.A.log("lipsync mode is emptied");
       this.stopTranslation();
     });
 
     addExtraEventListener(this.video, "progress", async () => {
       if (
-        !(this.firstPlay && this.data.autoTranslate === 1) ||
+        !this.videoData.videoId ||
+        this.audio.src ||
+        !this.firstPlay ||
+        this.data.autoTranslate !== 1 ||
         getVideoId(this.site.host, this.video) !== this.videoData.videoId
       ) {
         return;
-      }
-
-      if (!this.videoData.videoId) {
-        throw new VOTLocalizedError("VOTNoVideoIDFound");
       }
 
       try {
@@ -5541,6 +5560,7 @@ class VideoHandler {
       );
       this.subtitlesList = [];
       this.subtitlesListVideoId = null;
+      this.votButton.container.hidden = true;
       await this.updateSubtitlesLangSelect();
       return;
     }
@@ -5654,7 +5674,7 @@ class VideoHandler {
     if (window.location.hostname.includes("youtube.com")) {
       this.ytData = await youtubeUtils.getVideoData();
       videoData.isStream = this.ytData.isLive;
-      if (this.ytData.author !== "") {
+      if (this.ytData.title) {
         videoData.detectedLanguage = this.ytData.detectedLanguage;
         videoData.responseLanguage = this.translateToLang;
       }
@@ -5721,6 +5741,7 @@ class VideoHandler {
         "trovo",
         "yandexdisk",
         "coursehunter",
+        "directlink",
       ].includes(this.site.host)
     ) {
       videoData.detectedLanguage = "auto";
@@ -6129,6 +6150,14 @@ class VideoHandler {
         }
 
         this.updateTranslation(urlOrError);
+        if (!this.subtitlesList.some((item) => item.source === "yandex")) {
+          this.subtitlesList = await subtitles_getSubtitles(
+            this.site,
+            this.videoData.videoId,
+            this.videoData.detectedLanguage,
+          );
+          await this.updateSubtitlesLangSelect();
+        }
 
         this.videoTranslations.push({
           videoId: VIDEO_ID,
@@ -6148,19 +6177,20 @@ class VideoHandler {
   }
 
   async handleSrcChanged() {
+    if (
+      this.audio.src &&
+      getVideoId(this.site.host, this.video) === this.videoData.videoId
+    )
+      return;
     debug/* default */.A.log("[VideoHandler] src changed", this);
-
-    this.stopTranslation();
 
     this.firstPlay = true;
 
     this.videoData = await this.getVideoData();
-    if (this.videoData.detectedLanguage) {
-      this.setSelectMenuValues(
-        this.videoData.detectedLanguage,
-        this.videoData.responseLanguage,
-      );
-    }
+    this.setSelectMenuValues(
+      this.videoData.detectedLanguage,
+      this.videoData.responseLanguage,
+    );
 
     const hide =
       !this.video.src && !this.video.currentSrc && !this.video.srcObject;
@@ -6185,7 +6215,6 @@ class VideoHandler {
     debug/* default */.A.log("[VideoHandler] release");
 
     this.initialized = false;
-    this.stopTranslation();
     this.releaseExtraEvents();
     this.subtitlesWidget.release();
     this.votButton.container.remove();
@@ -6285,7 +6314,7 @@ async function src_main() {
         continue;
       }
 
-      if (site.host === "peertube") {
+      if (["peertube", "directlink"].includes(site.host)) {
         // we set the url of the current site, since peertube doesn't have a main server
         site.url = window.location.origin;
       }
