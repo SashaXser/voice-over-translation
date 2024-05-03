@@ -297,6 +297,12 @@ const sites = () => {
     //   selector:
     //     'div[data-tag="post-card"] div[elevation="subtle"] > div > div > div > div',
     // },
+    // {
+    //   host: "sibnet",
+    //   url: "https://video.sibnet.ru/",
+    //   match: /^video.sibnet.ru$/,
+    //   selector: ".video-js", // #video_html5_wrapper
+    // },
     // Нужно куда-то заливать данные о плейлисте
     // {
     //   host: "epicgames",
