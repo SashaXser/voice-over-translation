@@ -1753,6 +1753,7 @@ async function GM_fetch(url, opt = {}) {
     });
   } catch (error) {
     console.error("Error occurred in GM_fetch:", error);
+    debug/* default */.A.log("Error occurred in GM_fetch:", error);
     throw error;
   }
 }

@@ -1605,6 +1605,7 @@ async function GM_fetch(url, opt = {}) {
     });
   } catch (error) {
     console.error("Error occurred in GM_fetch:", error);
+    _debug_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A.log("Error occurred in GM_fetch:", error);
     throw error;
   }
 }
