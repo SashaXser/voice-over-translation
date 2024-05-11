@@ -18,6 +18,7 @@
 // @grant          GM_listValues
 // @grant          GM_setValue
 // @grant          GM_getValue
+// @grant          GM_xmlhttpRequest
 // @grant          GM_info
 // @require        https://cdn.jsdelivr.net/npm/protobufjs/dist/light/protobuf.min.js
 // @require        https://cdn.jsdelivr.net/npm/hls.js/dist/hls.light.min.js
@@ -106,6 +107,7 @@
 // @match          *://peervideo.club/*
 // @match          *://tube.la-dina.net/*
 // @match          *://peertube.tmp.rcp.tf/*
+// @match          *://peertube.su/*
 // @match          *://geo.dailymotion.com/*
 // @match          *://*.ok.ru/*
 // @match          *://trovo.live/*
@@ -119,9 +121,15 @@
 // @match          *://*.youku.com/*
 // @match          *://*/*.mp4*
 // @exclude        file://*/*.mp4*
-// @connect        api.browser.yandex.ru
+// @connect        yandex.ru
+// @connect        yandex.net
+// @connect        raw.githubusercontent.com
+// @connect        toil.cc
+// @connect        deno.dev
+// @connect        onrender.com
+// @connect        workers.dev
 // @namespace      vot-cloudflare
-// @version        1.5.1.4
+// @version        1.5.2.2
 // @icon           https://translate.yandex.ru/icons/favicon.ico
 // @author         sodapng, mynovelhost, Toil, SashaXser, MrSoczekXD
 // @homepageURL    https://github.com/ilyhalight/voice-over-translation/issues
@@ -156,7 +164,7 @@
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.vot-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );--vot-helper-ontheme: var( --vot-ontheme-rgb, var(--vot-onprimary-rgb, 255, 255, 255) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;border:none;border-radius:4px;padding:0 16px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-ontheme));background-color:rgb(var(--vot-helper-theme));box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer;transition:box-shadow .2s}.vot-button[hidden]{display:none !important}.vot-button::-moz-focus-inner{border:none}.vot-button::before,.vot-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-button::before{background-color:rgb(var(--vot-helper-ontheme));transition:opacity .2s}.vot-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-button:hover{box-shadow:0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)}.vot-button:hover::before{opacity:.08}.vot-button:active{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.vot-button:active::after{opacity:.32;background-size:100% 100%;transition:background-size 0s}.vot-button:disabled{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.12);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);box-shadow:none;cursor:initial}.vot-button:disabled::before,.vot-button:disabled::after{opacity:0}.vot-outlined-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:solid 1px;border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.24);border-radius:4px;padding:0 16px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-theme));background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:34px;outline:none;cursor:pointer}.vot-outlined-button[hidden]{display:none !important}.vot-outlined-button::-moz-focus-inner{border:none}.vot-outlined-button::before,.vot-outlined-button::after{content:"";position:absolute;border-radius:3px;top:0;right:0;bottom:0;left:0;opacity:0}.vot-outlined-button::before{background-color:rgb(var(--vot-helper-theme));transition:opacity .2s}.vot-outlined-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-outlined-button:hover::before{opacity:.04}.vot-outlined-button:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-outlined-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-outlined-button:disabled::before,.vot-outlined-button:disabled::after{opacity:0}.vot-text-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:none;border-radius:4px;padding:0 8px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-theme));background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer}.vot-text-button[hidden]{display:none !important}.vot-text-button::-moz-focus-inner{border:none}.vot-text-button::before,.vot-text-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-text-button::before{background-color:rgb(var(--vot-helper-theme));transition:opacity .2s}.vot-text-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-text-button:hover::before{opacity:.04}.vot-text-button:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-text-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-text-button:disabled::before,.vot-text-button:disabled::after{opacity:0}.vot-icon-button{--vot-helper-onsurface: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87);position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:none;border-radius:50%;padding:0;width:36px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;fill:var(--vot-helper-onsurface);color:var(--vot-helper-onsurface);background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer}.vot-icon-button[hidden]{display:none !important}.vot-icon-button::-moz-focus-inner{border:none}.vot-icon-button::before,.vot-icon-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-icon-button::before{background-color:var(--vot-helper-onsurface);transition:opacity .2s}.vot-icon-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity .3s,background-size .4s}.vot-icon-button:hover::before{opacity:.04}.vot-icon-button:active::after{opacity:.32;background-size:100% 100%;transition:background-size 0s,opacity 0s}.vot-icon-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);fill:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-icon-button:disabled::before,.vot-icon-button:disabled::after{opacity:0}.vot-textfield{--vot-helper-theme: rgb( var(--vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243)) ) !important;--vot-helper-safari1: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.38 ) !important;--vot-helper-safari2: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;--vot-helper-safari3: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.87 ) !important;position:relative !important;display:inline-block;padding-top:6px !important;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system) !important;font-size:16px !important;line-height:1.5 !important;text-align:start !important}.vot-textfield[hidden]{display:none !important}.vot-textfield>input,.vot-textfield>textarea{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin:0 !important;border-style:solid !important;border-width:1px !important;border-color:rgba(0,0,0,0) var(--vot-helper-safari2) var(--vot-helper-safari2) !important;border-radius:4px !important;padding:15px 13px 15px !important;width:100% !important;height:inherit !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important;-webkit-text-fill-color:currentColor !important;background-color:rgba(0,0,0,0) !important;box-shadow:inset 1px 0 rgba(0,0,0,0),inset -1px 0 rgba(0,0,0,0),inset 0 -1px rgba(0,0,0,0) !important;font-family:inherit !important;font-size:inherit !important;line-height:inherit !important;caret-color:var(--vot-helper-theme) !important;transition:border .2s,box-shadow .2s !important}.vot-textfield>input:not(:focus):placeholder-shown,.vot-textfield>textarea:not(:focus):placeholder-shown{border-top-color:var(--vot-helper-safari2) !important}.vot-textfield>input+span,.vot-textfield>textarea+span{position:absolute !important;top:0 !important;left:0 !important;display:flex !important;width:100% !important;max-height:100% !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;font-size:75% !important;line-height:15px !important;cursor:text !important;transition:color .2s,font-size .2s,line-height .2s !important;pointer-events:none !important}.vot-textfield>input:not(:focus):placeholder-shown+span,.vot-textfield>textarea:not(:focus):placeholder-shown+span{font-size:inherit !important;line-height:68px !important}.vot-textfield>input+span::before,.vot-textfield>input+span::after,.vot-textfield>textarea+span::before,.vot-textfield>textarea+span::after{content:"" !important;display:block !important;-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin-top:6px !important;border-top:solid 1px var(--vot-helper-safari2) !important;min-width:10px !important;height:8px !important;pointer-events:none !important;box-shadow:inset 0 1px rgba(0,0,0,0) !important;transition:border .2s,box-shadow .2s !important}.vot-textfield>input+span::before,.vot-textfield>textarea+span::before{margin-right:4px !important;border-left:solid 1px rgba(0,0,0,0) !important;border-radius:4px 0 !important}.vot-textfield>input+span::after,.vot-textfield>textarea+span::after{flex-grow:1 !important;margin-left:4px !important;border-right:solid 1px rgba(0,0,0,0) !important;border-radius:0 4px !important}.vot-textfield>input:not(:focus):placeholder-shown+span::before,.vot-textfield>input:not(:focus):placeholder-shown+span::after,.vot-textfield>textarea:not(:focus):placeholder-shown+span::before,.vot-textfield>textarea:not(:focus):placeholder-shown+span::after{border-top-color:rgba(0,0,0,0) !important}.vot-textfield:hover>input,.vot-textfield:hover>textarea{border-color:rgba(0,0,0,0) var(--vot-helper-safari3) var(--vot-helper-safari3) !important}.vot-textfield:hover>input+span::before,.vot-textfield:hover>input+span::after,.vot-textfield:hover>textarea+span::before,.vot-textfield:hover>textarea+span::after{border-top-color:var(--vot-helper-safari3) !important}.vot-textfield:hover>input:not(:focus):placeholder-shown,.vot-textfield:hover>textarea:not(:focus):placeholder-shown{border-color:var(--vot-helper-safari3) !important}.vot-textfield>input:focus,.vot-textfield>textarea:focus{border-color:rgba(0,0,0,0) var(--vot-helper-theme) var(--vot-helper-theme) !important;box-shadow:inset 1px 0 var(--vot-helper-theme),inset -1px 0 var(--vot-helper-theme),inset 0 -1px var(--vot-helper-theme) !important;outline:none !important}.vot-textfield>input:focus+span,.vot-textfield>textarea:focus+span{color:var(--vot-helper-theme) !important}.vot-textfield>input:focus+span::before,.vot-textfield>input:focus+span::after,.vot-textfield>textarea:focus+span::before,.vot-textfield>textarea:focus+span::after{border-top-color:var(--vot-helper-theme) !important;box-shadow:inset 0 1px var(--vot-helper-theme) !important}.vot-textfield>input:disabled,.vot-textfield>input:disabled+span,.vot-textfield>textarea:disabled,.vot-textfield>textarea:disabled+span{border-color:rgba(0,0,0,0) var(--vot-helper-safari1) var(--vot-helper-safari1) !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important;pointer-events:none !important}.vot-textfield>input:disabled+span::before,.vot-textfield>input:disabled+span::after,.vot-textfield>textarea:disabled+span::before,.vot-textfield>textarea:disabled+span::after{border-top-color:var(--vot-helper-safari1) !important}.vot-textfield>input:disabled:placeholder-shown,.vot-textfield>input:disabled:placeholder-shown+span,.vot-textfield>textarea:disabled:placeholder-shown,.vot-textfield>textarea:disabled:placeholder-shown+span{border-top-color:var(--vot-helper-safari1) !important}.vot-textfield>input:disabled:placeholder-shown+span::before,.vot-textfield>input:disabled:placeholder-shown+span::after,.vot-textfield>textarea:disabled:placeholder-shown+span::before,.vot-textfield>textarea:disabled:placeholder-shown+span::after{border-top-color:rgba(0,0,0,0) !important}@media not all and (min-resolution: 0.001dpcm){@supports(-webkit-appearance: none){.vot-textfield>input,.vot-textfield>input+span,.vot-textfield>textarea,.vot-textfield>textarea+span,.vot-textfield>input+span::before,.vot-textfield>input+span::after,.vot-textfield>textarea+span::before,.vot-textfield>textarea+span::after{transition-duration:.1s !important}}}.vot-checkbox{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );--vot-helper-ontheme: var( --vot-ontheme-rgb, var(--vot-onprimary-rgb, 255, 255, 255) );z-index:0;position:relative;display:inline-block;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;text-align:start}.vot-checkbox[hidden]{display:none !important}.vot-checkbox>input{appearance:none;-moz-appearance:none;-webkit-appearance:none;z-index:1;position:absolute;display:block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:3px 1px;border:solid 2px;background:rgba(0,0,0,0);border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6);border-radius:2px;width:18px;height:18px;outline:none;cursor:pointer;transition:border-color .2s,background-color .2s}.vot-checkbox>input+span{display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding-left:30px;width:inherit;cursor:pointer}.vot-checkbox>input+span::before{content:"";position:absolute;left:-10px;top:-8px;display:block;border-radius:50%;width:40px;height:40px;background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0));opacity:0;transform:scale(1);pointer-events:none;transition:opacity .3s,transform .2s}.vot-checkbox>input+span::after{content:"";z-index:1;display:block;position:absolute;top:3px;left:1px;-webkit-box-sizing:content-box !important;-moz-box-sizing:content-box !important;box-sizing:content-box !important;width:10px;height:5px;border:solid 2px rgba(0,0,0,0);border-right-width:0;border-top-width:0;pointer-events:none;transform:translate(3px, 4px) rotate(-45deg);transition:border-color .2s}.vot-checkbox>input:checked,.vot-checkbox>input:indeterminate{border-color:rgb(var(--vot-helper-theme));background-color:rgb(var(--vot-helper-theme))}.vot-checkbox>input:checked+span::before,.vot-checkbox>input:indeterminate+span::before{background-color:rgb(var(--vot-helper-theme))}.vot-checkbox>input:checked+span::after,.vot-checkbox>input:indeterminate+span::after{border-color:rgb(var(--vot-helper-ontheme, 255, 255, 255))}.vot-checkbox>input:indeterminate+span::after{border-left-width:0;transform:translate(4px, 3px)}.vot-checkbox:hover>input+span::before{opacity:.04}.vot-checkbox:active>input,.vot-checkbox:active:hover>input{border-color:rgb(var(--vot-helper-theme))}.vot-checkbox:active>input:checked{border-color:rgba(0,0,0,0);background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6)}.vot-checkbox:active>input+span::before{opacity:1;transform:scale(0);transition:transform 0s,opacity 0s}.vot-checkbox>input:disabled{border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-checkbox>input:disabled:checked,.vot-checkbox>input:disabled:indeterminate{border-color:rgba(0,0,0,0);background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38)}.vot-checkbox>input:disabled+span{color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-checkbox>input:disabled+span::before{opacity:0;transform:scale(0)}.vot-slider{--vot-safari-helper1: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.04 ) !important;--vot-safari-helper2: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.12 ) !important;--vot-safari-helper3: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.16 ) !important;--vot-safari-helper4: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.24 ) !important;display:inline-block;width:100% !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important;font-family:var(--vot-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system) !important;font-size:16px !important;line-height:1.5 !important;text-align:start !important}.vot-slider[hidden]{display:none !important}.vot-slider>input{-webkit-appearance:none !important;appearance:none !important;position:relative !important;top:24px !important;display:block !important;margin:0 0 -36px !important;width:100% !important;height:36px !important;background-color:rgba(0,0,0,0) !important;cursor:pointer !important}.vot-slider>input:last-child{position:static !important;margin:0 !important}.vot-slider>span{display:inline-block !important;margin-bottom:36px !important}.vot-slider>input:disabled{cursor:default !important;opacity:.38 !important}.vot-slider>input:disabled+span{color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input::-webkit-slider-runnable-track{margin:17px 0 !important;border-radius:1px !important;width:100% !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-webkit-slider-thumb{margin:0 !important;appearance:none !important;-webkit-appearance:none !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider:hover>input::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--vot-safari-helper1) !important}.vot-slider>input:active::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--vot-safari-helper4) !important}.vot-slider>input:disabled::-webkit-slider-runnable-track{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-webkit-slider-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;color:rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::-moz-range-track{margin:17px 0 !important;border-radius:1px !important;width:100% !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-moz-range-thumb{appearance:none !important;-moz-appearance:none !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider>input::-moz-range-progress{border-radius:1px !important;height:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-slider:hover>input:hover::-moz-range-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.04) !important}.vot-slider>input:active::-moz-range-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input:disabled::-moz-range-track{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-moz-range-progress{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important}.vot-slider>input:disabled::-moz-range-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::-moz-focus-outer{border:none !important}.vot-slider>input::-ms-track{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin:17px 0 !important;border:none !important;border-radius:1px !important;padding:0 17px !important;width:100% !important;height:2px !important;background-color:rgba(0,0,0,0) !important}.vot-slider>input::-ms-fill-lower{border-radius:1px !important;height:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-slider>input::-ms-fill-upper{border-radius:1px !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-ms-thumb{appearance:none !important;margin:0 17px !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider:hover>input::-ms-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.04) !important}.vot-slider>input:active::-ms-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input:disabled::-ms-fill-lower{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-ms-fill-upper{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important;opacity:.38 !important}.vot-slider>input:disabled::-ms-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::before{content:"" !important;display:block !important;position:absolute !important;width:calc(100%*var(--vot-progress, 0)) !important;height:2px !important;top:calc(50% - 1px) !important;background:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-select{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0) !important;--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87) !important;--vot-helper-safari1: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;--vot-helper-safari2: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.87 ) !important;display:flex;align-items:center;justify-content:space-between;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;line-height:1.5;text-align:start;color:var(--vot-helper-theme);fill:var(--vot-helper-theme)}.vot-select[hidden]{display:none !important}.vot-select-label{font-size:16px}.vot-select-outer{display:flex;align-items:center;justify-content:space-between;max-width:120px;width:120px;padding:0 5px;border-style:solid !important;border-width:1px !important;border-color:var(--vot-helper-safari1) !important;border-radius:4px !important;cursor:pointer;transition:border .2s !important}.vot-select-outer:hover{border-color:var(--vot-helper-safari2) !important}.vot-select-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vot-select-arrow-icon{width:20px;height:32px;display:flex;justify-content:center;align-items:center}.vot-select-content-list{display:flex;flex-direction:column}.vot-select-content-list .vot-select-content-item{padding:5px 10px;border-radius:8px;cursor:pointer}.vot-select-content-list .vot-select-content-item:not([inert]):hover{background-color:#2a2c31}.vot-select-content-list .vot-select-content-item[data-vot-selected=true]{color:rgb(var(--vot-primary-rgb, 33, 150, 243));background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.2)}.vot-select-content-list .vot-select-content-item[data-vot-selected=true]:hover{background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.1) !important}.vot-select-content-list .vot-select-content-item[data-vot-disabled=true]{cursor:default}.vot-select-content-list .vot-select-content-item[hidden]{display:none !important}.vot-header{color:rgba(var(--vot-helper-onsurface-rgb), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-weight:bold;line-height:1.5;text-align:start}.vot-header[hidden]{display:none !important}.vot-header:not(:first-child){padding-top:8px}.vot-header-level-1{font-size:2em}.vot-header-level-2{font-size:1.5em}.vot-header-level-3{font-size:1.17em}.vot-header-level-4{font-size:1em}.vot-header-level-5{font-size:.83em}.vot-header-level-6{font-size:.67em}.vot-info{display:flex;color:rgba(var(--vot-helper-onsurface-rgb), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;text-align:start}.vot-info[hidden]{display:none !important}.vot-info>:not(:first-child){color:rgba(var(--vot-helper-onsurface-rgb), 0.5);flex:1;margin-left:8px}.vot-lang-select{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);display:flex;align-items:center;justify-content:space-between;color:var(--vot-helper-theme);fill:var(--vot-helper-theme)}.vot-lang-select[hidden]{display:none !important}.vot-lang-select-icon{width:32px;height:32px;display:flex;justify-content:center;align-items:center}.vot-segmented-button{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);overflow:hidden;position:absolute;left:50%;top:5rem;transform:translate(-50%);user-select:none;display:flex;align-items:center;height:32px;max-width:100vw;background:rgb(var(--vot-surface-rgb, 255, 255, 255));color:var(--vot-helper-theme);fill:var(--vot-helper-theme);border-radius:4px;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;cursor:default;transition:opacity .5s;z-index:100}.vot-segmented-button[hidden]{display:none !important}.vot-segmented-button *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-segmented-button .vot-separator{width:1px;height:50%;background:rgba(var(--vot-helper-theme-rgb), 0.1)}.vot-segmented-button .vot-separator[hidden]{display:none !important}.vot-segmented-button .vot-segment,.vot-segmented-button .vot-segment-only-icon{position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100%;padding:0 8px;background-color:rgba(0,0,0,0);color:inherit;transition:background-color 100ms ease-in-out;border:none}.vot-segmented-button .vot-segment[hidden],.vot-segmented-button [hidden].vot-segment-only-icon{display:none !important}.vot-segmented-button .vot-segment::before,.vot-segmented-button .vot-segment-only-icon::before,.vot-segmented-button .vot-segment::after,.vot-segmented-button .vot-segment-only-icon::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-segmented-button .vot-segment::before,.vot-segmented-button .vot-segment-only-icon::before{background-color:rgb(var(--vot-helper-theme-rgb));transition:opacity .2s}.vot-segmented-button .vot-segment::after,.vot-segmented-button .vot-segment-only-icon::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-segmented-button .vot-segment:hover::before,.vot-segmented-button .vot-segment-only-icon:hover::before{opacity:.04}.vot-segmented-button .vot-segment:active::after,.vot-segmented-button .vot-segment-only-icon:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-segmented-button .vot-segment-only-icon{min-width:32px;padding:0}.vot-segmented-button .vot-segment-label{margin-left:8px;white-space:nowrap}.vot-segmented-button[data-status=success] .vot-translate-button{color:rgb(var(--vot-primary-rgb, 33, 150, 243));fill:rgb(var(--vot-primary-rgb, 33, 150, 243))}.vot-segmented-button[data-status=error] .vot-translate-button{color:#f28b82;fill:#f28b82}.vot-segmented-button svg{width:fit-content}.vot-menu{--vot-helper-surface-rgb: var(--vot-surface-rgb, 255, 255, 255);--vot-helper-surface: rgb(var(--vot-helper-surface-rgb));--vot-helper-onsurface-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-onsurface: rgba(var(--vot-helper-onsurface-rgb), 0.87);overflow:hidden;position:absolute;left:50%;top:calc(5rem + 32px + 16px);user-select:none;background-color:var(--vot-helper-surface);color:var(--vot-helper-onsurface);border-radius:8px;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;min-width:300px;cursor:default;z-index:100;visibility:visible;opacity:1;transform-origin:top;transform:translate(-50%) scale(1);transition:opacity .3s,transform .1s}.vot-menu *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-menu[hidden]{pointer-events:none;display:block !important;visibility:hidden;opacity:0;transform:translate(-50%) scale(0)}.vot-menu-content-wrapper{display:flex;flex-direction:column;min-height:100px;max-height:calc(var(--vot-container-height, 75vh) - (5rem + 32px + 16px)*2);overflow:auto}.vot-menu-header-container{flex-shrink:0;align-items:flex-start;display:flex;min-height:31px}.vot-menu-header-container:empty{padding:0 0 16px 0}.vot-menu-header-container>.vot-icon-button{margin-inline-end:4px;margin-top:4px}.vot-menu-title-container{display:flex;flex:1;font-size:inherit;font-weight:inherit;margin:0;outline:0;text-align:start}.vot-menu-title{flex:1;font-size:16px;line-height:1;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-menu-body-container{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:flex;flex-direction:column;min-height:1.375rem;overflow:auto;padding:0 16px;gap:8px;overscroll-behavior:contain;scrollbar-color:rgba(var(--vot-helper-onsurface-rgb), 0.1) var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar,.vot-menu-body-container::-webkit-scrollbar-track{height:12px !important;width:12px !important;background:var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-thumb{background:rgba(var(--vot-helper-onsurface-rgb), 0.1) !important;-webkit-border-radius:1ex !important;border:5px solid var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-thumb:hover{border:3px solid var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-corner{background:var(--vot-helper-surface) !important}.vot-menu-footer-container{flex-shrink:0;display:flex;justify-content:flex-end;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-menu-footer-container:empty{padding:16px 0 0 0}.vot-dialog-container{visibility:visible;position:absolute;z-index:10000}.vot-dialog-container[hidden]{display:block !important;pointer-events:none;visibility:hidden}.vot-dialog-container *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-dialog-backdrop{background-color:rgba(0,0,0,.6);position:fixed;top:0;right:0;bottom:0;left:0;opacity:1;transition:opacity .3s}[hidden]>.vot-dialog-backdrop{pointer-events:none;opacity:0}.vot-dialog{--vot-helper-surface-rgb: var(--vot-surface-rgb, 255, 255, 255);--vot-helper-surface: rgb(var(--vot-helper-surface-rgb));--vot-helper-onsurface-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-onsurface: rgba(var(--vot-helper-onsurface-rgb), 0.87);display:block;position:fixed;top:50%;bottom:50%;max-width:initial;max-height:initial;width:min(var(--vot-dialog-width, 512px),100%);height:fit-content;inset-inline-start:0px;inset-inline-end:0px;inset-block-start:0px;inset-block-end:0px;border-radius:8px;margin:auto;padding:0;background-color:var(--vot-helper-surface);color:var(--vot-helper-onsurface);box-shadow:0 0 16px rgba(0,0,0,.12),0 16px 16px rgba(0,0,0,.24);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;user-select:none;visibility:visible;overflow:auto;overflow-y:hidden;opacity:1;transform-origin:center;transform:scale(1);transition:opacity .3s,transform .1s}[hidden]>.vot-dialog{pointer-events:none;opacity:0;transform:scale(0.5);transition:opacity .1s,transform .2s}.vot-dialog-content-wrapper{display:flex;flex-direction:column;max-height:75vh;overflow:auto}.vot-dialog-header-container{flex-shrink:0;align-items:flex-start;display:flex;min-height:31px}.vot-dialog-header-container:empty{padding:0 0 20px 0}.vot-dialog-header-container>.vot-icon-button{margin-inline-end:4px;margin-top:4px}.vot-dialog-title-container{display:flex;flex:1;font-size:inherit;font-weight:inherit;margin:0;outline:0}.vot-dialog-title{flex:1;font-size:115.3846153846%;font-weight:bold;line-height:1;padding-bottom:16px;padding-inline-end:20px;padding-inline-start:20px;padding-top:20px}.vot-dialog-body-container{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:flex;flex-direction:column;min-height:1.375rem;overflow:auto;padding:0 20px;gap:16px;overscroll-behavior:contain;scrollbar-color:rgba(var(--vot-helper-onsurface-rgb), 0.1) var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar,.vot-dialog-body-container::-webkit-scrollbar-track{height:12px !important;width:12px !important;background:var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-thumb{background:rgba(var(--vot-helper-onsurface-rgb), 0.1) !important;-webkit-border-radius:1ex !important;border:5px solid var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-thumb:hover{border:3px solid var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-corner{background:var(--vot-helper-surface) !important}.vot-dialog-footer-container{flex-shrink:0;display:flex;justify-content:flex-end;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-dialog-footer-container:empty{padding:20px 0 0 0}.vot-subtitles-widget{display:flex;justify-content:center;align-items:center;position:absolute;width:50%;max-height:100%;min-height:20%;z-index:100;left:25%;top:75%;pointer-events:none}.vot-subtitles{position:relative;max-width:100%;max-height:100%;width:max-content;background:var(--vot-subtitles-background, rgba(46, 47, 52, 0.8));color:var(--vot-subtitles-color, rgb(227, 227, 227));border-radius:1rem;pointer-events:all;padding:1rem;font-size:2rem;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.vot-subtitles .passed{color:var(--vot-subtitles-passed-color, rgb(33, 150, 243))}:root{--vot-font-family: "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system;--vot-primary-rgb: 139, 180, 245;--vot-onprimary-rgb: 32, 33, 36;--vot-surface-rgb: 32, 33, 36;--vot-onsurface-rgb: 227, 227, 227;--vot-subtitles-background: rgba(var(--vot-surface-rgb, 46, 47, 52), 0.8);--vot-subtitles-color: rgb(var(--vot-onsurface-rgb, 227, 227, 227));--vot-subtitles-passed-color: rgb(var(--vot-primary-rgb, 33, 150, 243))}vot-block{display:block}`, ""]);
+___CSS_LOADER_EXPORT___.push([module.id, `.vot-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );--vot-helper-ontheme: var( --vot-ontheme-rgb, var(--vot-onprimary-rgb, 255, 255, 255) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;border:none;border-radius:4px;padding:0 16px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-ontheme));background-color:rgb(var(--vot-helper-theme));box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer;transition:box-shadow .2s}.vot-button[hidden]{display:none !important}.vot-button::-moz-focus-inner{border:none}.vot-button::before,.vot-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-button::before{background-color:rgb(var(--vot-helper-ontheme));transition:opacity .2s}.vot-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-button:hover{box-shadow:0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12)}.vot-button:hover::before{opacity:.08}.vot-button:active{box-shadow:0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)}.vot-button:active::after{opacity:.32;background-size:100% 100%;transition:background-size 0s}.vot-button:disabled{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.12);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);box-shadow:none;cursor:initial}.vot-button:disabled::before,.vot-button:disabled::after{opacity:0}.vot-outlined-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:solid 1px;border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.24);border-radius:4px;padding:0 16px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-theme));background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:34px;outline:none;cursor:pointer}.vot-outlined-button[hidden]{display:none !important}.vot-outlined-button::-moz-focus-inner{border:none}.vot-outlined-button::before,.vot-outlined-button::after{content:"";position:absolute;border-radius:3px;top:0;right:0;bottom:0;left:0;opacity:0}.vot-outlined-button::before{background-color:rgb(var(--vot-helper-theme));transition:opacity .2s}.vot-outlined-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-outlined-button:hover::before{opacity:.04}.vot-outlined-button:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-outlined-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-outlined-button:disabled::before,.vot-outlined-button:disabled::after{opacity:0}.vot-text-button{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:none;border-radius:4px;padding:0 8px;min-width:64px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;color:rgb(var(--vot-helper-theme));background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer}.vot-text-button[hidden]{display:none !important}.vot-text-button::-moz-focus-inner{border:none}.vot-text-button::before,.vot-text-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-text-button::before{background-color:rgb(var(--vot-helper-theme));transition:opacity .2s}.vot-text-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-text-button:hover::before{opacity:.04}.vot-text-button:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-text-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-text-button:disabled::before,.vot-text-button:disabled::after{opacity:0}.vot-icon-button{--vot-helper-onsurface: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87);position:relative;display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:0;border:none;border-radius:50%;padding:0;width:36px;height:36px;vertical-align:middle;text-align:center;text-overflow:ellipsis;fill:var(--vot-helper-onsurface);color:var(--vot-helper-onsurface);background-color:rgba(0,0,0,0);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;font-weight:500;line-height:36px;outline:none;cursor:pointer}.vot-icon-button[hidden]{display:none !important}.vot-icon-button::-moz-focus-inner{border:none}.vot-icon-button::before,.vot-icon-button::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-icon-button::before{background-color:var(--vot-helper-onsurface);transition:opacity .2s}.vot-icon-button::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity .3s,background-size .4s}.vot-icon-button:hover::before{opacity:.04}.vot-icon-button:active::after{opacity:.32;background-size:100% 100%;transition:background-size 0s,opacity 0s}.vot-icon-button:disabled{background-color:rgba(0,0,0,0);color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);fill:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-icon-button:disabled::before,.vot-icon-button:disabled::after{opacity:0}.vot-textfield{--vot-helper-theme: rgb( var(--vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243)) ) !important;--vot-helper-safari1: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.38 ) !important;--vot-helper-safari2: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;--vot-helper-safari3: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.87 ) !important;position:relative !important;display:inline-block;padding-top:6px !important;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system) !important;font-size:16px !important;line-height:1.5 !important;text-align:start !important}.vot-textfield[hidden]{display:none !important}.vot-textfield>input,.vot-textfield>textarea{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin:0 !important;border-style:solid !important;border-width:1px !important;border-color:rgba(0,0,0,0) var(--vot-helper-safari2) var(--vot-helper-safari2) !important;border-radius:4px !important;padding:15px 13px 15px !important;width:100% !important;height:inherit !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important;-webkit-text-fill-color:currentColor !important;background-color:rgba(0,0,0,0) !important;box-shadow:inset 1px 0 rgba(0,0,0,0),inset -1px 0 rgba(0,0,0,0),inset 0 -1px rgba(0,0,0,0) !important;font-family:inherit !important;font-size:inherit !important;line-height:inherit !important;caret-color:var(--vot-helper-theme) !important;transition:border .2s,box-shadow .2s !important}.vot-textfield>input:not(:focus):placeholder-shown,.vot-textfield>textarea:not(:focus):placeholder-shown{border-top-color:var(--vot-helper-safari2) !important}.vot-textfield>input+span,.vot-textfield>textarea+span{position:absolute !important;top:0 !important;left:0 !important;display:flex !important;width:100% !important;max-height:100% !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;font-size:75% !important;line-height:15px !important;cursor:text !important;transition:color .2s,font-size .2s,line-height .2s !important;pointer-events:none !important}.vot-textfield>input:not(:focus):placeholder-shown+span,.vot-textfield>textarea:not(:focus):placeholder-shown+span{font-size:inherit !important;line-height:68px !important}.vot-textfield>input+span::before,.vot-textfield>input+span::after,.vot-textfield>textarea+span::before,.vot-textfield>textarea+span::after{content:"" !important;display:block !important;-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin-top:6px !important;border-top:solid 1px var(--vot-helper-safari2) !important;min-width:10px !important;height:8px !important;pointer-events:none !important;box-shadow:inset 0 1px rgba(0,0,0,0) !important;transition:border .2s,box-shadow .2s !important}.vot-textfield>input+span::before,.vot-textfield>textarea+span::before{margin-right:4px !important;border-left:solid 1px rgba(0,0,0,0) !important;border-radius:4px 0 !important}.vot-textfield>input+span::after,.vot-textfield>textarea+span::after{flex-grow:1 !important;margin-left:4px !important;border-right:solid 1px rgba(0,0,0,0) !important;border-radius:0 4px !important}.vot-textfield>input:not(:focus):placeholder-shown+span::before,.vot-textfield>input:not(:focus):placeholder-shown+span::after,.vot-textfield>textarea:not(:focus):placeholder-shown+span::before,.vot-textfield>textarea:not(:focus):placeholder-shown+span::after{border-top-color:rgba(0,0,0,0) !important}.vot-textfield:hover>input,.vot-textfield:hover>textarea{border-color:rgba(0,0,0,0) var(--vot-helper-safari3) var(--vot-helper-safari3) !important}.vot-textfield:hover>input+span::before,.vot-textfield:hover>input+span::after,.vot-textfield:hover>textarea+span::before,.vot-textfield:hover>textarea+span::after{border-top-color:var(--vot-helper-safari3) !important}.vot-textfield:hover>input:not(:focus):placeholder-shown,.vot-textfield:hover>textarea:not(:focus):placeholder-shown{border-color:var(--vot-helper-safari3) !important}.vot-textfield>input:focus,.vot-textfield>textarea:focus{border-color:rgba(0,0,0,0) var(--vot-helper-theme) var(--vot-helper-theme) !important;box-shadow:inset 1px 0 var(--vot-helper-theme),inset -1px 0 var(--vot-helper-theme),inset 0 -1px var(--vot-helper-theme) !important;outline:none !important}.vot-textfield>input:focus+span,.vot-textfield>textarea:focus+span{color:var(--vot-helper-theme) !important}.vot-textfield>input:focus+span::before,.vot-textfield>input:focus+span::after,.vot-textfield>textarea:focus+span::before,.vot-textfield>textarea:focus+span::after{border-top-color:var(--vot-helper-theme) !important;box-shadow:inset 0 1px var(--vot-helper-theme) !important}.vot-textfield>input:disabled,.vot-textfield>input:disabled+span,.vot-textfield>textarea:disabled,.vot-textfield>textarea:disabled+span{border-color:rgba(0,0,0,0) var(--vot-helper-safari1) var(--vot-helper-safari1) !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important;pointer-events:none !important}.vot-textfield>input:disabled+span::before,.vot-textfield>input:disabled+span::after,.vot-textfield>textarea:disabled+span::before,.vot-textfield>textarea:disabled+span::after{border-top-color:var(--vot-helper-safari1) !important}.vot-textfield>input:disabled:placeholder-shown,.vot-textfield>input:disabled:placeholder-shown+span,.vot-textfield>textarea:disabled:placeholder-shown,.vot-textfield>textarea:disabled:placeholder-shown+span{border-top-color:var(--vot-helper-safari1) !important}.vot-textfield>input:disabled:placeholder-shown+span::before,.vot-textfield>input:disabled:placeholder-shown+span::after,.vot-textfield>textarea:disabled:placeholder-shown+span::before,.vot-textfield>textarea:disabled:placeholder-shown+span::after{border-top-color:rgba(0,0,0,0) !important}@media not all and (min-resolution: 0.001dpcm){@supports(-webkit-appearance: none){.vot-textfield>input,.vot-textfield>input+span,.vot-textfield>textarea,.vot-textfield>textarea+span,.vot-textfield>input+span::before,.vot-textfield>input+span::after,.vot-textfield>textarea+span::before,.vot-textfield>textarea+span::after{transition-duration:.1s !important}}}.vot-checkbox{--vot-helper-theme: var( --vot-theme-rgb, var(--vot-primary-rgb, 33, 150, 243) );--vot-helper-ontheme: var( --vot-ontheme-rgb, var(--vot-onprimary-rgb, 255, 255, 255) );z-index:0;position:relative;display:inline-block;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;text-align:start}.vot-checkbox[hidden]{display:none !important}.vot-checkbox>input{appearance:none;-moz-appearance:none;-webkit-appearance:none;z-index:1;position:absolute;display:block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;margin:3px 1px;border:solid 2px;background:rgba(0,0,0,0);border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6);border-radius:2px;width:18px;height:18px;outline:none;cursor:pointer;transition:border-color .2s,background-color .2s}.vot-checkbox>input+span{display:inline-block;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding-left:30px;width:inherit;cursor:pointer;font-weight:normal}.vot-checkbox>input+span::before{content:"";position:absolute;left:-10px;top:-8px;display:block;border-radius:50%;width:40px;height:40px;background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0));opacity:0;transform:scale(1);pointer-events:none;transition:opacity .3s,transform .2s}.vot-checkbox>input+span::after{content:"";z-index:1;display:block;position:absolute;top:3px;left:1px;-webkit-box-sizing:content-box !important;-moz-box-sizing:content-box !important;box-sizing:content-box !important;width:10px;height:5px;border:solid 2px rgba(0,0,0,0);border-right-width:0;border-top-width:0;pointer-events:none;transform:translate(3px, 4px) rotate(-45deg);transition:border-color .2s}.vot-checkbox>input:checked,.vot-checkbox>input:indeterminate{border-color:rgb(var(--vot-helper-theme));background-color:rgb(var(--vot-helper-theme))}.vot-checkbox>input:checked+span::before,.vot-checkbox>input:indeterminate+span::before{background-color:rgb(var(--vot-helper-theme))}.vot-checkbox>input:checked+span::after,.vot-checkbox>input:indeterminate+span::after{border-color:rgb(var(--vot-helper-ontheme, 255, 255, 255))}.vot-checkbox>input:indeterminate+span::after{border-left-width:0;transform:translate(4px, 3px)}.vot-checkbox:hover>input+span::before{opacity:.04}.vot-checkbox:active>input,.vot-checkbox:active:hover>input{border-color:rgb(var(--vot-helper-theme))}.vot-checkbox:active>input:checked{border-color:rgba(0,0,0,0);background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6)}.vot-checkbox:active>input+span::before{opacity:1;transform:scale(0);transition:transform 0s,opacity 0s}.vot-checkbox>input:disabled{border-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-checkbox>input:disabled:checked,.vot-checkbox>input:disabled:indeterminate{border-color:rgba(0,0,0,0);background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38)}.vot-checkbox>input:disabled+span{color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);cursor:initial}.vot-checkbox>input:disabled+span::before{opacity:0;transform:scale(0)}.vot-slider{--vot-safari-helper1: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.04 ) !important;--vot-safari-helper2: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.12 ) !important;--vot-safari-helper3: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.16 ) !important;--vot-safari-helper4: rgba( var(--vot-primary-rgb, 33, 150, 243), 0.24 ) !important;display:inline-block;width:100% !important;color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important;font-family:var(--vot-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system) !important;font-size:16px !important;line-height:1.5 !important;text-align:start !important}.vot-slider[hidden]{display:none !important}.vot-slider>input{-webkit-appearance:none !important;appearance:none !important;position:relative !important;top:24px !important;display:block !important;margin:0 0 -36px !important;width:100% !important;height:36px !important;background-color:rgba(0,0,0,0) !important;cursor:pointer !important}.vot-slider>input:last-child{position:static !important;margin:0 !important}.vot-slider>span{display:inline-block !important;margin-bottom:36px !important}.vot-slider>input:disabled{cursor:default !important;opacity:.38 !important}.vot-slider>input:disabled+span{color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input::-webkit-slider-runnable-track{margin:17px 0 !important;border-radius:1px !important;width:100% !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-webkit-slider-thumb{margin:0 !important;appearance:none !important;-webkit-appearance:none !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider:hover>input::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--vot-safari-helper1) !important}.vot-slider>input:active::-webkit-slider-thumb{box-shadow:0 0 0 2px var(--vot-safari-helper4) !important}.vot-slider>input:disabled::-webkit-slider-runnable-track{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-webkit-slider-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;color:rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::-moz-range-track{margin:17px 0 !important;border-radius:1px !important;width:100% !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-moz-range-thumb{appearance:none !important;-moz-appearance:none !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider>input::-moz-range-progress{border-radius:1px !important;height:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-slider:hover>input:hover::-moz-range-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.04) !important}.vot-slider>input:active::-moz-range-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input:disabled::-moz-range-track{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-moz-range-progress{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87) !important}.vot-slider>input:disabled::-moz-range-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::-moz-focus-outer{border:none !important}.vot-slider>input:focus{outline:none !important}.vot-slider>input::-ms-track{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important;margin:17px 0 !important;border:none !important;border-radius:1px !important;padding:0 17px !important;width:100% !important;height:2px !important;background-color:rgba(0,0,0,0) !important}.vot-slider>input::-ms-fill-lower{border-radius:1px !important;height:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-slider>input::-ms-fill-upper{border-radius:1px !important;height:2px !important;background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input::-ms-thumb{appearance:none !important;margin:0 17px !important;border:none !important;border-radius:50% !important;height:2px !important;width:2px !important;background-color:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important;transform:scale(6, 6) !important;transition:box-shadow .2s !important}.vot-slider:hover>input::-ms-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.04) !important}.vot-slider>input:active::-ms-thumb{box-shadow:0 0 0 2px rgba(var(--vot-primary-rgb, 33, 150, 243), 0.24) !important}.vot-slider>input:disabled::-ms-fill-lower{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important}.vot-slider>input:disabled::-ms-fill-upper{background-color:rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important;opacity:.38 !important}.vot-slider>input:disabled::-ms-thumb{background-color:rgb(var(--vot-onsurface-rgb, 0, 0, 0)) !important;box-shadow:0 0 0 1px rgb(var(--vot-surface-rgb, 255, 255, 255)) !important;transform:scale(4, 4) !important}.vot-slider>input::before{content:"" !important;display:block !important;position:absolute !important;width:calc(100%*var(--vot-progress, 0)) !important;height:2px !important;top:calc(50% - 1px) !important;background:rgb(var(--vot-primary-rgb, 33, 150, 243)) !important}.vot-select{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0) !important;--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87) !important;--vot-helper-safari1: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;--vot-helper-safari2: rgba( var(--vot-onsurface-rgb, 0, 0, 0), 0.87 ) !important;display:flex;align-items:center;justify-content:space-between;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:14px;line-height:1.5;text-align:start;color:var(--vot-helper-theme);fill:var(--vot-helper-theme)}.vot-select[hidden]{display:none !important}.vot-select-label{font-size:16px}.vot-select-outer{display:flex;align-items:center;justify-content:space-between;max-width:120px;width:120px;padding:0 5px;border-style:solid !important;border-width:1px !important;border-color:var(--vot-helper-safari1) !important;border-radius:4px !important;cursor:pointer;transition:border .2s !important}.vot-select-outer:hover{border-color:var(--vot-helper-safari2) !important}.vot-select-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vot-select-arrow-icon{width:20px;height:32px;display:flex;justify-content:center;align-items:center}.vot-select-content-list{display:flex;flex-direction:column}.vot-select-content-list .vot-select-content-item{padding:5px 10px;border-radius:8px;cursor:pointer}.vot-select-content-list .vot-select-content-item:not([inert]):hover{background-color:#2a2c31}.vot-select-content-list .vot-select-content-item[data-vot-selected=true]{color:rgb(var(--vot-primary-rgb, 33, 150, 243));background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.2)}.vot-select-content-list .vot-select-content-item[data-vot-selected=true]:hover{background-color:rgba(var(--vot-primary-rgb, 33, 150, 243), 0.1) !important}.vot-select-content-list .vot-select-content-item[data-vot-disabled=true]{cursor:default}.vot-select-content-list .vot-select-content-item[hidden]{display:none !important}.vot-header{color:rgba(var(--vot-helper-onsurface-rgb), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-weight:bold;line-height:1.5;text-align:start}.vot-header[hidden]{display:none !important}.vot-header:not(:first-child){padding-top:8px}.vot-header-level-1{font-size:2em}.vot-header-level-2{font-size:1.5em}.vot-header-level-3{font-size:1.17em}.vot-header-level-4{font-size:1em}.vot-header-level-5{font-size:.83em}.vot-header-level-6{font-size:.67em}.vot-info{display:flex;color:rgba(var(--vot-helper-onsurface-rgb), 0.87);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;text-align:start}.vot-info[hidden]{display:none !important}.vot-info>:not(:first-child){color:rgba(var(--vot-helper-onsurface-rgb), 0.5);flex:1;margin-left:8px}.vot-lang-select{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);display:flex;align-items:center;justify-content:space-between;color:var(--vot-helper-theme);fill:var(--vot-helper-theme)}.vot-lang-select[hidden]{display:none !important}.vot-lang-select-icon{width:32px;height:32px;display:flex;justify-content:center;align-items:center}.vot-segmented-button{--vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);overflow:hidden;position:absolute;left:50%;top:5rem;transform:translate(-50%);user-select:none;display:flex;align-items:center;height:32px;max-width:100vw;background:rgb(var(--vot-surface-rgb, 255, 255, 255));color:var(--vot-helper-theme);fill:var(--vot-helper-theme);border-radius:4px;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;cursor:default;transition:opacity .5s;z-index:100}.vot-segmented-button[hidden]{display:none !important}.vot-segmented-button *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-segmented-button .vot-separator{width:1px;height:50%;background:rgba(var(--vot-helper-theme-rgb), 0.1)}.vot-segmented-button .vot-separator[hidden]{display:none !important}.vot-segmented-button .vot-segment,.vot-segmented-button .vot-segment-only-icon{position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100%;padding:0 8px;background-color:rgba(0,0,0,0);color:inherit;transition:background-color 100ms ease-in-out;border:none}.vot-segmented-button .vot-segment[hidden],.vot-segmented-button [hidden].vot-segment-only-icon{display:none !important}.vot-segmented-button .vot-segment::before,.vot-segmented-button .vot-segment-only-icon::before,.vot-segmented-button .vot-segment::after,.vot-segmented-button .vot-segment-only-icon::after{content:"";position:absolute;border-radius:inherit;top:0;right:0;bottom:0;left:0;opacity:0}.vot-segmented-button .vot-segment::before,.vot-segmented-button .vot-segment-only-icon::before{background-color:rgb(var(--vot-helper-theme-rgb));transition:opacity .2s}.vot-segmented-button .vot-segment::after,.vot-segmented-button .vot-segment-only-icon::after{background:radial-gradient(circle at center, currentColor 1%, transparent 1%) center/10000% 10000% no-repeat;transition:opacity 1s,background-size .5s}.vot-segmented-button .vot-segment:hover::before,.vot-segmented-button .vot-segment-only-icon:hover::before{opacity:.04}.vot-segmented-button .vot-segment:active::after,.vot-segmented-button .vot-segment-only-icon:active::after{opacity:.16;background-size:100% 100%;transition:background-size 0s}.vot-segmented-button .vot-segment-only-icon{min-width:32px;padding:0}.vot-segmented-button .vot-segment-label{margin-left:8px;white-space:nowrap}.vot-segmented-button[data-status=success] .vot-translate-button{color:rgb(var(--vot-primary-rgb, 33, 150, 243));fill:rgb(var(--vot-primary-rgb, 33, 150, 243))}.vot-segmented-button[data-status=error] .vot-translate-button{color:#f28b82;fill:#f28b82}.vot-segmented-button[data-direction=column]{flex-direction:column;height:fit-content}.vot-segmented-button[data-direction=column] .vot-segment-label{display:none}.vot-segmented-button[data-direction=column]>.vot-segment-only-icon,.vot-segmented-button[data-direction=column]>.vot-segment{padding:8px}.vot-segmented-button[data-direction=column] .vot-separator{height:1px;width:50%}.vot-segmented-button[data-position=left]{left:50px;top:12.5vh}.vot-segmented-button[data-position=right]{left:auto;right:0;top:12.5vh}.vot-segmented-button svg{width:fit-content}.vot-menu{--vot-helper-surface-rgb: var(--vot-surface-rgb, 255, 255, 255);--vot-helper-surface: rgb(var(--vot-helper-surface-rgb));--vot-helper-onsurface-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-onsurface: rgba(var(--vot-helper-onsurface-rgb), 0.87);overflow:hidden;position:absolute;left:50%;top:calc(5rem + 32px + 16px);user-select:none;background-color:var(--vot-helper-surface);color:var(--vot-helper-onsurface);border-radius:8px;font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;min-width:300px;cursor:default;z-index:100;visibility:visible;opacity:1;transform-origin:top;transform:translate(-50%) scale(1);transition:opacity .3s,transform .1s}.vot-menu *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-menu[hidden]{pointer-events:none;display:block !important;visibility:hidden;opacity:0;transform:translate(-50%) scale(0)}.vot-menu-content-wrapper{display:flex;flex-direction:column;min-height:100px;max-height:calc(var(--vot-container-height, 75vh) - (5rem + 32px + 16px)*2);overflow:auto}.vot-menu-header-container{flex-shrink:0;align-items:flex-start;display:flex;min-height:31px}.vot-menu-header-container:empty{padding:0 0 16px 0}.vot-menu-header-container>.vot-icon-button{margin-inline-end:4px;margin-top:4px}.vot-menu-title-container{display:flex;flex:1;font-size:inherit;font-weight:inherit;margin:0;outline:0;text-align:start}.vot-menu-title{flex:1;font-size:16px;line-height:1;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-menu-body-container{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:flex;flex-direction:column;min-height:1.375rem;overflow:auto;padding:0 16px;gap:8px;overscroll-behavior:contain;scrollbar-color:rgba(var(--vot-helper-onsurface-rgb), 0.1) var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar,.vot-menu-body-container::-webkit-scrollbar-track{height:12px !important;width:12px !important;background:var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-thumb{background:rgba(var(--vot-helper-onsurface-rgb), 0.1) !important;-webkit-border-radius:1ex !important;border:5px solid var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-thumb:hover{border:3px solid var(--vot-helper-surface) !important}.vot-menu-body-container::-webkit-scrollbar-corner{background:var(--vot-helper-surface) !important}.vot-menu-footer-container{flex-shrink:0;display:flex;justify-content:flex-end;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-menu-footer-container:empty{padding:16px 0 0 0}.vot-menu[data-position=left]{left:240px;top:12.5vh}.vot-menu[data-position=right]{right:-80px;left:auto;top:12.5vh}.vot-dialog-container{visibility:visible;position:absolute;z-index:10000}.vot-dialog-container[hidden]{display:block !important;pointer-events:none;visibility:hidden}.vot-dialog-container *{-webkit-box-sizing:border-box !important;-moz-box-sizing:border-box !important;box-sizing:border-box !important}.vot-dialog-backdrop{background-color:rgba(0,0,0,.6);position:fixed;top:0;right:0;bottom:0;left:0;opacity:1;transition:opacity .3s}[hidden]>.vot-dialog-backdrop{pointer-events:none;opacity:0}.vot-dialog{--vot-helper-surface-rgb: var(--vot-surface-rgb, 255, 255, 255);--vot-helper-surface: rgb(var(--vot-helper-surface-rgb));--vot-helper-onsurface-rgb: var(--vot-onsurface-rgb, 0, 0, 0);--vot-helper-onsurface: rgba(var(--vot-helper-onsurface-rgb), 0.87);display:block;position:fixed;top:50%;bottom:50%;max-width:initial;max-height:initial;width:min(var(--vot-dialog-width, 512px),100%);height:fit-content;inset-inline-start:0px;inset-inline-end:0px;inset-block-start:0px;inset-block-end:0px;border-radius:8px;margin:auto;padding:0;background-color:var(--vot-helper-surface);color:var(--vot-helper-onsurface);box-shadow:0 0 16px rgba(0,0,0,.12),0 16px 16px rgba(0,0,0,.24);font-family:var(--vot-font-family, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);font-size:16px;line-height:1.5;user-select:none;visibility:visible;overflow:auto;overflow-y:hidden;opacity:1;transform-origin:center;transform:scale(1);transition:opacity .3s,transform .1s}[hidden]>.vot-dialog{pointer-events:none;opacity:0;transform:scale(0.5);transition:opacity .1s,transform .2s}.vot-dialog-content-wrapper{display:flex;flex-direction:column;max-height:75vh;overflow:auto}.vot-dialog-header-container{flex-shrink:0;align-items:flex-start;display:flex;min-height:31px}.vot-dialog-header-container:empty{padding:0 0 20px 0}.vot-dialog-header-container>.vot-icon-button{margin-inline-end:4px;margin-top:4px}.vot-dialog-title-container{display:flex;flex:1;font-size:inherit;font-weight:inherit;margin:0;outline:0}.vot-dialog-title{flex:1;font-size:115.3846153846%;font-weight:bold;line-height:1;padding-bottom:16px;padding-inline-end:20px;padding-inline-start:20px;padding-top:20px}.vot-dialog-body-container{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:flex;flex-direction:column;min-height:1.375rem;overflow:auto;padding:0 20px;gap:16px;overscroll-behavior:contain;scrollbar-color:rgba(var(--vot-helper-onsurface-rgb), 0.1) var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar,.vot-dialog-body-container::-webkit-scrollbar-track{height:12px !important;width:12px !important;background:var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-thumb{background:rgba(var(--vot-helper-onsurface-rgb), 0.1) !important;-webkit-border-radius:1ex !important;border:5px solid var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-thumb:hover{border:3px solid var(--vot-helper-surface) !important}.vot-dialog-body-container::-webkit-scrollbar-corner{background:var(--vot-helper-surface) !important}.vot-dialog-footer-container{flex-shrink:0;display:flex;justify-content:flex-end;padding-bottom:16px;padding-inline-end:16px;padding-inline-start:16px;padding-top:16px}.vot-dialog-footer-container:empty{padding:20px 0 0 0}.vot-subtitles-widget{display:flex;justify-content:center;align-items:center;position:absolute;width:50%;max-height:100%;min-height:20%;z-index:100;left:25%;top:75%;pointer-events:none}.vot-subtitles{position:relative;max-width:100%;max-height:100%;width:max-content;background:var(--vot-subtitles-background, rgba(46, 47, 52, 0.8));color:var(--vot-subtitles-color, rgb(227, 227, 227));border-radius:1rem;pointer-events:all;padding:1rem;font-size:2rem;line-height:normal;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.vot-subtitles .passed{color:var(--vot-subtitles-passed-color, rgb(33, 150, 243))}:root{--vot-font-family: "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system;--vot-primary-rgb: 139, 180, 245;--vot-onprimary-rgb: 32, 33, 36;--vot-surface-rgb: 32, 33, 36;--vot-onsurface-rgb: 227, 227, 227;--vot-subtitles-background: rgba(var(--vot-surface-rgb, 46, 47, 52), 0.8);--vot-subtitles-color: rgb(var(--vot-onsurface-rgb, 227, 227, 227));--vot-subtitles-passed-color: rgb(var(--vot-primary-rgb, 33, 150, 243))}vot-block{display:block}`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -581,9 +589,309 @@ const detectUrls = {
 
 const translateUrls = {
   yandex: "https://translate.toil.cc/translate",
+  deepl: "https://translate-deepl.toil.cc/translate",
 };
 
 
+
+
+/***/ }),
+
+/***/ "./src/config/constants.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ww: () => (/* binding */ actualTTS),
+/* harmony export */   ZY: () => (/* binding */ additionalTTS),
+/* harmony export */   xm: () => (/* binding */ availableLangs)
+/* harmony export */ });
+/* unused harmony export cfOnlyExtensions */
+// available languages for translation
+const availableLangs = [
+  "ru",
+  "en",
+  "zh",
+  "ko",
+  "lt",
+  "lv",
+  "ar",
+  "fr",
+  "it",
+  "es",
+  "de",
+  "ja",
+];
+
+// Additional languages working with TTS
+const additionalTTS = [
+  "kk",
+  "bn",
+  "pt",
+  "cs",
+  "hi",
+  "mr", // TODO: Add menu translation (MAYBE)
+  "te", // TODO: Add menu translation (MAYBE)
+  "tr",
+  "ms",
+  "vi",
+  "ta", // TODO: Add menu translation (MAYBE)
+  "jv",
+  "ur",
+  "fa",
+  "gu", // TODO: Add menu translation (MAYBE)
+  "id",
+  "uk",
+  "da",
+  "fi",
+  "uz",
+  "pl",
+  "sv",
+  "az",
+  "sq",
+  "am",
+  "hy",
+  "af",
+  "eu",
+  "my",
+  "bg",
+  "bs",
+  "cy",
+  "hu",
+  "gl",
+  "el",
+  "zu",
+  "kn",
+  "ca",
+  "km",
+  "lo",
+  "mk",
+  "ml",
+  "mt",
+  "mn",
+  "ne",
+  "nl",
+  "pa",
+  "ro",
+  "sr",
+  "si",
+  "sk",
+  "sl",
+  "sw",
+  "su",
+  "hr",
+  "et",
+];
+
+// up-to-date list of TTS working languages
+const actualTTS = ["ru", "en", "kk"];
+
+const cfOnlyExtensions = (/* unused pure expression or super */ null && ([
+  "Violentmonkey",
+  "FireMonkey",
+  "Greasemonkey",
+  "AdGuard",
+  "OrangeMonkey",
+]));
+
+
+
+
+/***/ }),
+
+/***/ "./src/localization/localizationProvider.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  z: () => (/* binding */ availableLocales),
+  j: () => (/* binding */ localizationProvider)
+});
+
+;// CONCATENATED MODULE: ./src/localization/locales/en.json
+const en_namespaceObject = /*#__PURE__*/JSON.parse('{"__version__":3,"recommended":"recommended","translateVideo":"Translate video","disableTranslate":"Turn off","translationSettings":"Translation settings","subtitlesSettings":"Subtitles settings","about":"About extension","resetSettings":"Reset settings","videoBeingTranslated":"The video is being translated","videoLanguage":"Video language","translationLanguage":"Translation language","translationTake":"The translation will take","translationTakeMoreThanHour":"The translation will take more than an hour","translationTakeAboutMinute":"The translation will take about a minute","translationTakeFewMinutes":"The translation will take a few minutes","translationTakeApproximatelyMinutes":"The translation will take approximately {0} minutes","translationTakeApproximatelyMinute":"The translation will take approximately {0} minutes","unSupportedExtensionError":"Error! {0} is not supported by this version of the extension!\\n\\nPlease use the cloudflare version of the VOT extension.","requestTranslationFailed":"Failed to request video translation","audioNotReceived":"Audio link not received","grantPermissionToAutoPlay":"Grant permission to autoplay","neededAdditionalExtension":"An additional extension is needed to support this site","audioFormatNotSupported":"The audio format is not supported","VOTAutoTranslate":"Translate on open","VOTDontTranslateYourLang":"Do not translate from my language","VOTVolume":"Video volume","VOTVolumeTranslation":"Translation Volume","VOTAutoSetVolume":"Reduce video volume to ","VOTShowVideoSlider":"Video volume slider","VOTSyncVolume":"Link translation and video volume","VOTAudioProxy":"Proxy received audio","VOTDisableFromYourLang":"You have disabled the translation of the video in your language","VOTLiveNotSupported":"Translation of live streams is not supported","VOTPremiere":"Wait for the premiere to end before translating","VOTVideoIsTooLong":"Video is too long","VOTNoVideoIDFound":"No video ID found","VOTSubtitles":"Subtitles","VOTSubtitlesDisabled":"Disabled","VOTSubtitlesMaxLength":"Subtitles max length","VOTHighlightWords":"Highlight words","VOTTranslatedFrom":"translated from","VOTAutogenerated":"autogenerated","VOTSettings":"VOT Settings","VOTMenuLanguage":"Menu language","VOTAuthors":"Authors","VOTVersion":"Version","VOTLoader":"Loader","VOTBrowser":"Browser","VOTShowPiPButton":"Show PiP button","langs":{"auto":"Auto","af":"Afrikaans","ak":"Akan","sq":"Albanian","am":"Amharic","ar":"Arabic","hy":"Armenian","as":"Assamese","ay":"Aymara","az":"Azerbaijani","bn":"Bangla","eu":"Basque","be":"Belarusian","bho":"Bhojpuri","bs":"Bosnian","bg":"Bulgarian","my":"Burmese","ca":"Catalan","ceb":"Cebuano","zh":"Chinese","zh-Hans":"Chinese (Simplified)","zh-Hant":"Chinese (Traditional)","co":"Corsican","hr":"Croatian","cs":"Czech","da":"Danish","dv":"Divehi","nl":"Dutch","en":"English","eo":"Esperanto","et":"Estonian","ee":"Ewe","fil":"Filipino","fi":"Finnish","fr":"French","gl":"Galician","lg":"Ganda","ka":"Georgian","de":"German","el":"Greek","gn":"Guarani","gu":"Gujarati","ht":"Haitian Creole","ha":"Hausa","haw":"Hawaiian","iw":"Hebrew","hi":"Hindi","hmn":"Hmong","hu":"Hungarian","is":"Icelandic","ig":"Igbo","id":"Indonesian","ga":"Irish","it":"Italian","ja":"Japanese","jv":"Javanese","kn":"Kannada","kk":"Kazakh","km":"Khmer","rw":"Kinyarwanda","ko":"Korean","kri":"Krio","ku":"Kurdish","ky":"Kyrgyz","lo":"Lao","la":"Latin","lv":"Latvian","ln":"Lingala","lt":"Lithuanian","lb":"Luxembourgish","mk":"Macedonian","mg":"Malagasy","ms":"Malay","ml":"Malayalam","mt":"Maltese","mi":"Māori","mr":"Marathi","mn":"Mongolian","ne":"Nepali","nso":"Northern Sotho","no":"Norwegian","ny":"Nyanja","or":"Odia","om":"Oromo","ps":"Pashto","fa":"Persian","pl":"Polish","pt":"Portuguese","pa":"Punjabi","qu":"Quechua","ro":"Romanian","ru":"Russian","sm":"Samoan","sa":"Sanskrit","gd":"Scottish Gaelic","sr":"Serbian","sn":"Shona","sd":"Sindhi","si":"Sinhala","sk":"Slovak","sl":"Slovenian","so":"Somali","st":"Southern Sotho","es":"Spanish","su":"Sundanese","sw":"Swahili","sv":"Swedish","tg":"Tajik","ta":"Tamil","tt":"Tatar","te":"Telugu","th":"Thai","ti":"Tigrinya","ts":"Tsonga","tr":"Turkish","tk":"Turkmen","uk":"Ukrainian","ur":"Urdu","ug":"Uyghur","uz":"Uzbek","vi":"Vietnamese","cy":"Welsh","fy":"Western Frisian","xh":"Xhosa","yi":"Yiddish","yo":"Yoruba","zu":"Zulu"},"udemyAccessTokenExpired":"Your entered Udemy Access Token has expired","udemyModuleArgsNotFound":"Could not get udemy module data due to the fact that ModuleArgs was not found","VOTTranslationHelpNull":"Could not get the data required for the translate","enterUdemyAccessToken":"Enter Udemy Access Token","VOTUdemyData":"Udemy Data","streamNoConnectionToServer":"There is no connection to the server","searchField":"Search...","VOTTranslateAPIErrors":"Translate errors from the API","VOTTranslationService":"Translation Service","VOTDetectService":"Detect Service","VOTTranslatingError":"Translating the error","VOTProxyWorkerHost":"Enter the proxy worker address","VOTM3u8ProxyHost":"Enter the address of the m3u8 proxy worker","proxySettings":"Proxy Settings"}');
+// EXTERNAL MODULE: ./src/utils/debug.js
+var debug = __webpack_require__("./src/utils/debug.js");
+// EXTERNAL MODULE: ./src/utils/storage.js
+var storage = __webpack_require__("./src/utils/storage.js");
+// EXTERNAL MODULE: ./src/utils/utils.js
+var utils = __webpack_require__("./src/utils/utils.js");
+;// CONCATENATED MODULE: ./src/localization/localizationProvider.js
+
+
+
+
+
+const localesVersion = 2;
+const localesUrl = `https://raw.githubusercontent.com/ilyhalight/voice-over-translation/${
+   false ? 0 : "master"
+}/src/localization/locales`;
+
+const availableLocales = [
+  "auto",
+  "en",
+  "ru",
+
+  "af",
+  "am",
+  "ar",
+  "az",
+  "bg",
+  "bn",
+  "bs",
+  "ca",
+  "cs",
+  "cy",
+  "da",
+  "de",
+  "el",
+  "es",
+  "et",
+  "eu",
+  "fa",
+  "fi",
+  "fr",
+  "gl",
+  "hi",
+  "hr",
+  "hu",
+  "hy",
+  "id",
+  "it",
+  "ja",
+  "jv",
+  "kk",
+  "km",
+  "kn",
+  "ko",
+  "lo",
+  "mk",
+  "ml",
+  "mn",
+  "ms",
+  "mt",
+  "my",
+  "ne",
+  "nl",
+  "pa",
+  "pl",
+  "pt",
+  "ro",
+  "si",
+  "sk",
+  "sl",
+  "sq",
+  "sr",
+  "su",
+  "sv",
+  "sw",
+  "tr",
+  "uk",
+  "ur",
+  "uz",
+  "vi",
+  "zh",
+  "zu",
+];
+
+const localizationProvider = new (class {
+  lang = "en";
+  locale = {};
+  gmValues = [
+    "locale-phrases",
+    "locale-lang",
+    "locale-version",
+    "locale-lang-override",
+  ];
+
+  constructor() {
+    const langOverride = storage/* votStorage */.d.syncGet("locale-lang-override", "auto");
+    if (langOverride && langOverride !== "auto") {
+      this.lang = langOverride;
+    } else {
+      this.lang =
+        (navigator.language || navigator.userLanguage)
+          ?.substr(0, 2)
+          ?.toLowerCase() ?? "en";
+    }
+    this.setLocaleFromJsonString(storage/* votStorage */.d.syncGet("locale-phrases", ""));
+  }
+
+  reset() {
+    this.gmValues.forEach((v) => storage/* votStorage */.d.syncDelete(v));
+  }
+
+  async update(force = false) {
+    const localeVersion = await storage/* votStorage */.d.get("locale-version", 0, true);
+    const localeLang = await storage/* votStorage */.d.get("locale-lang");
+    if (
+      !force &&
+      localeVersion === localesVersion &&
+      localeLang === this.lang
+    ) {
+      return;
+    }
+
+    debug/* default */.A.log("Updating locale...");
+
+    try {
+      const response = await (0,utils/* GM_fetch */.G3)(`${localesUrl}/${this.lang}.json`);
+      if (response.status !== 200) throw response.status;
+      const text = await response.text();
+      await storage/* votStorage */.d.set("locale-phrases", text);
+      this.setLocaleFromJsonString(text);
+      const version = this.getFromLocale(this.locale, "__version__");
+      if (typeof version === "number")
+        await storage/* votStorage */.d.set("locale-version", version);
+      await storage/* votStorage */.d.set("locale-lang", this.lang);
+    } catch (error) {
+      console.error(
+        "[VOT] [localizationProvider] failed get locale, cause:",
+        error,
+      );
+      this.setLocaleFromJsonString(await storage/* votStorage */.d.get("locale-phrases", ""));
+    }
+  }
+
+  setLocaleFromJsonString(json) {
+    try {
+      this.locale = JSON.parse(json) ?? {};
+    } catch (exception) {
+      console.error("[VOT] [localizationProvider]", exception);
+      this.locale = {};
+    }
+  }
+
+  getFromLocale(locale, key) {
+    const result = key.split(".").reduce((locale, key) => {
+      if (typeof locale === "object" && locale) return locale[key];
+      return undefined;
+    }, locale);
+    if (result === undefined) {
+      console.warn(
+        "[VOT] [localizationProvider] locale",
+        locale,
+        "doesn't contain key",
+        key,
+      );
+    }
+    return result;
+  }
+
+  getDefault(key) {
+    return this.getFromLocale(en_namespaceObject, key) ?? key;
+  }
+
+  get(key) {
+    return (
+      this.getFromLocale(this.locale, key) ??
+      this.getFromLocale(en_namespaceObject, key) ??
+      key
+    );
+  }
+})();
 
 
 /***/ }),
@@ -597,9 +905,7 @@ const translateUrls = {
 /* harmony export */ });
 const debug = {};
 debug.log = (...text) => {
-  if (true) {
-    return;
-  }
+  if (false) {}
   return console.log(
     "%c[VOT DEBUG]",
     "background: #F2452D; color: #fff; padding: 5px;",
@@ -726,6 +1032,780 @@ const votStorage = new (class {
 
 /***/ }),
 
+/***/ "./src/utils/translateApis.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Tl: () => (/* binding */ translate),
+/* harmony export */   o0: () => (/* binding */ detect),
+/* harmony export */   qh: () => (/* binding */ detectServices),
+/* harmony export */   vN: () => (/* binding */ translateServices)
+/* harmony export */ });
+/* harmony import */ var _config_config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/config/config.js");
+/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/utils/storage.js");
+
+
+
+const HTTP_TIMEOUT = 3000;
+
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    console.error("Fetch timed-out. Error:", error);
+    return error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+const YandexTranslateAPI = {
+  async translate(text, lang) {
+    // Limit: 10k symbols
+    //
+    // Lang examples:
+    // en-ru, uk-ru, ru-en...
+    // ru, en (instead of auto-ru, auto-en)
+
+    try {
+      const response = await fetchWithTimeout(
+        `${_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .translateUrls */ .rw.yandex}?${new URLSearchParams({
+          text,
+          lang,
+        })}`,
+      );
+
+      if (response instanceof Error) {
+        throw response;
+      }
+
+      const content = await response.json();
+
+      if (content.code !== 200) {
+        throw content.message;
+      }
+
+      return content.text[0];
+    } catch (error) {
+      console.error("Error translating text:", error);
+      return text;
+    }
+  },
+
+  async detect(text) {
+    // Limit: 10k symbols
+    try {
+      const response = await fetchWithTimeout(
+        `${_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .detectUrls */ .QL.yandex}?${new URLSearchParams({
+          text,
+        })}`,
+      );
+
+      if (response instanceof Error) {
+        throw response;
+      }
+
+      const content = await response.json();
+      if (content.code !== 200) {
+        throw content.message;
+      }
+
+      return content.lang ?? "en";
+    } catch (error) {
+      console.error("Error getting lang from text:", error);
+      return "en";
+    }
+  },
+};
+
+const RustServerAPI = {
+  async detect(text) {
+    try {
+      const response = await fetch(_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .detectUrls */ .QL.rustServer, {
+        method: "POST",
+        body: text,
+      });
+
+      if (response instanceof Error) {
+        throw response;
+      }
+
+      return await response.text();
+    } catch (error) {
+      console.error("Error getting lang from text:", error);
+      return "en";
+    }
+  },
+};
+
+const DeeplServerAPI = {
+  async translate(text, fromLang = "auto", toLang = "ru") {
+    try {
+      const response = await fetchWithTimeout(_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .translateUrls */ .rw.deepl, {
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          text,
+          source_lang: fromLang,
+          target_lang: toLang,
+        }),
+      });
+
+      if (response instanceof Error) {
+        throw response;
+      }
+
+      const content = await response.json();
+
+      if (content.code !== 200) {
+        throw content.message;
+      }
+
+      return content.data;
+    } catch (error) {
+      console.error("Error translating text:", error);
+      return text;
+    }
+  },
+};
+
+async function translate(text, fromLang = "", toLang = "ru") {
+  const service = await _storage_js__WEBPACK_IMPORTED_MODULE_1__/* .votStorage */ .d.get(
+    "translationService",
+    _config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .defaultTranslationService */ .mE,
+  );
+  switch (service) {
+    case "yandex": {
+      const langPair = fromLang && toLang ? `${fromLang}-${toLang}` : toLang;
+      return await YandexTranslateAPI.translate(text, langPair);
+    }
+    case "deepl": {
+      return await DeeplServerAPI.translate(text, fromLang, toLang);
+    }
+    default:
+      return text;
+  }
+}
+
+async function detect(text) {
+  const service = await _storage_js__WEBPACK_IMPORTED_MODULE_1__/* .votStorage */ .d.get("detectService", _config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .defaultDetectService */ .K2);
+  switch (service) {
+    case "yandex":
+      return await YandexTranslateAPI.detect(text);
+    case "rust-server":
+      return await RustServerAPI.detect(text);
+    default:
+      return "en";
+  }
+}
+
+const translateServices = Object.keys(_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .translateUrls */ .rw);
+const detectServices = Object.keys(_config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .detectUrls */ .QL).map((k) =>
+  k === "rustServer" ? "rust-server" : k,
+);
+
+
+
+
+/***/ }),
+
+/***/ "./src/utils/utils.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Bs: () => (/* binding */ isPiPAvailable),
+/* harmony export */   CK: () => (/* binding */ initHls),
+/* harmony export */   G3: () => (/* binding */ GM_fetch),
+/* harmony export */   R4: () => (/* binding */ langTo6391),
+/* harmony export */   X5: () => (/* binding */ cleanText),
+/* harmony export */   jI: () => (/* binding */ getVideoId),
+/* harmony export */   ox: () => (/* binding */ secsToStrTime),
+/* harmony export */   vV: () => (/* binding */ lang)
+/* harmony export */ });
+/* harmony import */ var _localization_localizationProvider_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/localization/localizationProvider.js");
+/* harmony import */ var _youtubeUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/utils/youtubeUtils.js");
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/utils/debug.js");
+
+
+
+
+const userlang = navigator.language || navigator.userLanguage;
+const lang = userlang?.substr(0, 2)?.toLowerCase() ?? "en";
+
+// not used
+// function waitForElm(selector) {
+//   // https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
+//   return new Promise((resolve) => {
+//     const element = document.querySelector(selector);
+//     if (element) {
+//       return resolve(element);
+//     }
+
+//     const observer = new MutationObserver(() => {
+//       const element = document.querySelector(selector);
+//       if (element) {
+//         resolve(element);
+//         observer.disconnect();
+//       }
+//     });
+
+//     observer.observe(document.body, {
+//       childList: true,
+//       subtree: true,
+//       once: true,
+//     });
+//   });
+// }
+
+// not used
+// const sleep = (m) => new Promise((r) => setTimeout(r, m));
+
+const getVideoId = (service, video) => {
+  let url = new URL(window.location.href);
+
+  switch (service) {
+    case "piped":
+    case "invidious":
+    case "youtube": {
+      if (url.searchParams.has("enablejsapi")) {
+        const videoUrl = _youtubeUtils_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.getPlayer().getVideoUrl();
+        url = new URL(videoUrl);
+      }
+
+      return (
+        url.pathname.match(/(?:watch|embed|shorts)\/([^/]+)/)?.[1] ||
+        url.searchParams.get("v")
+      );
+    }
+    case "vk":
+      if (url.pathname.match(/^\/video-?[0-9]{8,9}_[0-9]{9}$/)) {
+        return url.pathname.match(/^\/video-?[0-9]{8,9}_[0-9]{9}$/)[0].slice(1);
+      } else if (url.searchParams.get("z")) {
+        return url.searchParams.get("z").split("/")[0];
+      } else if (url.searchParams.get("oid") && url.searchParams.get("id")) {
+        return `video-${Math.abs(
+          url.searchParams.get("oid"),
+        )}_${url.searchParams.get("id")}`;
+      } else {
+        return false;
+      }
+    case "nine_gag":
+    case "9gag":
+    case "gag":
+      return url.pathname.match(/gag\/([^/]+)/)?.[1];
+    case "twitch":
+      if (/^m\.twitch\.tv$/.test(window.location.hostname)) {
+        const linkUrl = document.head.querySelector('link[rel="canonical"]');
+        return (
+          linkUrl?.href.match(/videos\/([^/]+)/)?.[0] || url.pathname.slice(1)
+        );
+      } else if (/^player\.twitch\.tv$/.test(window.location.hostname)) {
+        return `videos/${url.searchParams.get("video")}`;
+      } else if (/^clips\.twitch\.tv$/.test(window.location.hostname)) {
+        // get link to twitch channel (ex.: https://www.twitch.tv/xqc)
+        const channelLink = document.querySelector(
+          ".tw-link[data-test-selector='stream-info-card-component__stream-avatar-link']",
+        );
+        if (!channelLink) {
+          return false;
+        }
+
+        const channelName = channelLink.href.replace(
+          "https://www.twitch.tv/",
+          "",
+        );
+        return `${channelName}/clip/${url.searchParams.get("clip")}`;
+      } else if (url.pathname.match(/([^/]+)\/(?:clip)\/([^/]+)/)) {
+        return url.pathname.match(/([^/]+)\/(?:clip)\/([^/]+)/)[0];
+      } else {
+        return url.pathname.match(/(?:videos)\/([^/]+)/)?.[0];
+      }
+    case "proxytok":
+      return url.pathname.match(/([^/]+)\/video\/([^/]+)/)?.[0];
+    case "tiktok": {
+      let id = url.pathname.match(/([^/]+)\/video\/([^/]+)/)?.[0];
+      if (!id) {
+        const playerEl = video.closest(".xgplayer-playing, .tiktok-web-player");
+        const itemEl = playerEl?.closest(
+          'div[data-e2e="recommend-list-item-container"]',
+        );
+        const authorEl = itemEl?.querySelector(
+          'a[data-e2e="video-author-avatar"]',
+        );
+        if (playerEl && authorEl) {
+          const videoId = playerEl.id?.match(/^xgwrapper-[0-9]+-(.*)$/)?.at(1);
+          const author = authorEl.href?.match(/.*(@.*)$/)?.at(1);
+          if (videoId && author) {
+            id = `${author}/video/${videoId}`;
+          }
+        }
+      }
+      return id;
+    }
+    case "vimeo": {
+      const appId = url.searchParams.get("app_id");
+      const videoId =
+        url.pathname.match(/[^/]+\/[^/]+$/)?.[0] ||
+        url.pathname.match(/[^/]+$/)?.[0];
+
+      return appId ? `${videoId}?app_id=${appId}` : videoId;
+    }
+    case "xvideos":
+      return url.pathname.match(/[^/]+\/[^/]+$/)?.[0];
+    case "pornhub":
+      return (
+        url.searchParams.get("viewkey") ||
+        url.pathname.match(/embed\/([^/]+)/)?.[1]
+      );
+    case "twitter":
+      return url.pathname.match(/status\/([^/]+)/)?.[1];
+    case "udemy":
+      return url.pathname;
+    case "rumble":
+      return url.pathname;
+    case "facebook":
+      return url.pathname;
+    case "rutube":
+      return url.pathname.match(/(?:video|embed)\/([^/]+)/)?.[1];
+    case "coub":
+      if (url.pathname.includes("/view")) {
+        return url.pathname.match(/view\/([^/]+)/)?.[1];
+      } else if (url.pathname.includes("/embed")) {
+        return url.pathname.match(/embed\/([^/]+)/)?.[1];
+      } else {
+        return document.querySelector(".coub.active")?.dataset?.permalink;
+      }
+    case "bilibili": {
+      const bvid = url.searchParams.get("bvid");
+      if (bvid) {
+        return bvid;
+      } else {
+        let vid = url.pathname.match(/video\/([^/]+)/)?.[1];
+        if (vid && url.search && url.searchParams.get("p") !== null) {
+          vid += `/?p=${url.searchParams.get("p")}`;
+        }
+        return vid;
+      }
+    }
+    case "mail_ru":
+      if (url.pathname.startsWith("/v/") || url.pathname.startsWith("/mail/")) {
+        return url.pathname;
+      } else if (url.pathname.match(/video\/embed\/([^/]+)/)) {
+        const referer = document.querySelector(
+          ".b-video-controls__mymail-link",
+        );
+        if (!referer) {
+          return false;
+        }
+
+        return referer?.href.split("my.mail.ru")?.[1];
+      }
+      return false;
+    case "bitchute":
+      return url.pathname.match(/video\/([^/]+)/)?.[1];
+    case "coursera":
+      // ! LINK SHOULD BE LIKE THIS https://www.coursera.org/learn/learning-how-to-learn/lecture/75EsZ
+      // return url.pathname.match(/lecture\/([^/]+)\/([^/]+)/)?.[1]; // <--- COURSE PREVIEW
+      return url.pathname.match(/learn\/([^/]+)\/lecture\/([^/]+)/)?.[0]; // <--- COURSE PASSING (IF YOU LOGINED TO COURSERA)
+    case "eporner":
+      // ! LINK SHOULD BE LIKE THIS eporner.com/video-XXXXXXXXX/isdfsd-dfjsdfjsdf-dsfsdf-dsfsda-dsad-ddsd
+      return url.pathname.match(/video-([^/]+)\/([^/]+)/)?.[0];
+    case "peertube":
+      return url.pathname.match(/\/w\/([^/]+)/)?.[0];
+    case "dailymotion": {
+      // we work in the context of the player
+      // geo.dailymotion.com
+      const plainPlayerConfig = Array.from(
+        document.querySelectorAll("*"),
+      ).filter((s) => s.innerHTML.trim().includes(".m3u8"));
+      try {
+        let videoUrl = plainPlayerConfig[1].lastChild.src;
+        return videoUrl.match(/\/video\/(\w+)\.m3u8/)?.[1];
+      } catch (e) {
+        console.error("[VOT]", e);
+        return false;
+      }
+    }
+    case "trovo": {
+      if (!url.pathname.startsWith("/s/")) {
+        return false;
+      }
+
+      const vid = url.searchParams.get("vid");
+      if (!vid) {
+        return false;
+      }
+
+      const path = url.pathname.match(/([^/]+)\/([\d]+)/)?.[0];
+      if (!path) {
+        return false;
+      }
+
+      return `${path}?vid=${vid}`;
+    }
+    case "yandexdisk":
+      return url.pathname.match(/\/i\/([^/]+)/)?.[1];
+    case "coursehunter": {
+      const courseId = url.pathname.match(/\/course\/([^/]+)/)?.[1];
+      return courseId ? courseId + url.search : false;
+    }
+    case "ok.ru": {
+      return url.pathname.match(/\/video\/(\d+)/)?.[0];
+    }
+    case "googledrive":
+      return url.searchParams.get("docid");
+    case "bannedvideo":
+      return url.searchParams.get("id");
+    case "weverse":
+      return url.pathname.match(/([^/]+)\/(live|media)\/([^/]+)/)?.[0];
+    case "newgrounds":
+      return url.pathname.match(/([^/]+)\/(view)\/([^/]+)/)?.[0];
+    case "egghead":
+      return url.pathname;
+    case "youku":
+      return url.pathname.match(/v_show\/id_[\w=]+/)?.[0];
+    // case "sibnet": {
+    //   const videoId = url.searchParams.get("videoid");
+    //   if (videoId) {
+    //     return `video${videoId}`;
+    //   }
+
+    //   return url.pathname.match(/video([^/]+)/)?.[0];
+    // }
+    // case "patreon":
+    //   return url.pathname.match(/posts\/([^/]+)/)?.[0];
+    case "directlink":
+      return url.pathname + url.search;
+    default:
+      return false;
+  }
+};
+
+function secsToStrTime(secs) {
+  const minutes = Math.floor(secs / 60);
+  const seconds = Math.floor(secs % 60);
+  if (minutes >= 60) {
+    return _localization_localizationProvider_js__WEBPACK_IMPORTED_MODULE_0__/* .localizationProvider */ .j.get("translationTakeMoreThanHour");
+  } else if (minutes >= 10 && minutes % 10) {
+    return _localization_localizationProvider_js__WEBPACK_IMPORTED_MODULE_0__/* .localizationProvider */ .j
+      .get("translationTakeApproximatelyMinutes")
+      .replace("{0}", minutes);
+  } else if (minutes == 1 || (minutes == 0 && seconds > 0)) {
+    return _localization_localizationProvider_js__WEBPACK_IMPORTED_MODULE_0__/* .localizationProvider */ .j.get("translationTakeAboutMinute");
+  } else {
+    return _localization_localizationProvider_js__WEBPACK_IMPORTED_MODULE_0__/* .localizationProvider */ .j
+      .get("translationTakeApproximatelyMinute")
+      .replace("{0}", minutes);
+  }
+}
+function langTo6391(lang) {
+  // convert lang to ISO 639-1
+  return lang.toLowerCase().split(";")[0].trim().split("-")[0].split("_")[0];
+}
+
+function isPiPAvailable() {
+  return (
+    "pictureInPictureEnabled" in document && document.pictureInPictureEnabled
+  );
+}
+
+function initHls() {
+  return typeof Hls != "undefined" && Hls?.isSupported()
+    ? new Hls({
+        debug: false, // turn it on manually if necessary
+        lowLatencyMode: true,
+        backBufferLength: 90,
+      })
+    : undefined;
+}
+
+function cleanText(title, description) {
+  let cleanedDescription = "";
+
+  const deletefilter = [
+    /(?:https?|ftp):\/\/[\S]+/g,
+    /https?:\/\/\S+|www\.\S+/gm,
+    /\b\S+\.\S+/gm,
+    /#[^\s#]+/g,
+    /Auto-generated by YouTube/g,
+    /Provided to YouTube by/g,
+    /Released on/g,
+    /0x[a-fA-F0-9]{40}/g,
+    /[13][a-km-zA-HJ-NP-Z1-9]{25,34}/g,
+    /4[0-9AB][1-9A-HJ-NP-Za-km-z]{93}/g,
+    /Paypal/g,
+  ];
+
+  const combinedRegex = new RegExp(
+    deletefilter.map((regex) => regex.source).join("|"),
+  );
+  cleanedDescription = description
+    ? description
+        .split("\n")
+        .filter((line) => !combinedRegex.test(line))
+        .join("")
+    : "";
+
+  const cleanText = [title, cleanedDescription]
+    .join(" ")
+    .replace(/[^\p{L}\s]/gu, " ")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, 1000);
+  return cleanText;
+}
+
+function GM_fetch(url, opt = {}) {
+  // https://github.com/ilyhalight/voice-over-translation/discussions/589
+  if (GM_info?.scriptHandler === "AdGuard" || !GM_xmlhttpRequest) {
+    console.error("GM_xmlhttpRequest is not available");
+    return fetch(url, opt);
+  }
+
+  return new Promise((resolve, reject) => {
+    _debug_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A.log("opt.headers log", opt.headers);
+    const options = {
+      url: url,
+      method: opt.method || "GET",
+      headers: opt.headers,
+      data: opt.body,
+      responseType: "blob",
+      onload: function (resp) {
+        resolve(
+          new Response(resp.response, {
+            status: resp.status,
+            statusText: resp.statusText,
+            headers: parseHeaders(resp.responseHeaders),
+          }),
+        );
+      },
+      onerror: function (err) {
+        reject(new Error("GM_xmlhttpRequest failed: " + err.error));
+      },
+      ontimeout: function () {
+        reject(new Error("GM_xmlhttpRequest timed out."));
+      },
+      onabort: function () {
+        reject(new Error("GM_xmlhttpRequest was aborted."));
+      },
+    };
+    GM_xmlhttpRequest(options);
+  });
+}
+
+function parseHeaders(headers) {
+  return Object.fromEntries(
+    headers
+      .trim()
+      .split("\r\n")
+      .map((header) => {
+        const parts = header.split(": ");
+        const headerName = parts.shift();
+        const headerValue = parts.join(": ");
+        if (headerName.toLowerCase() === "set-cookie") {
+          return [];
+        }
+        return [headerName, headerValue];
+      })
+      .filter((header) => header.length),
+  );
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/utils/youtubeUtils.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/utils/debug.js");
+/* harmony import */ var _config_constants_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/config/constants.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/utils/utils.js");
+/* harmony import */ var _translateApis_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/utils/translateApis.js");
+
+
+
+
+
+// Get the language code from the response or the text
+async function getLanguage(player, response, title, description) {
+  if (
+    !window.location.hostname.includes("m.youtube.com") &&
+    player?.getAudioTrack
+  ) {
+    // ! Experimental ! get lang from selected audio track if availabled
+    const audioTracks = player.getAudioTrack();
+    const trackInfo = audioTracks?.getLanguageInfo(); // get selected track info (id === "und" if tracks are not available)
+    if (trackInfo?.id !== "und") {
+      return (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__/* .langTo6391 */ .R4)(trackInfo.id.split(".")[0]);
+    }
+  }
+
+  // TODO: If the audio tracks will work fine, transfer the receipt of captions to the audioTracks variable
+  // Check if there is an automatic caption track in the response
+  const captionTracks =
+    response?.captions?.playerCaptionsTracklistRenderer?.captionTracks;
+  if (captionTracks?.length) {
+    const autoCaption = captionTracks.find((caption) => caption.kind === "asr");
+    if (autoCaption && autoCaption.languageCode) {
+      return (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__/* .langTo6391 */ .R4)(autoCaption.languageCode);
+    }
+  }
+
+  // If there is no caption track, use detect to get the language code from the description
+
+  const text = (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__/* .cleanText */ .X5)(title, description);
+
+  _debug_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.log(`Detecting language text: ${text}`);
+
+  return (0,_translateApis_js__WEBPACK_IMPORTED_MODULE_2__/* .detect */ .o0)(text);
+}
+
+function isMobile() {
+  return /^m\.youtube\.com$/.test(window.location.hostname);
+}
+
+function getPlayer() {
+  if (window.location.pathname.startsWith("/shorts/")) {
+    return isMobile()
+      ? document.querySelector("#movie_player")
+      : document.querySelector("#shorts-player");
+  }
+
+  return document.querySelector("#movie_player");
+}
+
+function getPlayerResponse() {
+  const player = getPlayer();
+  if (player?.getPlayerResponse)
+    return player?.getPlayerResponse?.call() ?? null;
+  return player?.data?.playerResponse ?? null;
+}
+
+function getPlayerData() {
+  const player = getPlayer();
+  if (player?.getVideoData) return player?.getVideoData?.call() ?? null;
+  return player?.data?.playerResponse?.videoDetails ?? null;
+}
+
+function getVideoVolume() {
+  const player = getPlayer();
+  if (player?.getVolume) {
+    return player.getVolume.call() / 100;
+  }
+
+  return 1;
+}
+
+function setVideoVolume(volume) {
+  const player = getPlayer();
+  if (player?.setVolume) {
+    player.setVolume(Math.round(volume * 100));
+    return true;
+  }
+}
+
+function isMuted() {
+  const player = getPlayer();
+  if (player?.isMuted) {
+    return player.isMuted.call();
+  }
+
+  return false;
+}
+
+function videoSeek(video, time) {
+  // * TIME IN MS
+  _debug_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.log("videoSeek", time);
+  const preTime =
+    getPlayer()?.getProgressState()?.seekableEnd || video.currentTime;
+  const finalTime = preTime - time; // we always throw it to the end of the stream - time
+  video.currentTime = finalTime;
+}
+
+function getSubtitles() {
+  const response = getPlayerResponse();
+  let captionTracks =
+    response?.captions?.playerCaptionsTracklistRenderer?.captionTracks ?? [];
+  captionTracks = captionTracks.reduce((result, captionTrack) => {
+    if ("languageCode" in captionTrack) {
+      const language = captionTrack?.languageCode
+        ? (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__/* .langTo6391 */ .R4)(captionTrack?.languageCode)
+        : undefined;
+      const url = captionTrack?.url || captionTrack?.baseUrl;
+      language &&
+        url &&
+        result.push({
+          source: "youtube",
+          language,
+          isAutoGenerated: captionTrack?.kind === "asr",
+          url: `${
+            url.startsWith("http") ? url : `${window.location.origin}/${url}`
+          }&fmt=json3`,
+        });
+    }
+    return result;
+  }, []);
+  _debug_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.log("youtube subtitles:", captionTracks);
+  return captionTracks;
+}
+
+// Get the video data from the player
+async function getVideoData() {
+  const player = getPlayer();
+  const response = getPlayerResponse(); // null in /embed
+  const data = getPlayerData();
+  const { title } = data ?? {};
+  const { shortDescription: description, isLive } =
+    response?.videoDetails ?? {};
+  let detectedLanguage = title
+    ? await getLanguage(player, response, title, description)
+    : "en";
+  detectedLanguage = _config_constants_js__WEBPACK_IMPORTED_MODULE_3__/* .availableLangs */ .xm.includes(detectedLanguage)
+    ? detectedLanguage
+    : "en";
+  const videoData = {
+    isLive: !!isLive,
+    title,
+    description,
+    detectedLanguage,
+  };
+  _debug_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.log("youtube video data:", videoData);
+  console.log("[VOT] Detected language: ", videoData.detectedLanguage);
+  return videoData;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  isMobile,
+  getPlayer,
+  getPlayerResponse,
+  getPlayerData,
+  getVideoVolume,
+  getSubtitles,
+  getVideoData,
+  setVideoVolume,
+  videoSeek,
+  isMuted,
+});
+
+
+/***/ }),
+
 /***/ "./src/yandexRequest-cloudflare.js":
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -737,6 +1817,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _config_config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/config/config.js");
 /* harmony import */ var _utils_debug_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/utils/debug.js");
 /* harmony import */ var _utils_storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/utils/storage.js");
+/* harmony import */ var _utils_utils_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/utils/utils.js");
+
 
 
 
@@ -774,7 +1856,7 @@ async function yandexRequest(path, body, headers, callback) {
     };
     const workerHost = await _utils_storage_js__WEBPACK_IMPORTED_MODULE_2__/* .votStorage */ .d.get("proxyWorkerHost", _config_config_js__WEBPACK_IMPORTED_MODULE_0__/* .proxyWorkerHost */ .Pm);
     // Fetch the translation from the worker host
-    response = await fetch(`https://${workerHost}${path}`, options);
+    response = await (0,_utils_utils_js__WEBPACK_IMPORTED_MODULE_3__/* .GM_fetch */ .G3)(`https://${workerHost}${path}`, options);
     _utils_debug_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.log("yandexRequest:", response.status, response);
     // Get the response body as an array buffer
     responseBody = await response.arrayBuffer();
@@ -950,285 +2032,17 @@ const sitesPeertube = [
   "peervideo.club",
   "tube.la-dina.net",
   "peertube.tmp.rcp.tf",
+  "peertube.su",
 ];
 
 
 
 // EXTERNAL MODULE: ./src/config/config.js
 var config = __webpack_require__("./src/config/config.js");
-;// CONCATENATED MODULE: ./src/config/constants.js
-// available languages for translation
-const availableLangs = [
-  "ru",
-  "en",
-  "zh",
-  "ko",
-  "lt",
-  "lv",
-  "ar",
-  "fr",
-  "it",
-  "es",
-  "de",
-  "ja",
-];
-
-// Additional languages working with TTS
-const additionalTTS = [
-  "kk",
-  "bn",
-  "pt",
-  "cs",
-  "hi",
-  "mr", // TODO: Add menu translation (MAYBE)
-  "te", // TODO: Add menu translation (MAYBE)
-  "tr",
-  "ms",
-  "vi",
-  "ta", // TODO: Add menu translation (MAYBE)
-  "jv",
-  "ur",
-  "fa",
-  "gu", // TODO: Add menu translation (MAYBE)
-  "id",
-  "uk",
-  "da",
-  "fi",
-  "uz",
-  "pl",
-  "sv",
-  "az",
-  "sq",
-  "am",
-  "hy",
-  "af",
-  "eu",
-  "my",
-  "bg",
-  "bs",
-  "cy",
-  "hu",
-  "gl",
-  "el",
-  "zu",
-  "kn",
-  "ca",
-  "km",
-  "lo",
-  "mk",
-  "ml",
-  "mt",
-  "mn",
-  "ne",
-  "nl",
-  "pa",
-  "ro",
-  "sr",
-  "si",
-  "sk",
-  "sl",
-  "sw",
-  "su",
-  "hr",
-  "et",
-];
-
-// up-to-date list of TTS working languages
-const actualTTS = ["ru", "en", "kk"];
-
-const cfOnlyExtensions = (/* unused pure expression or super */ null && ([
-  "Violentmonkey",
-  "FireMonkey",
-  "Greasemonkey",
-  "AdGuard",
-  "OrangeMonkey",
-]));
-
-
-
-;// CONCATENATED MODULE: ./src/localization/locales/en.json
-const en_namespaceObject = /*#__PURE__*/JSON.parse('{"__version__":3,"recommended":"recommended","translateVideo":"Translate video","disableTranslate":"Turn off","translationSettings":"Translation settings","subtitlesSettings":"Subtitles settings","about":"About extension","resetSettings":"Reset settings","videoBeingTranslated":"The video is being translated","videoLanguage":"Video language","translationLanguage":"Translation language","translationTake":"The translation will take","translationTakeMoreThanHour":"The translation will take more than an hour","translationTakeAboutMinute":"The translation will take about a minute","translationTakeFewMinutes":"The translation will take a few minutes","translationTakeApproximatelyMinutes":"The translation will take approximately {0} minutes","translationTakeApproximatelyMinute":"The translation will take approximately {0} minutes","unSupportedExtensionError":"Error! {0} is not supported by this version of the extension!\\n\\nPlease use the cloudflare version of the VOT extension.","requestTranslationFailed":"Failed to request video translation","audioNotReceived":"Audio link not received","grantPermissionToAutoPlay":"Grant permission to autoplay","neededAdditionalExtension":"An additional extension is needed to support this site","audioFormatNotSupported":"The audio format is not supported","VOTAutoTranslate":"Translate on open","VOTDontTranslateYourLang":"Do not translate from my language","VOTVolume":"Video volume","VOTVolumeTranslation":"Translation Volume","VOTAutoSetVolume":"Reduce video volume to ","VOTShowVideoSlider":"Video volume slider","VOTSyncVolume":"Link translation and video volume","VOTAudioProxy":"Proxy received audio","VOTDisableFromYourLang":"You have disabled the translation of the video in your language","VOTLiveNotSupported":"Translation of live streams is not supported","VOTPremiere":"Wait for the premiere to end before translating","VOTVideoIsTooLong":"Video is too long","VOTNoVideoIDFound":"No video ID found","VOTSubtitles":"Subtitles","VOTSubtitlesDisabled":"Disabled","VOTSubtitlesMaxLength":"Subtitles max length","VOTHighlightWords":"Highlight words","VOTTranslatedFrom":"translated from","VOTAutogenerated":"autogenerated","VOTSettings":"VOT Settings","VOTMenuLanguage":"Menu language","VOTAuthors":"Authors","VOTVersion":"Version","VOTLoader":"Loader","VOTBrowser":"Browser","VOTShowPiPButton":"Show PiP button","langs":{"auto":"Auto","af":"Afrikaans","ak":"Akan","sq":"Albanian","am":"Amharic","ar":"Arabic","hy":"Armenian","as":"Assamese","ay":"Aymara","az":"Azerbaijani","bn":"Bangla","eu":"Basque","be":"Belarusian","bho":"Bhojpuri","bs":"Bosnian","bg":"Bulgarian","my":"Burmese","ca":"Catalan","ceb":"Cebuano","zh":"Chinese","zh-Hans":"Chinese (Simplified)","zh-Hant":"Chinese (Traditional)","co":"Corsican","hr":"Croatian","cs":"Czech","da":"Danish","dv":"Divehi","nl":"Dutch","en":"English","eo":"Esperanto","et":"Estonian","ee":"Ewe","fil":"Filipino","fi":"Finnish","fr":"French","gl":"Galician","lg":"Ganda","ka":"Georgian","de":"German","el":"Greek","gn":"Guarani","gu":"Gujarati","ht":"Haitian Creole","ha":"Hausa","haw":"Hawaiian","iw":"Hebrew","hi":"Hindi","hmn":"Hmong","hu":"Hungarian","is":"Icelandic","ig":"Igbo","id":"Indonesian","ga":"Irish","it":"Italian","ja":"Japanese","jv":"Javanese","kn":"Kannada","kk":"Kazakh","km":"Khmer","rw":"Kinyarwanda","ko":"Korean","kri":"Krio","ku":"Kurdish","ky":"Kyrgyz","lo":"Lao","la":"Latin","lv":"Latvian","ln":"Lingala","lt":"Lithuanian","lb":"Luxembourgish","mk":"Macedonian","mg":"Malagasy","ms":"Malay","ml":"Malayalam","mt":"Maltese","mi":"Māori","mr":"Marathi","mn":"Mongolian","ne":"Nepali","nso":"Northern Sotho","no":"Norwegian","ny":"Nyanja","or":"Odia","om":"Oromo","ps":"Pashto","fa":"Persian","pl":"Polish","pt":"Portuguese","pa":"Punjabi","qu":"Quechua","ro":"Romanian","ru":"Russian","sm":"Samoan","sa":"Sanskrit","gd":"Scottish Gaelic","sr":"Serbian","sn":"Shona","sd":"Sindhi","si":"Sinhala","sk":"Slovak","sl":"Slovenian","so":"Somali","st":"Southern Sotho","es":"Spanish","su":"Sundanese","sw":"Swahili","sv":"Swedish","tg":"Tajik","ta":"Tamil","tt":"Tatar","te":"Telugu","th":"Thai","ti":"Tigrinya","ts":"Tsonga","tr":"Turkish","tk":"Turkmen","uk":"Ukrainian","ur":"Urdu","ug":"Uyghur","uz":"Uzbek","vi":"Vietnamese","cy":"Welsh","fy":"Western Frisian","xh":"Xhosa","yi":"Yiddish","yo":"Yoruba","zu":"Zulu"},"udemyAccessTokenExpired":"Your entered Udemy Access Token has expired","udemyModuleArgsNotFound":"Could not get udemy module data due to the fact that ModuleArgs was not found","VOTTranslationHelpNull":"Could not get the data required for the translate","enterUdemyAccessToken":"Enter Udemy Access Token","VOTUdemyData":"Udemy Data","streamNoConnectionToServer":"There is no connection to the server","searchField":"Search...","VOTTranslateAPIErrors":"Translate errors from the API","VOTTranslationService":"Translation Service","VOTDetectService":"Detect Service","VOTTranslatingError":"Translating the error","VOTProxyWorkerHost":"Enter the proxy worker address","VOTM3u8ProxyHost":"Enter the address of the m3u8 proxy worker","proxySettings":"Proxy Settings"}');
-// EXTERNAL MODULE: ./src/utils/debug.js
-var debug = __webpack_require__("./src/utils/debug.js");
-// EXTERNAL MODULE: ./src/utils/storage.js
-var storage = __webpack_require__("./src/utils/storage.js");
-;// CONCATENATED MODULE: ./src/localization/localizationProvider.js
-
-
-
-
-const localesVersion = 2;
-const localesUrl = `https://raw.githubusercontent.com/ilyhalight/voice-over-translation/${
-   false ? 0 : "master"
-}/src/localization/locales`;
-
-const availableLocales = [
-  "auto",
-  "en",
-  "ru",
-
-  "af",
-  "am",
-  "ar",
-  "az",
-  "bg",
-  "bn",
-  "bs",
-  "ca",
-  "cs",
-  "cy",
-  "da",
-  "de",
-  "el",
-  "es",
-  "et",
-  "eu",
-  "fa",
-  "fi",
-  "fr",
-  "gl",
-  "hi",
-  "hr",
-  "hu",
-  "hy",
-  "id",
-  "it",
-  "ja",
-  "jv",
-  "kk",
-  "km",
-  "kn",
-  "ko",
-  "lo",
-  "mk",
-  "ml",
-  "mn",
-  "ms",
-  "mt",
-  "my",
-  "ne",
-  "nl",
-  "pa",
-  "pl",
-  "pt",
-  "ro",
-  "si",
-  "sk",
-  "sl",
-  "sq",
-  "sr",
-  "su",
-  "sv",
-  "sw",
-  "tr",
-  "uk",
-  "ur",
-  "uz",
-  "vi",
-  "zh",
-  "zu",
-];
-
-const localizationProvider = new (class {
-  lang = "en";
-  locale = {};
-  gmValues = [
-    "locale-phrases",
-    "locale-lang",
-    "locale-version",
-    "locale-lang-override",
-  ];
-
-  constructor() {
-    const langOverride = storage/* votStorage */.d.syncGet("locale-lang-override", "auto");
-    if (langOverride && langOverride !== "auto") {
-      this.lang = langOverride;
-    } else {
-      this.lang =
-        (navigator.language || navigator.userLanguage)
-          ?.substr(0, 2)
-          ?.toLowerCase() ?? "en";
-    }
-    this.setLocaleFromJsonString(storage/* votStorage */.d.syncGet("locale-phrases", ""));
-  }
-
-  reset() {
-    this.gmValues.forEach((v) => storage/* votStorage */.d.syncDelete(v));
-  }
-
-  async update(force = false) {
-    if (
-      !force &&
-      (await storage/* votStorage */.d.get("locale-version", 0, true)) === localesVersion &&
-      (await storage/* votStorage */.d.get("locale-lang")) === this.lang
-    ) {
-      return;
-    }
-
-    debug/* default */.A.log("Updating locale...");
-
-    await fetch(`${localesUrl}/${this.lang}.json`)
-      .then((response) => {
-        if (response.status === 200) return response.text();
-        throw response.status;
-      })
-      .then(async (text) => {
-        await storage/* votStorage */.d.set("locale-phrases", text);
-        this.setLocaleFromJsonString(text);
-        const version = this.getFromLocale(this.locale, "__version__");
-        if (typeof version === "number")
-          await storage/* votStorage */.d.set("locale-version", version);
-        await storage/* votStorage */.d.set("locale-lang", this.lang);
-      })
-      .catch(async (error) => {
-        console.error(
-          "[VOT] [localizationProvider] failed get locale, cause:",
-          error,
-        );
-        this.setLocaleFromJsonString(
-          await storage/* votStorage */.d.get("locale-phrases", ""),
-        );
-      });
-  }
-
-  setLocaleFromJsonString(json) {
-    try {
-      this.locale = JSON.parse(json) ?? {};
-    } catch (exception) {
-      console.error("[VOT] [localizationProvider]", exception);
-      this.locale = {};
-    }
-  }
-
-  getFromLocale(locale, key) {
-    const result = key.split(".").reduce((locale, key) => {
-      if (typeof locale === "object" && locale) return locale[key];
-      return undefined;
-    }, locale);
-    if (result === undefined) {
-      console.warn(
-        "[VOT] [localizationProvider] locale",
-        locale,
-        "doesn't contain key",
-        key,
-      );
-    }
-    return result;
-  }
-
-  getDefault(key) {
-    return this.getFromLocale(en_namespaceObject, key) ?? key;
-  }
-
-  get(key) {
-    return (
-      this.getFromLocale(this.locale, key) ??
-      this.getFromLocale(en_namespaceObject, key) ??
-      key
-    );
-  }
-})();
-
+// EXTERNAL MODULE: ./src/config/constants.js
+var constants = __webpack_require__("./src/config/constants.js");
+// EXTERNAL MODULE: ./src/localization/localizationProvider.js + 1 modules
+var localizationProvider = __webpack_require__("./src/localization/localizationProvider.js");
 // EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js
 var injectStylesIntoStyleTag = __webpack_require__("./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
 var injectStylesIntoStyleTag_default = /*#__PURE__*/__webpack_require__.n(injectStylesIntoStyleTag);
@@ -1265,9 +2079,7 @@ var options = {};
 
 options.styleTagTransform = (styleTagTransform_default());
 options.setAttributes = (setAttributesWithoutAttributes_default());
-
-      options.insert = insertBySelector_default().bind(null, "head");
-    
+options.insert = insertBySelector_default().bind(null, "head");
 options.domAPI = (styleDomAPI_default());
 options.insertStyleElement = (style_loader_insertStyleElement_default());
 
@@ -1643,7 +2455,7 @@ function createVOTSelect(selectTitle, dialogTitle, items, options = {}) {
 
     // search logic
     const votSearchLangTextfield = createTextfield(
-      localizationProvider.get("searchField"),
+      localizationProvider/* localizationProvider */.j.get("searchField"),
     );
 
     votSearchLangTextfield.input.oninput = (e) => {
@@ -1755,624 +2567,17 @@ function createVOTLanguageSelect(options) {
 
 class VOTLocalizedError extends Error {
   constructor(message) {
-    super(localizationProvider.getDefault(message));
+    super(localizationProvider/* localizationProvider */.j.getDefault(message));
     this.name = "VOTLocalizedError";
     this.unlocalizedMessage = message;
-    this.localizedMessage = localizationProvider.get(message);
+    this.localizedMessage = localizationProvider/* localizationProvider */.j.get(message);
   }
 }
 
-;// CONCATENATED MODULE: ./src/utils/translateApis.js
-
-
-
-const HTTP_TIMEOUT = 3000;
-
-async function fetchWithTimeout(url, options) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), HTTP_TIMEOUT);
-
-  try {
-    return await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    });
-  } catch (error) {
-    console.error("Fetch timed-out. Error:", error);
-    return error;
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
-
-const YandexTranslateAPI = {
-  async translate(text, lang) {
-    // Limit: 10k symbols
-    //
-    // Lang examples:
-    // en-ru, uk-ru, ru-en...
-    // ru, en (instead of auto-ru, auto-en)
-
-    try {
-      const response = await fetchWithTimeout(config/* translateUrls */.rw.yandex, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          text,
-          lang,
-        }),
-      });
-
-      if (response instanceof Error) {
-        throw response;
-      }
-
-      const content = await response.json();
-
-      if (content.code !== 200) {
-        throw content.message;
-      }
-
-      return content.text[0];
-    } catch (error) {
-      console.error("Error translating text:", error);
-      return text;
-    }
-  },
-
-  async detect(text, lang) {
-    // Limit: 10k symbols
-    try {
-      const response = await fetchWithTimeout(config/* detectUrls */.QL.yandex, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          text,
-          lang,
-        }),
-      });
-
-      if (response instanceof Error) {
-        throw response;
-      }
-
-      const content = await response.json();
-      if (content.code !== 200) {
-        throw content.message;
-      }
-
-      return content.lang ?? "en";
-    } catch (error) {
-      console.error("Error translating text:", error);
-      return "en";
-    }
-  },
-};
-
-const RustServerAPI = {
-  async detect(text) {
-    try {
-      const response = await fetch(config/* detectUrls */.QL.rustServer, {
-        method: "POST",
-        body: text,
-      });
-
-      if (response instanceof Error) {
-        throw response;
-      }
-
-      return await response.text();
-    } catch (error) {
-      console.error("Error getting lang from text:", error);
-      return "en";
-    }
-  },
-};
-
-async function translate(text, fromLang = "", toLang = "ru") {
-  const service = await storage/* votStorage */.d.get(
-    "translationService",
-    config/* defaultTranslationService */.mE,
-  );
-  switch (service) {
-    case "yandex": {
-      const langPair = fromLang && toLang ? `${fromLang}-${toLang}` : toLang;
-      return await YandexTranslateAPI.translate(text, langPair);
-    }
-    default:
-      return text;
-  }
-}
-
-async function detect(text) {
-  const service = await storage/* votStorage */.d.get("detectService", config/* defaultDetectService */.K2);
-  switch (service) {
-    case "yandex":
-      return await YandexTranslateAPI.detect(text);
-    case "rust-server":
-      return await RustServerAPI.detect(text);
-    default:
-      return "en";
-  }
-}
-
-const translateServices = ["yandex"];
-const detectServices = ["yandex", "rust-server"];
-
-
-
-;// CONCATENATED MODULE: ./src/utils/youtubeUtils.js
-
-
-
-
-
-// Get the language code from the response or the text
-async function getLanguage(player, response, title, description) {
-  if (
-    !window.location.hostname.includes("m.youtube.com") &&
-    player?.getAudioTrack
-  ) {
-    // ! Experimental ! get lang from selected audio track if availabled
-    const audioTracks = player.getAudioTrack();
-    const trackInfo = audioTracks?.getLanguageInfo(); // get selected track info (id === "und" if tracks are not available)
-    if (trackInfo?.id !== "und") {
-      return langTo6391(trackInfo.id.split(".")[0]);
-    }
-  }
-
-  // TODO: If the audio tracks will work fine, transfer the receipt of captions to the audioTracks variable
-  // Check if there is an automatic caption track in the response
-  const captionTracks =
-    response?.captions?.playerCaptionsTracklistRenderer?.captionTracks;
-  if (captionTracks?.length) {
-    const autoCaption = captionTracks.find((caption) => caption.kind === "asr");
-    if (autoCaption && autoCaption.languageCode) {
-      return langTo6391(autoCaption.languageCode);
-    }
-  }
-
-  // If there is no caption track, use detect to get the language code from the description
-
-  const deletefilter = [
-    /(?:https?|ftp):\/\/[\S]+/g, //temp fix
-    /https?:\/\/\S+|www\.\S+/gm,
-    /\b\S+\.\S+/gm,
-    /#[^\s#]+/g, // hash tags
-    /Auto-generated by YouTube/g,
-    /Provided to YouTube by/g,
-    /Released on/g,
-    /Bitcoin/g,
-    /USDT/g,
-    /Paypal/g,
-  ];
-
-  const cleanedDescription = description
-    ? description
-        .split("\n\n")
-        .filter((line) => !deletefilter.some((regex) => regex.test(line)))
-        .join("\n\n")
-    : "";
-
-  const cleanText = [title, cleanedDescription]
-    .join(" ")
-    .replace(/[^\p{L}\s]/gu, " ")
-    .trim()
-    .replace(/\s+/g, " ")
-    .slice(0, 1000);
-
-  return await detect(cleanText);
-}
-
-function isMobile() {
-  return /^m\.youtube\.com$/.test(window.location.hostname);
-}
-
-function getPlayer() {
-  if (window.location.pathname.startsWith("/shorts/")) {
-    return isMobile()
-      ? document.querySelector("#movie_player")
-      : document.querySelector("#shorts-player");
-  }
-
-  return document.querySelector("#movie_player");
-}
-
-function getPlayerResponse() {
-  const player = getPlayer();
-  if (player?.getPlayerResponse)
-    return player?.getPlayerResponse?.call() ?? null;
-  return player?.data?.playerResponse ?? null;
-}
-
-function getPlayerData() {
-  const player = getPlayer();
-  if (player?.getVideoData) return player?.getVideoData?.call() ?? null;
-  return player?.data?.playerResponse?.videoDetails ?? null;
-}
-
-function getVideoVolume() {
-  const player = getPlayer();
-  if (player?.getVolume) {
-    return player.getVolume.call() / 100;
-  }
-
-  return 1;
-}
-
-function setVideoVolume(volume) {
-  const player = getPlayer();
-  if (player?.setVolume) {
-    player.setVolume(Math.round(volume * 100));
-    return true;
-  }
-}
-
-function videoSeek(video, time) {
-  // * TIME IN MS
-  debug/* default */.A.log("videoSeek", time);
-  const preTime =
-    getPlayer()?.getProgressState()?.seekableEnd || video.currentTime;
-  const finalTime = preTime - time; // we always throw it to the end of the stream - time
-  video.currentTime = finalTime;
-}
-
-function getSubtitles() {
-  const response = getPlayerResponse();
-  let captionTracks =
-    response?.captions?.playerCaptionsTracklistRenderer?.captionTracks ?? [];
-  captionTracks = captionTracks.reduce((result, captionTrack) => {
-    if ("languageCode" in captionTrack) {
-      const language = captionTrack?.languageCode
-        ? langTo6391(captionTrack?.languageCode)
-        : undefined;
-      const url = captionTrack?.url || captionTrack?.baseUrl;
-      language &&
-        url &&
-        result.push({
-          source: "youtube",
-          language,
-          isAutoGenerated: captionTrack?.kind === "asr",
-          url: `${
-            url.startsWith("http") ? url : `${window.location.origin}/${url}`
-          }&fmt=json3`,
-        });
-    }
-    return result;
-  }, []);
-  debug/* default */.A.log("youtube subtitles:", captionTracks);
-  return captionTracks;
-}
-
-// Get the video data from the player
-async function getVideoData() {
-  const player = getPlayer();
-  const response = getPlayerResponse(); // null in /embed
-  const data = getPlayerData();
-  const { title } = data ?? {};
-  const { shortDescription: description, isLive } =
-    response?.videoDetails ?? {};
-  let detectedLanguage = title
-    ? await getLanguage(player, response, title, description)
-    : "en";
-  detectedLanguage = availableLangs.includes(detectedLanguage)
-    ? detectedLanguage
-    : "en";
-  const videoData = {
-    isLive: !!isLive,
-    title,
-    description,
-    detectedLanguage,
-  };
-  debug/* default */.A.log("youtube video data:", videoData);
-  console.log("[VOT] Detected language: ", videoData.detectedLanguage);
-  return videoData;
-}
-
-/* harmony default export */ const youtubeUtils = ({
-  isMobile,
-  getPlayer,
-  getPlayerResponse,
-  getPlayerData,
-  getVideoVolume,
-  getSubtitles,
-  getVideoData,
-  setVideoVolume,
-  videoSeek,
-});
-
-;// CONCATENATED MODULE: ./src/utils/utils.js
-
-
-
-const userlang = navigator.language || navigator.userLanguage;
-const lang = userlang?.substr(0, 2)?.toLowerCase() ?? "en";
-
-// not used
-// function waitForElm(selector) {
-//   // https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
-//   return new Promise((resolve) => {
-//     const element = document.querySelector(selector);
-//     if (element) {
-//       return resolve(element);
-//     }
-
-//     const observer = new MutationObserver(() => {
-//       const element = document.querySelector(selector);
-//       if (element) {
-//         resolve(element);
-//         observer.disconnect();
-//       }
-//     });
-
-//     observer.observe(document.body, {
-//       childList: true,
-//       subtree: true,
-//       once: true,
-//     });
-//   });
-// }
-
-// not used
-// const sleep = (m) => new Promise((r) => setTimeout(r, m));
-
-const getVideoId = (service, video) => {
-  let url = new URL(window.location.href);
-
-  switch (service) {
-    case "piped":
-    case "invidious":
-    case "youtube": {
-      if (url.searchParams.has("enablejsapi")) {
-        const videoUrl = youtubeUtils.getPlayer().getVideoUrl();
-        url = new URL(videoUrl);
-      }
-
-      return (
-        url.pathname.match(/(?:watch|embed|shorts)\/([^/]+)/)?.[1] ||
-        url.searchParams.get("v")
-      );
-    }
-    case "vk":
-      if (url.pathname.match(/^\/video-?[0-9]{8,9}_[0-9]{9}$/)) {
-        return url.pathname.match(/^\/video-?[0-9]{8,9}_[0-9]{9}$/)[0].slice(1);
-      } else if (url.searchParams.get("z")) {
-        return url.searchParams.get("z").split("/")[0];
-      } else if (url.searchParams.get("oid") && url.searchParams.get("id")) {
-        return `video-${Math.abs(
-          url.searchParams.get("oid"),
-        )}_${url.searchParams.get("id")}`;
-      } else {
-        return false;
-      }
-    case "nine_gag":
-    case "9gag":
-    case "gag":
-      return url.pathname.match(/gag\/([^/]+)/)?.[1];
-    case "twitch":
-      if (/^m\.twitch\.tv$/.test(window.location.hostname)) {
-        const linkUrl = document.head.querySelector('link[rel="canonical"]');
-        return (
-          linkUrl?.href.match(/videos\/([^/]+)/)?.[0] || url.pathname.slice(1)
-        );
-      } else if (/^player\.twitch\.tv$/.test(window.location.hostname)) {
-        return `videos/${url.searchParams.get("video")}`;
-      } else if (/^clips\.twitch\.tv$/.test(window.location.hostname)) {
-        // get link to twitch channel (ex.: https://www.twitch.tv/xqc)
-        const channelLink = document.querySelector(
-          ".tw-link[data-test-selector='stream-info-card-component__stream-avatar-link']",
-        );
-        if (!channelLink) {
-          return false;
-        }
-
-        const channelName = channelLink.href.replace(
-          "https://www.twitch.tv/",
-          "",
-        );
-        return `${channelName}/clip/${url.searchParams.get("clip")}`;
-      } else if (url.pathname.match(/([^/]+)\/(?:clip)\/([^/]+)/)) {
-        return url.pathname.match(/([^/]+)\/(?:clip)\/([^/]+)/)[0];
-      } else {
-        return url.pathname.match(/(?:videos)\/([^/]+)/)?.[0];
-      }
-    case "proxytok":
-      return url.pathname.match(/([^/]+)\/video\/([^/]+)/)?.[0];
-    case "tiktok": {
-      let id = url.pathname.match(/([^/]+)\/video\/([^/]+)/)?.[0];
-      if (!id) {
-        const playerEl = video.closest(".xgplayer-playing, .tiktok-web-player");
-        const itemEl = playerEl?.closest(
-          'div[data-e2e="recommend-list-item-container"]',
-        );
-        const authorEl = itemEl?.querySelector(
-          'a[data-e2e="video-author-avatar"]',
-        );
-        if (playerEl && authorEl) {
-          const videoId = playerEl.id?.match(/^xgwrapper-[0-9]+-(.*)$/)?.at(1);
-          const author = authorEl.href?.match(/.*(@.*)$/)?.at(1);
-          if (videoId && author) {
-            id = `${author}/video/${videoId}`;
-          }
-        }
-      }
-      return id;
-    }
-    case "vimeo": {
-      const appId = url.searchParams.get("app_id");
-      const videoId =
-        url.pathname.match(/[^/]+\/[^/]+$/)?.[0] ||
-        url.pathname.match(/[^/]+$/)?.[0];
-
-      return appId ? `${videoId}?app_id=${appId}` : videoId;
-    }
-    case "xvideos":
-      return url.pathname.match(/[^/]+\/[^/]+$/)?.[0];
-    case "pornhub":
-      return (
-        url.searchParams.get("viewkey") ||
-        url.pathname.match(/embed\/([^/]+)/)?.[1]
-      );
-    case "twitter":
-      return url.pathname.match(/status\/([^/]+)/)?.[1];
-    case "udemy":
-      return url.pathname;
-    case "rumble":
-      return url.pathname;
-    case "facebook":
-      return url.pathname;
-    case "rutube":
-      return url.pathname.match(/(?:video|embed)\/([^/]+)/)?.[1];
-    case "coub":
-      if (url.pathname.includes("/view")) {
-        return url.pathname.match(/view\/([^/]+)/)?.[1];
-      } else if (url.pathname.includes("/embed")) {
-        return url.pathname.match(/embed\/([^/]+)/)?.[1];
-      } else {
-        return document.querySelector(".coub.active")?.dataset?.permalink;
-      }
-    case "bilibili": {
-      const bvid = url.searchParams.get("bvid");
-      if (bvid) {
-        return bvid;
-      } else {
-        let vid = url.pathname.match(/video\/([^/]+)/)?.[1];
-        if (vid && url.search && url.searchParams.get("p") !== null) {
-          vid += `/?p=${url.searchParams.get("p")}`;
-        }
-        return vid;
-      }
-    }
-    case "mail_ru":
-      if (url.pathname.startsWith("/v/") || url.pathname.startsWith("/mail/")) {
-        return url.pathname;
-      } else if (url.pathname.match(/video\/embed\/([^/]+)/)) {
-        const referer = document.querySelector(
-          ".b-video-controls__mymail-link",
-        );
-        if (!referer) {
-          return false;
-        }
-
-        return referer?.href.split("my.mail.ru")?.[1];
-      }
-      return false;
-    case "bitchute":
-      return url.pathname.match(/video\/([^/]+)/)?.[1];
-    case "coursera":
-      // ! LINK SHOULD BE LIKE THIS https://www.coursera.org/learn/learning-how-to-learn/lecture/75EsZ
-      // return url.pathname.match(/lecture\/([^/]+)\/([^/]+)/)?.[1]; // <--- COURSE PREVIEW
-      return url.pathname.match(/learn\/([^/]+)\/lecture\/([^/]+)/)?.[0]; // <--- COURSE PASSING (IF YOU LOGINED TO COURSERA)
-    case "eporner":
-      // ! LINK SHOULD BE LIKE THIS eporner.com/video-XXXXXXXXX/isdfsd-dfjsdfjsdf-dsfsdf-dsfsda-dsad-ddsd
-      return url.pathname.match(/video-([^/]+)\/([^/]+)/)?.[0];
-    case "peertube":
-      return url.pathname.match(/\/w\/([^/]+)/)?.[0];
-    case "dailymotion": {
-      // we work in the context of the player
-      // geo.dailymotion.com
-      const plainPlayerConfig = Array.from(
-        document.querySelectorAll("*"),
-      ).filter((s) => s.innerHTML.trim().includes(".m3u8"));
-      try {
-        let videoUrl = plainPlayerConfig[1].lastChild.src;
-        return videoUrl.match(/\/video\/(\w+)\.m3u8/)?.[1];
-      } catch (e) {
-        console.error("[VOT]", e);
-        return false;
-      }
-    }
-    case "trovo": {
-      if (!url.pathname.startsWith("/s/")) {
-        return false;
-      }
-
-      const vid = url.searchParams.get("vid");
-      if (!vid) {
-        return false;
-      }
-
-      const path = url.pathname.match(/([^/]+)\/([\d]+)/)?.[0];
-      if (!path) {
-        return false;
-      }
-
-      return `${path}?vid=${vid}`;
-    }
-    case "yandexdisk":
-      return url.pathname.match(/\/i\/([^/]+)/)?.[1];
-    case "coursehunter": {
-      const courseId = url.pathname.match(/\/course\/([^/]+)/)?.[1];
-      return courseId ? courseId + url.search : false;
-    }
-    case "ok.ru": {
-      return url.pathname.match(/\/video\/(\d+)/)?.[0];
-    }
-    case "googledrive":
-      return url.searchParams.get("docid");
-    case "bannedvideo":
-      return url.searchParams.get("id");
-    case "weverse":
-      return url.pathname.match(/([^/]+)\/(live|media)\/([^/]+)/)?.[0];
-    case "newgrounds":
-      return url.pathname.match(/([^/]+)\/(view)\/([^/]+)/)?.[0];
-    case "egghead":
-      return url.pathname;
-    case "youku":
-      return url.pathname.match(/v_show\/id_[\w=]+/)?.[0];
-    // case "patreon":
-    //   return url.pathname.match(/posts\/([^/]+)/)?.[0];
-    case "directlink":
-      return url.pathname + url.search;
-    default:
-      return false;
-  }
-};
-
-function secsToStrTime(secs) {
-  const minutes = Math.floor(secs / 60);
-  const seconds = Math.floor(secs % 60);
-  if (minutes >= 60) {
-    return localizationProvider.get("translationTakeMoreThanHour");
-  } else if (minutes >= 10 && minutes % 10) {
-    return localizationProvider
-      .get("translationTakeApproximatelyMinutes")
-      .replace("{0}", minutes);
-  } else if (minutes == 1 || (minutes == 0 && seconds > 0)) {
-    return localizationProvider.get("translationTakeAboutMinute");
-  } else {
-    return localizationProvider
-      .get("translationTakeApproximatelyMinute")
-      .replace("{0}", minutes);
-  }
-}
-function langTo6391(lang) {
-  // convert lang to ISO 639-1
-  return lang.toLowerCase().split(";")[0].trim().split("-")[0].split("_")[0];
-}
-
-function isPiPAvailable() {
-  return (
-    "pictureInPictureEnabled" in document && document.pictureInPictureEnabled
-  );
-}
-
-function initHls() {
-  return typeof Hls != "undefined" && Hls?.isSupported()
-    ? new Hls({
-        debug: false, // turn it on manually if necessary
-        lowLatencyMode: true,
-        backBufferLength: 90,
-      })
-    : undefined;
-}
-
-
-
+// EXTERNAL MODULE: ./src/utils/debug.js
+var debug = __webpack_require__("./src/utils/debug.js");
+// EXTERNAL MODULE: ./src/utils/utils.js
+var utils = __webpack_require__("./src/utils/utils.js");
 ;// CONCATENATED MODULE: ./src/utils/volume.js
 // element - audio / video element
 function syncVolume(element, sliderVolume, otherSliderVolume, tempVolume) {
@@ -2721,6 +2926,8 @@ async function requestVideoTranslation(
 
 /* harmony default export */ const rvt = (requestVideoTranslation);
 
+// EXTERNAL MODULE: ./src/utils/youtubeUtils.js
+var youtubeUtils = __webpack_require__("./src/utils/youtubeUtils.js");
 ;// CONCATENATED MODULE: ./src/rvs.js
 
 
@@ -2891,45 +3098,44 @@ function formatYoutubeSubtitles(subtitles) {
 }
 
 async function fetchSubtitles(subtitlesObject) {
-  let resolved = false;
-  let subtitles = await Promise.race([
-    new Promise((resolve) => {
-      setTimeout(() => {
-        if (!resolved) {
-          console.error("[VOT] Failed to fetch subtitles. Reason: timeout");
-          resolve([]);
-        }
-      }, 5000);
-    }),
-    new Promise((resolve) => {
-      debug/* default */.A.log("Fetching subtitles:", subtitlesObject);
-      fetch(subtitlesObject.url)
-        .then((response) => response.json())
-        .then((json) => {
-          resolved = true;
-          resolve(json);
-        })
-        .catch((error) => {
-          console.error("[VOT] Failed to fetch subtitles. Reason:", error);
-          resolved = true;
-          resolve({
-            containsTokens: false,
-            subtitles: [],
-          });
-        });
-    }),
-  ]);
+  const timeoutPromise = new Promise((resolve) =>
+    setTimeout(
+      () =>
+        resolve({
+          containsTokens: false,
+          subtitles: [],
+        }),
+      5000,
+    ),
+  );
+
+  const fetchPromise = (async () => {
+    try {
+      const response = await (0,utils/* GM_fetch */.G3)(subtitlesObject.url);
+      return await response.json();
+    } catch (error) {
+      console.error("[VOT] Failed to fetch subtitles. Reason:", error);
+      return {
+        containsTokens: false,
+        subtitles: [],
+      };
+    }
+  })();
+
+  let subtitles = await Promise.race([timeoutPromise, fetchPromise]);
+
   if (subtitlesObject.source === "youtube") {
     subtitles = formatYoutubeSubtitles(subtitles);
   }
+
   subtitles.subtitles = getSubtitlesTokens(subtitles, subtitlesObject.source);
   console.log("[VOT] subtitles:", subtitles);
   return subtitles;
 }
 
-async function subtitles_getSubtitles(site, videoId, requestLang) {
+async function getSubtitles(site, videoId, requestLang) {
   const ytSubtitles =
-    site.host === "youtube" ? youtubeUtils.getSubtitles() : [];
+    site.host === "youtube" ? youtubeUtils/* default */.A.getSubtitles() : [];
   let resolved = false;
   const yaSubtitles = await Promise.race([
     new Promise((resolve) => {
@@ -3000,10 +3206,10 @@ async function subtitles_getSubtitles(site, videoId, requestLang) {
     }
     if (
       a.language !== b.language &&
-      (a.language === lang || b.language === lang)
+      (a.language === utils/* lang */.vV || b.language === utils/* lang */.vV)
     ) {
       // sort by user language
-      return a.language === lang ? -1 : 1;
+      return a.language === utils/* lang */.vV ? -1 : 1;
     }
     if (a.source === "yandex") {
       // sort by translation
@@ -3253,7 +3459,7 @@ async function getCourseData(courseId) {
   return await response.json();
 }
 
-async function coursehunterUtils_getVideoData() {
+async function getVideoData() {
   const courseId =
     window.course_id ??
     document.querySelector('input[name="course_id"]')?.value;
@@ -3276,7 +3482,7 @@ async function coursehunterUtils_getVideoData() {
 }
 
 /* harmony default export */ const coursehunterUtils = ({
-  getVideoData: coursehunterUtils_getVideoData,
+  getVideoData,
 });
 
 ;// CONCATENATED MODULE: ./src/utils/courseraUtils.js
@@ -3294,13 +3500,13 @@ async function courseraUtils_getCourseData(courseId) {
 
 function getSubtitlesFileURL(captions, detectedLanguage, responseLang) {
   let subtitle = captions?.find(
-    (caption) => langTo6391(caption.srclang) === detectedLanguage,
+    (caption) => (0,utils/* langTo6391 */.R4)(caption.srclang) === detectedLanguage,
   );
 
   if (!subtitle) {
     subtitle =
       captions?.find(
-        (caption) => langTo6391(caption.srclang) === responseLang,
+        (caption) => (0,utils/* langTo6391 */.R4)(caption.srclang) === responseLang,
       ) || captions?.[0];
   }
 
@@ -3314,18 +3520,18 @@ function getVideoFileURL(sources) {
   return source?.src;
 }
 
-function courseraUtils_getPlayerData() {
-  return courseraUtils_getPlayer()?.player;
+function getPlayerData() {
+  return getPlayer()?.player;
 }
 
-function courseraUtils_getPlayer() {
+function getPlayer() {
   return document.querySelector(".vjs-v6");
 }
 
 // Get the video data from the player
 async function courseraUtils_getVideoData(responseLang = "en") {
   let translationHelp = null;
-  const data = courseraUtils_getPlayerData();
+  const data = getPlayerData();
 
   const { duration } = data?.cache_ || {};
   const { courseId, tracks, sources } = data?.options_ || {};
@@ -3334,9 +3540,9 @@ async function courseraUtils_getVideoData(responseLang = "en") {
   const courseData = await courseraUtils_getCourseData(courseId);
 
   let detectedLanguage = courseData?.primaryLanguageCodes?.[0];
-  detectedLanguage = detectedLanguage ? langTo6391(detectedLanguage) : "en";
+  detectedLanguage = detectedLanguage ? (0,utils/* langTo6391 */.R4)(detectedLanguage) : "en";
 
-  if (!availableLangs.includes(detectedLanguage)) {
+  if (!constants/* availableLangs */.xm.includes(detectedLanguage)) {
     detectedLanguage = "en";
   }
 
@@ -3358,6 +3564,13 @@ async function courseraUtils_getVideoData(responseLang = "en") {
         targetUrl: `https://www.coursera.org${subtitlesURL}`,
       },
     ];
+  } else if (videoURL && !subtitlesURL) {
+    console.warn(
+      "[VOT] Subtitles files not found. Using the link only to the video file.",
+    );
+    translationHelp = {
+      url: videoURL,
+    };
   } else {
     console.error(
       `Failed to find subtitlesURL or videoURL. videoURL: ${videoURL}, subtitlesURL: ${subtitlesURL}`,
@@ -3376,8 +3589,8 @@ async function courseraUtils_getVideoData(responseLang = "en") {
 }
 
 /* harmony default export */ const courseraUtils = ({
-  getPlayer: courseraUtils_getPlayer,
-  getPlayerData: courseraUtils_getPlayerData,
+  getPlayer,
+  getPlayerData,
   getVideoData: courseraUtils_getVideoData,
 });
 
@@ -3409,7 +3622,7 @@ function checkUdemyTokenExpire(expires) {
 async function getLectureData(udemyData, courseId, lectureId) {
   // reference: https://greasyfork.org/ru/scripts/422576-udemy-subtitle-downloader-v3/code
   if (!checkUdemyTokenExpire(udemyData.expires) || !udemyData.accessToken) {
-    console.error(localizationProvider.get("udemyAccessTokenExpired"));
+    console.error(localizationProvider/* localizationProvider */.j.get("udemyAccessTokenExpired"));
     return undefined;
   }
 
@@ -3432,13 +3645,13 @@ async function getLectureData(udemyData, courseId, lectureId) {
 
 function udemyUtils_getSubtitlesFileURL(captions, detectedLanguage, responseLang) {
   let subtitle = captions?.find(
-    (caption) => langTo6391(caption.locale_id) === detectedLanguage,
+    (caption) => (0,utils/* langTo6391 */.R4)(caption.locale_id) === detectedLanguage,
   );
 
   if (!subtitle) {
     subtitle =
       captions?.find(
-        (caption) => langTo6391(caption.locale_id) === responseLang,
+        (caption) => (0,utils/* langTo6391 */.R4)(caption.locale_id) === responseLang,
       ) || captions?.[0];
   }
 
@@ -3462,7 +3675,7 @@ function getModuleData() {
     ".ud-app-loader[data-module-id='course-taking']",
   )?.dataset?.moduleArgs;
   if (!moduleArgs) {
-    console.error(localizationProvider.get("udemyModuleArgsNotFound"));
+    console.error(localizationProvider/* localizationProvider */.j.get("udemyModuleArgsNotFound"));
     return {};
   }
   return JSON.parse(moduleArgs);
@@ -3500,9 +3713,9 @@ async function udemyUtils_getVideoData(udemyData, responseLang = "en") {
   console.log("lecture Data:", lectureData);
 
   let detectedLanguage = courseLang?.locale?.locale;
-  detectedLanguage = detectedLanguage ? langTo6391(detectedLanguage) : "en";
+  detectedLanguage = detectedLanguage ? (0,utils/* langTo6391 */.R4)(detectedLanguage) : "en";
 
-  if (!availableLangs.includes(detectedLanguage)) {
+  if (!constants/* availableLangs */.xm.includes(detectedLanguage)) {
     detectedLanguage = "en";
   }
 
@@ -3529,6 +3742,13 @@ async function udemyUtils_getVideoData(udemyData, responseLang = "en") {
         targetUrl: subtitlesURL,
       },
     ];
+  } else if (videoURL && !subtitlesURL) {
+    console.warn(
+      "[VOT] Subtitles files not found. Using the link only to the video file.",
+    );
+    translationHelp = {
+      url: videoURL,
+    };
   } else {
     console.error(
       `Failed to find subtitlesURL or videoURL. videoURL: ${videoURL}, subtitlesURL: ${subtitlesURL}`,
@@ -3623,25 +3843,22 @@ async function bannedvideoUtils_getVideoData(videoId) {
 
 ;// CONCATENATED MODULE: ./src/utils/crypto.js
 async function getHmacSha1(hmacKey, salt) {
-  const utf8Encoder = new TextEncoder("utf-8");
-  salt = utf8Encoder.encode(salt);
-
-  return window.crypto.subtle
-    .importKey(
+  try {
+    const utf8Encoder = new TextEncoder("utf-8");
+    salt = utf8Encoder.encode(salt);
+    const key = await window.crypto.subtle.importKey(
       "raw",
       utf8Encoder.encode(hmacKey),
       { name: "HMAC", hash: { name: "SHA-1" } },
       false,
       ["sign", "verify"],
-    )
-    .then((key) => window.crypto.subtle.sign("HMAC", key, salt))
-    .then((arrayBuffer) =>
-      btoa(String.fromCharCode(...new Uint8Array(arrayBuffer))),
-    )
-    .catch((err) => {
-      console.error(err);
-      return false;
-    });
+    );
+    const signature = await window.crypto.subtle.sign("HMAC", key, salt);
+    return btoa(String.fromCharCode(...new Uint8Array(signature)));
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 }
 
 ;// CONCATENATED MODULE: ./src/utils/weverseUtils.js
@@ -4096,6 +4313,12 @@ const sites = () => {
     //   selector:
     //     'div[data-tag="post-card"] div[elevation="subtle"] > div > div > div > div',
     // },
+    // {
+    //   host: "sibnet",
+    //   url: "https://video.sibnet.ru/",
+    //   match: /^video.sibnet.ru$/,
+    //   selector: ".video-js", // #video_html5_wrapper
+    // },
     // Нужно куда-то заливать данные о плейлисте
     // {
     //   host: "epicgames",
@@ -4206,6 +4429,10 @@ class VideoObserver {
   }
 }
 
+// EXTERNAL MODULE: ./src/utils/storage.js
+var storage = __webpack_require__("./src/utils/storage.js");
+// EXTERNAL MODULE: ./src/utils/translateApis.js
+var translateApis = __webpack_require__("./src/utils/translateApis.js");
 ;// CONCATENATED MODULE: ./src/index.js
 
 
@@ -4252,8 +4479,8 @@ const videoLipSyncEvents = [
 
 function genOptionsByOBJ(obj, conditionString, validateLangs = false) {
   return obj.map((code) => ({
-    label: `${validateLangs && !actualTTS.includes(code) ? "❌ " : ""}${
-      localizationProvider.get("langs")[code] ?? code.toUpperCase()
+    label: `${validateLangs && !constants/* actualTTS */.Ww.includes(code) ? "❌ " : ""}${
+      localizationProvider/* localizationProvider */.j.get("langs")[code] ?? code.toUpperCase()
     }`,
     value: code,
     selected: conditionString === code,
@@ -4296,7 +4523,7 @@ function translateVideo(
 
       debug/* default */.A.log("[exec callback] Requesting video translation");
       if (!success) {
-        callback(false, localizationProvider.get("requestTranslationFailed"));
+        callback(false, localizationProvider/* localizationProvider */.j.get("requestTranslationFailed"));
         return;
       }
 
@@ -4312,15 +4539,15 @@ function translateVideo(
           callback(
             !!translateResponse.url,
             translateResponse.url ||
-              localizationProvider.get("audioNotReceived"),
+              localizationProvider/* localizationProvider */.j.get("audioNotReceived"),
           );
           break;
         case 2:
           callback(
             false,
             translateResponse.remainingTime
-              ? secsToStrTime(translateResponse.remainingTime)
-              : localizationProvider.get("translationTakeFewMinutes"),
+              ? (0,utils/* secsToStrTime */.ox)(translateResponse.remainingTime)
+              : localizationProvider/* localizationProvider */.j.get("translationTakeFewMinutes"),
           );
           break;
         case 3:
@@ -4339,7 +4566,7 @@ function translateVideo(
             Он появляется при первом запросе с 17=1, но не исключено,
             что может появится и просто так
           */
-          callback(false, localizationProvider.get("videoBeingTranslated"));
+          callback(false, localizationProvider/* localizationProvider */.j.get("videoBeingTranslated"));
           break;
       }
     },
@@ -4358,7 +4585,7 @@ function translateStream(url, requestLang, responseLang, callback) {
     (success, response) => {
       debug/* default */.A.log("[exec callback] Requesting stream translation");
       if (!success) {
-        callback(false, localizationProvider.get("requestTranslationFailed"));
+        callback(false, localizationProvider/* localizationProvider */.j.get("requestTranslationFailed"));
         return;
       }
 
@@ -4370,14 +4597,14 @@ function translateStream(url, requestLang, responseLang, callback) {
           callback(
             false,
             streamResponse.interval,
-            localizationProvider.get("translationTakeFewMinutes"),
+            localizationProvider/* localizationProvider */.j.get("translationTakeFewMinutes"),
           );
           break;
         case 20:
           callback(
             true,
             streamResponse.interval,
-            streamResponse || localizationProvider.get("audioNotReceived"),
+            streamResponse || localizationProvider/* localizationProvider */.j.get("audioNotReceived"),
           );
           break;
         case 0:
@@ -4385,7 +4612,7 @@ function translateStream(url, requestLang, responseLang, callback) {
           callback(
             false,
             streamResponse.interval,
-            localizationProvider.get("streamNoConnectionToServer"),
+            localizationProvider/* localizationProvider */.j.get("streamNoConnectionToServer"),
           );
           break;
       }
@@ -4396,7 +4623,7 @@ function translateStream(url, requestLang, responseLang, callback) {
 class VideoHandler {
   // translate properties
   translateFromLang = "en"; // default language of video
-  translateToLang = lang; // default language of audio response
+  translateToLang = utils/* lang */.vV; // default language of audio response
 
   timer;
 
@@ -4404,7 +4631,7 @@ class VideoHandler {
   videoData = "";
   firstPlay = true;
   audio = new Audio();
-  hls = initHls(); // debug enabled only in dev mode
+  hls = (0,utils/* initHls */.CK)(); // debug enabled only in dev mode
 
   videoTranslations = [];
   videoTranslationTTL = 7200;
@@ -4415,13 +4642,17 @@ class VideoHandler {
   autoRetry;
   streamPing;
   volumeOnStart;
-  tempOriginalVolume;
-  tempVolume;
+  tempOriginalVolume; // temp video volume for syncing
+  tempVolume; // temp translation volume for syncing
+  firstSyncVolume = true; // used for skip 1st syncing with observer
 
   subtitlesList = [];
   subtitlesListVideoId = null;
 
   videoLastSrcObject = null;
+
+  // button move
+  dragging;
 
   constructor(video, container, site) {
     debug/* default */.A.log(
@@ -4434,8 +4665,6 @@ class VideoHandler {
     this.video = video;
     this.container = container;
     this.site = site;
-    this.handleSrcChangedBound = this.handleSrcChanged.bind(this);
-    this.video.addEventListener("loadeddata", this.handleSrcChangedBound);
     this.stopTranslationBound = this.stopTranslation.bind(this);
     this.handleVideoEventBound = this.handleVideoEvent.bind(this);
     this.changeOpacityOnEventBound = this.changeOpacityOnEvent.bind(this);
@@ -4447,11 +4676,11 @@ class VideoHandler {
     if (this.initialized) return;
 
     const audioProxyDefault =
-      lang === "uk" && "cloudflare" === "cloudflare" ? 1 : 0;
+      utils/* lang */.vV === "uk" && "cloudflare" === "cloudflare" ? 1 : 0;
 
     const dataPromises = {
       autoTranslate: storage/* votStorage */.d.get("autoTranslate", 0, true),
-      dontTranslateLanguage: storage/* votStorage */.d.get("dontTranslateLanguage", lang),
+      dontTranslateLanguage: storage/* votStorage */.d.get("dontTranslateLanguage", utils/* lang */.vV),
       dontTranslateYourLang: storage/* votStorage */.d.get("dontTranslateYourLang", 1, true),
       autoSetVolumeYandexStyle: storage/* votStorage */.d.get(
         "autoSetVolumeYandexStyle",
@@ -4459,11 +4688,12 @@ class VideoHandler {
         true,
       ),
       autoVolume: storage/* votStorage */.d.get("autoVolume", config/* defaultAutoVolume */.JD, true),
+      buttonPos: storage/* votStorage */.d.get("buttonPos", "default"),
       showVideoSlider: storage/* votStorage */.d.get("showVideoSlider", 1, true),
       syncVolume: storage/* votStorage */.d.get("syncVolume", 0, true),
       subtitlesMaxLength: storage/* votStorage */.d.get("subtitlesMaxLength", 300, true),
       highlightWords: storage/* votStorage */.d.get("highlightWords", 0, true),
-      responseLanguage: storage/* votStorage */.d.get("responseLanguage", lang),
+      responseLanguage: storage/* votStorage */.d.get("responseLanguage", utils/* lang */.vV),
       defaultVolume: storage/* votStorage */.d.get("defaultVolume", 100, true),
       udemyData: storage/* votStorage */.d.get("udemyData", { accessToken: "", expires: 0 }),
       audioProxy: storage/* votStorage */.d.get("audioProxy", audioProxyDefault, true),
@@ -4525,20 +4755,35 @@ class VideoHandler {
   transformBtn(status = "none", text) {
     this.votButton.container.dataset.status = status;
     this.votButton.label.innerHTML = text;
+    this.votButton.container.title = status === "error" ? text : "";
   }
 
   initUI() {
     // VOT Button
     {
       this.votButton = ui.createVOTButton(
-        localizationProvider.get("translateVideo"),
+        localizationProvider/* localizationProvider */.j.get("translateVideo"),
       );
+      // use an additional check because sometimes this.video.clientWidth = 0
+
+      if (
+        this.data?.buttonPos &&
+        this.data?.buttonPos !== "default" &&
+        this.video.clientWidth &&
+        this.video.clientWidth > 550
+      ) {
+        this.votButton.container.dataset.direction = "column";
+        this.votButton.container.dataset.position = this.data?.buttonPos;
+      } else {
+        this.votButton.container.dataset.direction = "row";
+        this.votButton.container.dataset.position = "default";
+      }
       this.container.appendChild(this.votButton.container);
 
       this.votButton.pipButton.hidden =
-        !isPiPAvailable() || !this.data?.showPiPButton;
+        !(0,utils/* isPiPAvailable */.Bs)() || !this.data?.showPiPButton;
       this.votButton.separator2.hidden =
-        !isPiPAvailable() || !this.data?.showPiPButton;
+        !(0,utils/* isPiPAvailable */.Bs)() || !this.data?.showPiPButton;
 
       this.votButton.container.addEventListener("click", (e) => {
         e.preventDefault();
@@ -4549,7 +4794,11 @@ class VideoHandler {
 
     // VOT Menu
     {
-      this.votMenu = ui.createVOTMenu(localizationProvider.get("VOTSettings"));
+      this.votMenu = ui.createVOTMenu(localizationProvider/* localizationProvider */.j.get("VOTSettings"));
+      this.votMenu.container.dataset.position =
+        this.video.clientWidth && this.video.clientWidth > 550
+          ? this.data?.buttonPos
+          : "default";
       this.container.appendChild(this.votMenu.container);
 
       this.votDownloadButton = ui.createIconButton(
@@ -4571,15 +4820,15 @@ class VideoHandler {
 
       this.votTranslationLanguageSelect = ui.createVOTLanguageSelect({
         fromTitle:
-          localizationProvider.get("langs")[this.video.detectedLanguage],
-        fromDialogTitle: localizationProvider.get("videoLanguage"),
+          localizationProvider/* localizationProvider */.j.get("langs")[this.video.detectedLanguage],
+        fromDialogTitle: localizationProvider/* localizationProvider */.j.get("videoLanguage"),
         fromItems: [
           {
-            label: localizationProvider.get("langs")["auto"],
+            label: localizationProvider/* localizationProvider */.j.get("langs")["auto"],
             value: "auto",
             selected: "",
           },
-          ...genOptionsByOBJ(availableLangs, this.videoData.detectedLanguage),
+          ...genOptionsByOBJ(constants/* availableLangs */.xm, this.videoData.detectedLanguage),
         ],
         fromOnSelectCB: async (e) => {
           debug/* default */.A.log(
@@ -4592,11 +4841,11 @@ class VideoHandler {
             this.videoData.responseLanguage,
           );
         },
-        toTitle: localizationProvider.get("langs")[this.video.responseLanguage],
-        toDialogTitle: localizationProvider.get("translationLanguage"),
+        toTitle: localizationProvider/* localizationProvider */.j.get("langs")[this.video.responseLanguage],
+        toDialogTitle: localizationProvider/* localizationProvider */.j.get("translationLanguage"),
         toItems: [
           ...genOptionsByOBJ(
-            availableLangs,
+            constants/* availableLangs */.xm,
             this.videoData.responseLanguage,
             true,
           ),
@@ -4606,7 +4855,7 @@ class VideoHandler {
             disabled: true,
           },
           ...genOptionsByOBJ(
-            additionalTTS,
+            constants/* additionalTTS */.ZY,
             this.videoData.responseLanguage,
             true,
           ),
@@ -4633,11 +4882,11 @@ class VideoHandler {
       );
 
       this.votSubtitlesSelect = ui.createVOTSelect(
-        localizationProvider.get("VOTSubtitlesDisabled"),
-        localizationProvider.get("VOTSubtitles"),
+        localizationProvider/* localizationProvider */.j.get("VOTSubtitlesDisabled"),
+        localizationProvider/* localizationProvider */.j.get("VOTSubtitles"),
         [
           {
-            label: localizationProvider.get("VOTSubtitlesDisabled"),
+            label: localizationProvider/* localizationProvider */.j.get("VOTSubtitlesDisabled"),
             value: "disabled",
             selected: true,
             disabled: false,
@@ -4648,7 +4897,7 @@ class VideoHandler {
             await this.changeSubtitlesLang(e.target.dataset.votValue);
           },
           labelElement: ui.createVOTSelectLabel(
-            localizationProvider.get("VOTSubtitles"),
+            localizationProvider/* localizationProvider */.j.get("VOTSubtitles"),
           ),
         },
       );
@@ -4656,7 +4905,7 @@ class VideoHandler {
       this.votMenu.bodyContainer.appendChild(this.votSubtitlesSelect.container);
 
       this.votVideoVolumeSlider = ui.createSlider(
-        `${localizationProvider.get("VOTVolume")}: <strong>${
+        `${localizationProvider/* localizationProvider */.j.get("VOTVolume")}: <strong>${
           this.getVideoVolume() * 100
         }%</strong>`,
         this.getVideoVolume() * 100,
@@ -4669,7 +4918,7 @@ class VideoHandler {
       );
 
       this.votVideoTranslationVolumeSlider = ui.createSlider(
-        `${localizationProvider.get("VOTVolumeTranslation")}: <strong>${
+        `${localizationProvider/* localizationProvider */.j.get("VOTVolumeTranslation")}: <strong>${
           this.data?.defaultVolume ?? 100
         }%</strong>`,
         this.data?.defaultVolume ?? 100,
@@ -4690,19 +4939,19 @@ class VideoHandler {
     // VOT Settings
     {
       this.votSettingsDialog = ui.createDialog(
-        localizationProvider.get("VOTSettings"),
+        localizationProvider/* localizationProvider */.j.get("VOTSettings"),
       );
       document.documentElement.appendChild(this.votSettingsDialog.container);
 
       this.votTranslationHeader = ui.createHeader(
-        localizationProvider.get("translationSettings"),
+        localizationProvider/* localizationProvider */.j.get("translationSettings"),
       );
       this.votSettingsDialog.bodyContainer.appendChild(
         this.votTranslationHeader,
       );
 
       this.votAutoTranslateCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTAutoTranslate"),
+        localizationProvider/* localizationProvider */.j.get("VOTAutoTranslate"),
         this.data?.autoTranslate ?? false,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4710,13 +4959,13 @@ class VideoHandler {
       );
 
       this.votDontTranslateYourLangSelect = ui.createVOTSelect(
-        localizationProvider.get("langs")[
-          storage/* votStorage */.d.syncGet("dontTranslateLanguage", lang)
+        localizationProvider/* localizationProvider */.j.get("langs")[
+          storage/* votStorage */.d.syncGet("dontTranslateLanguage", utils/* lang */.vV)
         ],
-        localizationProvider.get("VOTDontTranslateYourLang"),
+        localizationProvider/* localizationProvider */.j.get("VOTDontTranslateYourLang"),
         genOptionsByOBJ(
-          availableLangs,
-          storage/* votStorage */.d.syncGet("dontTranslateLanguage", lang),
+          constants/* availableLangs */.xm,
+          storage/* votStorage */.d.syncGet("dontTranslateLanguage", utils/* lang */.vV),
         ),
         {
           onSelectCb: async (e) => {
@@ -4727,7 +4976,7 @@ class VideoHandler {
             );
           },
           labelElement: ui.createCheckbox(
-            localizationProvider.get("VOTDontTranslateYourLang"),
+            localizationProvider/* localizationProvider */.j.get("VOTDontTranslateYourLang"),
             this.data?.dontTranslateYourLang ?? true,
           ).container,
         },
@@ -4738,7 +4987,7 @@ class VideoHandler {
       );
 
       this.votAutoSetVolumeCheckbox = ui.createCheckbox(
-        `${localizationProvider.get("VOTAutoSetVolume")}`,
+        `${localizationProvider/* localizationProvider */.j.get("VOTAutoSetVolume")}`,
         this.data?.autoSetVolumeYandexStyle ?? true,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4755,7 +5004,7 @@ class VideoHandler {
       );
 
       this.votShowVideoSliderCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTShowVideoSlider"),
+        localizationProvider/* localizationProvider */.j.get("VOTShowVideoSlider"),
         this.data?.showVideoSlider ?? false,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4764,7 +5013,7 @@ class VideoHandler {
 
       // udemy only
       this.votUdemyDataTextfield = ui.createTextfield(
-        localizationProvider.get("VOTUdemyData"),
+        localizationProvider/* localizationProvider */.j.get("VOTUdemyData"),
         this.data?.udemyData?.accessToken ?? "",
       );
       this.votUdemyDataTextfield.container.hidden = this.site.host !== "udemy";
@@ -4772,23 +5021,21 @@ class VideoHandler {
         this.votUdemyDataTextfield.container,
       );
 
-      // youtube only
       this.votSyncVolumeCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTSyncVolume"),
+        localizationProvider/* localizationProvider */.j.get("VOTSyncVolume"),
         this.data?.syncVolume ?? false,
       );
-      this.votSyncVolumeCheckbox.container.hidden =
-        !["youtube", "googledrive"].includes(this.site.host) ||
-        this.site.additionalData === "mobile";
       this.votSettingsDialog.bodyContainer.appendChild(
         this.votSyncVolumeCheckbox.container,
       );
 
       this.votTranslationServiceSelect = ui.createVOTSelect(
-        storage/* votStorage */.d.syncGet("translationService", config/* defaultTranslationService */.mE),
-        localizationProvider.get("VOTTranslationService"),
+        storage/* votStorage */.d
+          .syncGet("translationService", config/* defaultTranslationService */.mE)
+          .toUpperCase(),
+        localizationProvider/* localizationProvider */.j.get("VOTTranslationService"),
         genOptionsByOBJ(
-          translateServices,
+          translateApis/* translateServices */.vN,
           storage/* votStorage */.d.syncGet("translationService", config/* defaultTranslationService */.mE),
         ),
         {
@@ -4800,22 +5047,22 @@ class VideoHandler {
             );
           },
           labelElement: ui.createCheckbox(
-            localizationProvider.get("VOTTranslateAPIErrors"),
+            localizationProvider/* localizationProvider */.j.get("VOTTranslateAPIErrors"),
             this.data.translateAPIErrors ?? true,
           ).container,
         },
       );
       this.votTranslationServiceSelect.container.hidden =
-        localizationProvider.lang === "ru";
+        localizationProvider/* localizationProvider */.j.lang === "ru";
       this.votSettingsDialog.bodyContainer.appendChild(
         this.votTranslationServiceSelect.container,
       );
 
       this.votDetectServiceSelect = ui.createVOTSelect(
-        storage/* votStorage */.d.syncGet("detectService", config/* defaultDetectService */.K2),
-        localizationProvider.get("VOTDetectService"),
+        storage/* votStorage */.d.syncGet("detectService", config/* defaultDetectService */.K2).toUpperCase(),
+        localizationProvider/* localizationProvider */.j.get("VOTDetectService"),
         genOptionsByOBJ(
-          detectServices,
+          translateApis/* detectServices */.qh,
           storage/* votStorage */.d.syncGet("detectService", config/* defaultDetectService */.K2),
         ),
         {
@@ -4824,7 +5071,7 @@ class VideoHandler {
             await storage/* votStorage */.d.set("detectService", this.data.detectService);
           },
           labelElement: ui.createVOTSelectLabel(
-            localizationProvider.get("VOTDetectService"),
+            localizationProvider/* localizationProvider */.j.get("VOTDetectService"),
           ),
         },
       );
@@ -4835,12 +5082,12 @@ class VideoHandler {
       // SUBTITLES
 
       this.votSubtitlesHeader = ui.createHeader(
-        localizationProvider.get("subtitlesSettings"),
+        localizationProvider/* localizationProvider */.j.get("subtitlesSettings"),
       );
       this.votSettingsDialog.bodyContainer.appendChild(this.votSubtitlesHeader);
 
       this.votSubtitlesMaxLengthSlider = ui.createSlider(
-        `${localizationProvider.get("VOTSubtitlesMaxLength")}: <strong>${
+        `${localizationProvider/* localizationProvider */.j.get("VOTSubtitlesMaxLength")}: <strong>${
           this.data?.subtitlesMaxLength ?? 300
         }</strong>`,
         this.data?.subtitlesMaxLength ?? 300,
@@ -4852,7 +5099,7 @@ class VideoHandler {
       );
 
       this.votSubtitlesHighlightWordsCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTHighlightWords"),
+        localizationProvider/* localizationProvider */.j.get("VOTHighlightWords"),
         this.data?.highlightWords ?? false,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4862,12 +5109,12 @@ class VideoHandler {
       // PROXY
 
       this.votProxyHeader = ui.createHeader(
-        localizationProvider.get("proxySettings"),
+        localizationProvider/* localizationProvider */.j.get("proxySettings"),
       );
       this.votSettingsDialog.bodyContainer.appendChild(this.votProxyHeader);
 
       this.votM3u8ProxyHostTextfield = ui.createTextfield(
-        localizationProvider.get("VOTM3u8ProxyHost"),
+        localizationProvider/* localizationProvider */.j.get("VOTM3u8ProxyHost"),
         this.data?.m3u8ProxyHost,
         config/* m3u8ProxyHost */.se,
       );
@@ -4877,7 +5124,7 @@ class VideoHandler {
 
       // cf version only
       this.votProxyWorkerHostTextfield = ui.createTextfield(
-        localizationProvider.get("VOTProxyWorkerHost"),
+        localizationProvider/* localizationProvider */.j.get("VOTProxyWorkerHost"),
         this.data?.proxyWorkerHost,
         config/* proxyWorkerHost */.Pm,
       );
@@ -4889,7 +5136,7 @@ class VideoHandler {
 
       // cf version only
       this.votAudioProxyCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTAudioProxy"),
+        localizationProvider/* localizationProvider */.j.get("VOTAudioProxy"),
         this.data?.audioProxy ?? false,
       );
       this.votAudioProxyCheckbox.container.hidden = "cloudflare" !== "cloudflare";
@@ -4899,16 +5146,16 @@ class VideoHandler {
 
       // ABOUT
 
-      this.votAboutHeader = ui.createHeader(localizationProvider.get("about"));
+      this.votAboutHeader = ui.createHeader(localizationProvider/* localizationProvider */.j.get("about"));
       this.votSettingsDialog.bodyContainer.appendChild(this.votAboutHeader);
 
       this.votLanguageSelect = ui.createVOTSelect(
-        localizationProvider.get("langs")[
+        localizationProvider/* localizationProvider */.j.get("langs")[
           storage/* votStorage */.d.syncGet("locale-lang-override", "auto")
         ],
-        localizationProvider.get("VOTMenuLanguage"),
+        localizationProvider/* localizationProvider */.j.get("VOTMenuLanguage"),
         genOptionsByOBJ(
-          availableLocales,
+          localizationProvider/* availableLocales */.z,
           storage/* votStorage */.d.syncGet("locale-lang-override", "auto"),
         ),
         {
@@ -4919,7 +5166,7 @@ class VideoHandler {
             );
           },
           labelElement: ui.createVOTSelectLabel(
-            localizationProvider.get("VOTMenuLanguage"),
+            localizationProvider/* localizationProvider */.j.get("VOTMenuLanguage"),
           ),
         },
       );
@@ -4929,16 +5176,16 @@ class VideoHandler {
       );
 
       this.votShowPiPButtonCheckbox = ui.createCheckbox(
-        localizationProvider.get("VOTShowPiPButton"),
+        localizationProvider/* localizationProvider */.j.get("VOTShowPiPButton"),
         this.data?.showPiPButton ?? false,
       );
-      this.votShowPiPButtonCheckbox.container.hidden = !isPiPAvailable();
+      this.votShowPiPButtonCheckbox.container.hidden = !(0,utils/* isPiPAvailable */.Bs)();
       this.votSettingsDialog.bodyContainer.appendChild(
         this.votShowPiPButtonCheckbox.container,
       );
 
       this.votVersionInfo = ui.createInformation(
-        `${localizationProvider.get("VOTVersion")}:`,
+        `${localizationProvider/* localizationProvider */.j.get("VOTVersion")}:`,
          true
           ? `cloudflare ${GM_info.script.version}`
           : 0,
@@ -4948,7 +5195,7 @@ class VideoHandler {
       );
 
       this.votAuthorsInfo = ui.createInformation(
-        `${localizationProvider.get("VOTAuthors")}:`,
+        `${localizationProvider/* localizationProvider */.j.get("VOTAuthors")}:`,
         GM_info.script.author,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4956,7 +5203,7 @@ class VideoHandler {
       );
 
       this.votLoaderInfo = ui.createInformation(
-        `${localizationProvider.get("VOTLoader")}:`,
+        `${localizationProvider/* localizationProvider */.j.get("VOTLoader")}:`,
         `${GM_info.scriptHandler} v${GM_info.version}`,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4964,7 +5211,7 @@ class VideoHandler {
       );
 
       this.votBrowserInfo = ui.createInformation(
-        `${localizationProvider.get("VOTBrowser")}:`,
+        `${localizationProvider/* localizationProvider */.j.get("VOTBrowser")}:`,
         `${browserInfo.browser.name} ${browserInfo.browser.version} (${browserInfo.os.name} ${browserInfo.os.version})`,
       );
       this.votSettingsDialog.bodyContainer.appendChild(
@@ -4972,7 +5219,7 @@ class VideoHandler {
       );
 
       this.votResetSettingsButton = ui.createButton(
-        localizationProvider.get("resetSettings"),
+        localizationProvider/* localizationProvider */.j.get("resetSettings"),
       );
       this.votSettingsDialog.bodyContainer.appendChild(
         this.votResetSettingsButton,
@@ -5029,6 +5276,39 @@ class VideoHandler {
       this.votButton.menuButton.addEventListener("click", () => {
         this.votMenu.container.hidden = !this.votMenu.container.hidden;
       });
+
+      this.votButton.container.addEventListener("mousedown", () => {
+        this.dragging = true;
+      });
+
+      document.addEventListener("mouseup", () => {
+        this.dragging = false;
+      });
+
+      document.addEventListener("mousemove", async (e) => {
+        if (this.dragging) {
+          e.preventDefault();
+
+          const percentX = (e.clientX / this.video.clientWidth) * 100;
+          // const percentY = (e.clientY / this.video.clientHeight) * 100;
+
+          this.data.buttonPos =
+            this.video.clientWidth && this.video.clientWidth > 550
+              ? percentX <= 33
+                ? "left"
+                : percentX >= 66
+                  ? "right"
+                  : "default"
+              : "default";
+          this.votButton.container.dataset.direction =
+            this.data.buttonPos === "default" ? "row" : "column";
+          this.votButton.container.dataset.position = this.data.buttonPos;
+          this.votMenu.container.dataset.position = this.data.buttonPos;
+          if (this.video.clientWidth && this.video.clientWidth > 550) {
+            await storage/* votStorage */.d.set("buttonPos", this.data.buttonPos);
+          }
+        }
+      });
     }
 
     // VOT Menu
@@ -5060,25 +5340,8 @@ class VideoHandler {
         this.votVideoVolumeSlider.label.querySelector("strong").innerHTML =
           `${value}%`;
         this.setVideoVolume(value / 100);
-        if (this.data.syncVolume === 1) {
-          const translateVolume = Number(
-            this.votVideoTranslationVolumeSlider.input.value,
-          );
-          const finalValue = syncVolume(
-            this.audio,
-            value,
-            translateVolume,
-            this.tempOriginalVolume,
-          );
-
-          this.votVideoTranslationVolumeSlider.input.value = finalValue;
-          this.votVideoTranslationVolumeSlider.label.querySelector(
-            "strong",
-          ).innerHTML = `${finalValue}%`;
-          ui.updateSlider(this.votVideoTranslationVolumeSlider.input);
-
-          this.tempVolume = finalValue;
-          this.tempOriginalVolume = value;
+        if (this.data.syncVolume) {
+          this.syncVolumeWrapper("video", value);
         }
       });
 
@@ -5092,8 +5355,17 @@ class VideoHandler {
               "strong",
             ).innerHTML = `${this.data.defaultVolume}%`;
             this.audio.volume = this.data.defaultVolume / 100;
-            if (this.data.syncVolume === 1) {
-              this.syncTranslationWithVideo(this.data.defaultVolume);
+            if (!this.data.syncVolume) {
+              return;
+            }
+
+            this.syncVolumeWrapper("translation", this.data.defaultVolume);
+            if (
+              ["youtube", "googledrive"].includes(this.site.host) &&
+              this.site.additionalData !== "mobile"
+            ) {
+              // fix update youtube volume slider
+              this.setVideoVolume(this.tempOriginalVolume / 100);
             }
           })();
         },
@@ -5251,9 +5523,9 @@ class VideoHandler {
             this.data.showPiPButton,
           );
           this.votButton.pipButton.hidden =
-            !isPiPAvailable() || !this.data.showPiPButton;
+            !(0,utils/* isPiPAvailable */.Bs)() || !this.data.showPiPButton;
           this.votButton.separator2.hidden =
-            !isPiPAvailable() || !this.data.showPiPButton;
+            !(0,utils/* isPiPAvailable */.Bs)() || !this.data.showPiPButton;
         })();
       });
 
@@ -5295,10 +5567,10 @@ class VideoHandler {
 
       this.votResetSettingsButton.addEventListener("click", () => {
         (async () => {
-          localizationProvider.reset();
+          localizationProvider/* localizationProvider */.j.reset();
           const valuesForClear = await storage/* votStorage */.d.list();
           valuesForClear
-            .filter((v) => !localizationProvider.gmValues.includes(v))
+            .filter((v) => !localizationProvider/* localizationProvider */.j.gmValues.includes(v))
             .forEach((v) => storage/* votStorage */.d.syncDelete(v));
           window.location.reload();
         })();
@@ -5346,6 +5618,17 @@ class VideoHandler {
           `--vot-container-height: ${e.contentRect.height}px`,
         );
       });
+
+      const isBigWidth = this.video.clientWidth && this.video.clientWidth > 550;
+
+      this.votButton.container.dataset.position =
+        this.votMenu.container.dataset.position = isBigWidth
+          ? this.data?.buttonPos
+          : "default";
+      this.votButton.container.dataset.direction =
+        this.data?.buttonPos && this.data?.buttonPos !== "default" && isBigWidth
+          ? "column"
+          : "row";
     });
     this.resizeObserver.observe(this.video);
     this.votMenu.container.setAttribute(
@@ -5360,18 +5643,37 @@ class VideoHandler {
         }px`,
       );
     }, 500);
-    // Sync volume slider with original video (youtube only)
+    // Sync menu volume slider with youtube original video (youtube only)
     if (
       ["youtube", "googledrive"].includes(this.site.host) &&
       this.site.additionalData !== "mobile"
     ) {
       this.syncVolumeObserver = new MutationObserver((mutations) => {
+        if (!this.audio.src || !this.data.syncVolume) {
+          return;
+        }
+
         mutations.forEach((mutation) => {
           if (
             mutation.type === "attributes" &&
             mutation.attributeName === "aria-valuenow"
           ) {
-            this.syncVideoVolumeSlider();
+            if (this.firstSyncVolume) {
+              // disable sync if it's sync when the translation is enabled
+              this.firstSyncVolume = false;
+              return;
+            }
+
+            // youtube sets setMuted and returns the old value if the slider is moved to 0
+            // also fixes the operation if the video is muted via the hotkey
+            const videoVolume = this.isMuted()
+              ? 0
+              : this.getVideoVolume() * 100;
+
+            const finalVolume = Math.round(videoVolume);
+            this.data.defaultVolume = finalVolume;
+            this.audio.volume = this.data.defaultVolume / 100;
+            this.syncVolumeWrapper("video", finalVolume);
           }
         });
       });
@@ -5464,15 +5766,29 @@ class VideoHandler {
       this.container.draggable = false;
     }
 
+    addExtraEventListener(this.video, "loadeddata", async () => {
+      // Временное решение
+      if (this.site.host === "rutube" && this.video.src) {
+        return;
+      }
+      if ((0,utils/* getVideoId */.jI)(this.site.host, this.video) === this.videoData.videoId)
+        return;
+      await this.handleSrcChanged();
+      debug/* default */.A.log("lipsync mode is loadeddata");
+    });
+
     addExtraEventListener(this.video, "emptied", () => {
-      if (
-        this.video.src &&
-        getVideoId(this.site.host, this.video) === this.videoData.videoId
-      )
+      if ((0,utils/* getVideoId */.jI)(this.site.host, this.video) === this.videoData.videoId)
         return;
       debug/* default */.A.log("lipsync mode is emptied");
       this.stopTranslation();
     });
+
+    if (!["rutube", "ok"].includes(this.site.host)) {
+      addExtraEventListener(this.video, "volumechange", () => {
+        this.syncVideoVolumeSlider();
+      });
+    }
 
     addExtraEventListener(this.video, "progress", async () => {
       if (
@@ -5480,7 +5796,7 @@ class VideoHandler {
         this.audio.src ||
         !this.firstPlay ||
         this.data.autoTranslate !== 1 ||
-        getVideoId(this.site.host, this.video) !== this.videoData.videoId
+        (0,utils/* getVideoId */.jI)(this.site.host, this.video) !== this.videoData.videoId
       ) {
         return;
       }
@@ -5524,7 +5840,7 @@ class VideoHandler {
     this.votSubtitlesSelect.setSelected(subs);
     if (subs === "disabled") {
       this.votSubtitlesSelect.setTitle(
-        localizationProvider.get("VOTSubtitlesDisabled"),
+        localizationProvider/* localizationProvider */.j.get("VOTSubtitlesDisabled"),
       );
       this.subtitlesWidget.setContent(null);
       this.votDownloadSubtitlesButton.hidden = true;
@@ -5542,24 +5858,24 @@ class VideoHandler {
   async updateSubtitlesLangSelect() {
     const updatedOptions = [
       {
-        label: localizationProvider.get("VOTSubtitlesDisabled"),
+        label: localizationProvider/* localizationProvider */.j.get("VOTSubtitlesDisabled"),
         value: "disabled",
         selected: true,
         disabled: false,
       },
       ...this.subtitlesList.map((s, idx) => ({
         label:
-          (localizationProvider.get("langs")[s.language] ??
+          (localizationProvider/* localizationProvider */.j.get("langs")[s.language] ??
             s.language.toUpperCase()) +
           (s.translatedFromLanguage
-            ? ` ${localizationProvider.get("VOTTranslatedFrom")} ${
-                localizationProvider.get("langs")[s.translatedFromLanguage] ??
+            ? ` ${localizationProvider/* localizationProvider */.j.get("VOTTranslatedFrom")} ${
+                localizationProvider/* localizationProvider */.j.get("langs")[s.translatedFromLanguage] ??
                 s.translatedFromLanguage.toUpperCase()
               }`
             : "") +
           (s.source !== "yandex" ? ` ${s.source}` : "") +
           (s.isAutoGenerated
-            ? ` (${localizationProvider.get("VOTAutogenerated")})`
+            ? ` (${localizationProvider/* localizationProvider */.j.get("VOTAutogenerated")})`
             : ""),
         value: idx,
         selected: false,
@@ -5577,7 +5893,7 @@ class VideoHandler {
 
     if (!this.videoData.videoId) {
       console.error(
-        `[VOT] ${localizationProvider.getDefault("VOTNoVideoIDFound")}`,
+        `[VOT] ${localizationProvider/* localizationProvider */.j.getDefault("VOTNoVideoIDFound")}`,
       );
       this.subtitlesList = [];
       this.subtitlesListVideoId = null;
@@ -5586,11 +5902,13 @@ class VideoHandler {
       return;
     }
 
+    this.votButton.container.hidden = false;
+
     if (this.subtitlesListVideoId === this.videoData.videoId) {
       return;
     }
 
-    this.subtitlesList = await subtitles_getSubtitles(
+    this.subtitlesList = await getSubtitles(
       this.site,
       this.videoData.videoId,
       this.videoData.detectedLanguage,
@@ -5607,7 +5925,7 @@ class VideoHandler {
   getVideoVolume() {
     let videoVolume = this.video?.volume;
     if (["youtube", "googledrive"].includes(this.site.host)) {
-      videoVolume = youtubeUtils.getVideoVolume() || videoVolume;
+      videoVolume = youtubeUtils/* default */.A.getVideoVolume() ?? videoVolume;
     }
     return videoVolume;
   }
@@ -5615,7 +5933,7 @@ class VideoHandler {
   // Set video volume in 0.00-1.00 format
   setVideoVolume(volume) {
     if (["youtube", "googledrive"].includes(this.site.host)) {
-      const videoVolume = youtubeUtils.setVideoVolume(volume);
+      const videoVolume = youtubeUtils/* default */.A.setVideoVolume(volume);
       if (videoVolume) {
         return;
       }
@@ -5623,9 +5941,16 @@ class VideoHandler {
     this.video.volume = volume;
   }
 
-  // Sync volume slider with original video (youtube only)
+  isMuted() {
+    return ["youtube", "googledrive"].includes(this.site.host)
+      ? youtubeUtils/* default */.A.isMuted()
+      : this.video?.muted;
+  }
+
+  // Sync volume slider with original video
   syncVideoVolumeSlider() {
-    const newSlidersVolume = Math.round(this.getVideoVolume() * 100);
+    const videoVolume = this.isMuted() ? 0 : this.getVideoVolume() * 100;
+    const newSlidersVolume = Math.round(videoVolume);
 
     this.votVideoVolumeSlider.input.value = newSlidersVolume;
     this.votVideoVolumeSlider.label.querySelector("strong").innerHTML =
@@ -5639,10 +5964,10 @@ class VideoHandler {
 
   setSelectMenuValues(from, to) {
     this.votTranslationLanguageSelect.fromSelect.setTitle(
-      localizationProvider.get("langs")[from],
+      localizationProvider/* localizationProvider */.j.get("langs")[from],
     );
     this.votTranslationLanguageSelect.toSelect.setTitle(
-      localizationProvider.get("langs")[to],
+      localizationProvider/* localizationProvider */.j.get("langs")[to],
     );
     this.votTranslationLanguageSelect.fromSelect.setSelected(from);
     this.votTranslationLanguageSelect.toSelect.setSelected(to);
@@ -5651,28 +5976,35 @@ class VideoHandler {
     this.videoData.responseLanguage = to;
   }
 
-  // A helper function to sync translation volume with video volume
-  syncTranslationWithVideo(translationValue) {
-    // Get the video volume value
-    const videoVolume = Number(this.votVideoVolumeSlider.input.value);
+  /**
+   * wrap over syncVolume to make it easier to work with sliders
+   * @constructor
+   * @param {"translation" | "video"} fromType - the initiator of sync
+   * @param {number} newVolume - new volume of sliders
+   */
+  syncVolumeWrapper(fromType, newVolume) {
+    const slider =
+      fromType === "translation"
+        ? this.votVideoVolumeSlider
+        : this.votVideoTranslationVolumeSlider;
 
-    // Calculate the synced video volume based on the translation volume
+    const currentSliderValue = Number(slider.input.value);
+
     const finalValue = syncVolume(
-      this.video,
-      translationValue,
-      videoVolume,
-      this.tempVolume,
+      fromType === "translation" ? this.video : this.audio,
+      newVolume,
+      currentSliderValue,
+      fromType === "translation" ? this.tempVolume : this.tempOriginalVolume,
     );
 
-    // Set the video volume slider value to the synced value
-    this.votVideoVolumeSlider.input.value = finalValue;
-    this.votVideoVolumeSlider.label.querySelector("strong").innerHTML =
-      `${finalValue}%`;
-    ui.updateSlider(this.votVideoVolumeSlider.input);
+    slider.input.value = finalValue;
+    slider.label.querySelector("strong").innerHTML = `${finalValue}%`;
+    ui.updateSlider(slider.input);
 
     // Update the temp variables for future syncing
-    this.tempOriginalVolume = finalValue;
-    this.tempVolume = translationValue;
+    this.tempOriginalVolume =
+      fromType === "translation" ? finalValue : newVolume;
+    this.tempVolume = fromType === "translation" ? newVolume : finalValue;
   }
 
   async getVideoData() {
@@ -5682,7 +6014,7 @@ class VideoHandler {
       translationHelp: null,
       isStream: false, // by default, we request the translation of the video
       duration: this.video?.duration || 343, // ! if 0 - we get 400 error
-      videoId: getVideoId(this.site.host, this.video),
+      videoId: (0,utils/* getVideoId */.jI)(this.site.host, this.video),
       detectedLanguage: this.translateFromLang,
       responseLanguage: this.translateToLang,
     };
@@ -5693,7 +6025,7 @@ class VideoHandler {
     }
 
     if (window.location.hostname.includes("youtube.com")) {
-      this.ytData = await youtubeUtils.getVideoData();
+      this.ytData = await youtubeUtils/* default */.A.getVideoData();
       videoData.isStream = this.ytData.isLive;
       if (this.ytData.title) {
         videoData.detectedLanguage = this.ytData.detectedLanguage;
@@ -5814,15 +6146,15 @@ class VideoHandler {
           if (e.name === "NotAllowedError") {
             this.transformBtn(
               "error",
-              localizationProvider.get("grantPermissionToAutoPlay"),
+              localizationProvider/* localizationProvider */.j.get("grantPermissionToAutoPlay"),
             );
             throw new VOTLocalizedError("grantPermissionToAutoPlay");
           } else if (e.name === "NotSupportedError") {
             this.transformBtn(
               "error",
               sitesChromiumBlocked.includes(window.location.hostname)
-                ? localizationProvider.get("neededAdditionalExtension")
-                : localizationProvider.get("audioFormatNotSupported"),
+                ? localizationProvider/* localizationProvider */.j.get("neededAdditionalExtension")
+                : localizationProvider/* localizationProvider */.j.get("audioFormatNotSupported"),
             );
             throw sitesChromiumBlocked.includes(window.location.hostname)
               ? new VOTLocalizedError("neededAdditionalExtension")
@@ -5862,7 +6194,7 @@ class VideoHandler {
     this.votVideoTranslationVolumeSlider.container.hidden = true;
     this.votDownloadButton.hidden = true;
     this.downloadTranslationUrl = null;
-    this.transformBtn("none", localizationProvider.get("translateVideo"));
+    this.transformBtn("none", localizationProvider/* localizationProvider */.j.get("translateVideo"));
     debug/* default */.A.log(`Volume on start: ${this.volumeOnStart}`);
     if (this.volumeOnStart) {
       this.setVideoVolume(this.volumeOnStart);
@@ -5870,7 +6202,8 @@ class VideoHandler {
     this.volumeOnStart = "";
     clearInterval(this.streamPing);
     this.hls?.destroy();
-    this.hls = initHls();
+    this.hls = (0,utils/* initHls */.CK)();
+    this.firstSyncVolume = true;
   }
 
   async translateExecutor(VIDEO_ID) {
@@ -5885,9 +6218,9 @@ class VideoHandler {
   }
 
   async updateTranslationErrorMsg(errorMessage) {
-    const translationTake = localizationProvider.get("translationTake");
-    const VOTTranslatingError = localizationProvider.get("VOTTranslatingError");
-    const lang = localizationProvider.lang;
+    const translationTake = localizationProvider/* localizationProvider */.j.get("translationTake");
+    const VOTTranslatingError = localizationProvider/* localizationProvider */.j.get("VOTTranslatingError");
+    const lang = localizationProvider/* localizationProvider */.j.lang;
 
     if (errorMessage?.name === "VOTLocalizedError") {
       this.transformBtn("error", errorMessage.localizedMessage);
@@ -5896,7 +6229,7 @@ class VideoHandler {
       !errorMessage.includes(translationTake) &&
       lang !== "ru"
     ) {
-      const translatedMessage = await translate(errorMessage, "ru", lang);
+      const translatedMessage = await (0,translateApis/* translate */.Tl)(errorMessage, "ru", lang);
       this.transformBtn("error", VOTTranslatingError);
       this.transformBtn("error", translatedMessage);
     } else {
@@ -5968,7 +6301,7 @@ class VideoHandler {
     videoLipSyncEvents.forEach((e) =>
       this.video.addEventListener(e, this.handleVideoEventBound),
     );
-    this.transformBtn("success", localizationProvider.get("disableTranslate"));
+    this.transformBtn("success", localizationProvider/* localizationProvider */.j.get("disableTranslate"));
     this.afterUpdateTranslation(audioUrl);
   }
 
@@ -5997,7 +6330,7 @@ class VideoHandler {
         responseLang,
         async (success, reqInterval, resOrError) => {
           debug/* default */.A.log("[exec callback] translateStream callback");
-          if (getVideoId(this.site.host, this.video) !== VIDEO_ID) return;
+          if ((0,utils/* getVideoId */.jI)(this.site.host, this.video) !== VIDEO_ID) return;
           if (!success || !resOrError.translatedInfo) {
             await this.updateTranslationErrorMsg(resOrError);
 
@@ -6022,7 +6355,7 @@ class VideoHandler {
 
           this.transformBtn(
             "success",
-            localizationProvider.get("disableTranslate"),
+            localizationProvider/* localizationProvider */.j.get("disableTranslate"),
           );
 
           console.log(resOrError);
@@ -6093,7 +6426,7 @@ class VideoHandler {
           }
 
           if (this.site.host === "youtube") {
-            youtubeUtils.videoSeek(this.video, 10); // 10 is the most successful number for streaming. With it, the audio is not so far behind the original
+            youtubeUtils/* default */.A.videoSeek(this.video, 10); // 10 is the most successful number for streaming. With it, the audio is not so far behind the original
           }
 
           this.volumeOnStart = this.getVideoVolume();
@@ -6155,13 +6488,13 @@ class VideoHandler {
       translationHelp,
       async (success, urlOrError) => {
         debug/* default */.A.log("[exec callback] translateVideo callback");
-        if (getVideoId(this.site.host, this.video) !== VIDEO_ID) return;
+        if ((0,utils/* getVideoId */.jI)(this.site.host, this.video) !== VIDEO_ID) return;
         if (!success) {
           await this.updateTranslationErrorMsg(urlOrError);
 
           // if the error line contains information that the translation is being performed, then we wait
           if (
-            urlOrError.includes(localizationProvider.get("translationTake"))
+            urlOrError.includes(localizationProvider/* localizationProvider */.j.get("translationTake"))
           ) {
             clearTimeout(this.autoRetry);
             this.autoRetry = setTimeout(
@@ -6182,7 +6515,7 @@ class VideoHandler {
 
         this.updateTranslation(urlOrError);
         if (!this.subtitlesList.some((item) => item.source === "yandex")) {
-          this.subtitlesList = await subtitles_getSubtitles(
+          this.subtitlesList = await getSubtitles(
             this.site,
             this.videoData.videoId,
             this.videoData.detectedLanguage,
@@ -6208,11 +6541,6 @@ class VideoHandler {
   }
 
   async handleSrcChanged() {
-    if (
-      this.audio.src &&
-      getVideoId(this.site.host, this.video) === this.videoData.videoId
-    )
-      return;
     debug/* default */.A.log("[VideoHandler] src changed", this);
 
     this.firstPlay = true;
@@ -6279,9 +6607,9 @@ const videosWrappers = new WeakMap();
 async function src_main() {
   debug/* default */.A.log("Loading extension...");
 
-  await localizationProvider.update();
+  await localizationProvider/* localizationProvider */.j.update();
 
-  debug/* default */.A.log(`Selected menu language: ${localizationProvider.lang}`);
+  debug/* default */.A.log(`Selected menu language: ${localizationProvider/* localizationProvider */.j.lang}`);
 
   if (
     false
