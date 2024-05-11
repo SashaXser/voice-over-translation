@@ -1713,60 +1713,48 @@ function cleanText(title, description) {
   return cleanText;
 }
 
-function GM_fetch(url, opt = {}) {
-  // https://github.com/ilyhalight/voice-over-translation/discussions/589
-  if (GM_info?.scriptHandler === "AdGuard" || !GM_xmlhttpRequest) {
-    console.error("GM_xmlhttpRequest is not available");
-    return fetch(url, opt);
+async function GM_fetch(url, opt = {}) {
+  try {
+    if (GM_info?.scriptHandler === "AdGuard" || !GM_xmlhttpRequest) {
+      console.error("GM_xmlhttpRequest is not available");
+      return fetch(url, opt);
+    }
+
+    return new Promise((resolve, reject) => {
+      const requestOptions = {
+        ...opt,
+        url,
+        data: opt.body,
+        responseType: "arraybuffer",
+        onload: (resp) => {
+          const headers = new Headers();
+          resp.responseHeaders
+            .trim()
+            .split("\r\n")
+            .forEach((line) => {
+              const [key, value] = line.split(": ");
+              if (key.toLowerCase() !== "set-cookie") {
+                headers.append(key, value);
+              }
+            });
+          debug/* default */.A.log("responseHeaders", resp.responseHeaders);
+          resolve(
+            new Response(new Blob([resp.response]), {
+              status: resp.status,
+              headers,
+            }),
+          );
+        },
+        ontimeout: () => reject("fetch timeout"),
+        onerror: (error) => reject(error),
+        onabort: () => reject("fetch abort"),
+      };
+      GM_xmlhttpRequest(requestOptions);
+    });
+  } catch (error) {
+    console.error("Error occurred in GM_fetch:", error);
+    throw error;
   }
-
-  return new Promise((resolve, reject) => {
-    debug/* default */.A.log("opt.headers log", opt.headers);
-    const options = {
-      url: url,
-      method: opt.method || "GET",
-      headers: opt.headers,
-      data: opt.body,
-      responseType: "blob",
-      onload: function (resp) {
-        resolve(
-          new Response(resp.response, {
-            status: resp.status,
-            statusText: resp.statusText,
-            headers: parseHeaders(resp.responseHeaders),
-          }),
-        );
-      },
-      onerror: function (err) {
-        reject(new Error("GM_xmlhttpRequest failed: " + err.error));
-      },
-      ontimeout: function () {
-        reject(new Error("GM_xmlhttpRequest timed out."));
-      },
-      onabort: function () {
-        reject(new Error("GM_xmlhttpRequest was aborted."));
-      },
-    };
-    GM_xmlhttpRequest(options);
-  });
-}
-
-function parseHeaders(headers) {
-  return Object.fromEntries(
-    headers
-      .trim()
-      .split("\r\n")
-      .map((header) => {
-        const parts = header.split(": ");
-        const headerName = parts.shift();
-        const headerValue = parts.join(": ");
-        if (headerName.toLowerCase() === "set-cookie") {
-          return [];
-        }
-        return [headerName, headerValue];
-      })
-      .filter((header) => header.length),
-  );
 }
 
 
