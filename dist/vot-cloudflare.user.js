@@ -129,7 +129,7 @@
 // @connect        onrender.com
 // @connect        workers.dev
 // @namespace      vot-cloudflare
-// @version        1.5.2.2
+// @version        1.5.3
 // @icon           https://translate.yandex.ru/icons/favicon.ico
 // @author         sodapng, mynovelhost, Toil, SashaXser, MrSoczekXD
 // @homepageURL    https://github.com/ilyhalight/voice-over-translation/issues
@@ -577,7 +577,7 @@ const m3u8ProxyHost = "m3u8-proxy.toil.cc"; // used for striming
 const proxyWorkerHost = "vot.toil.cc"; // used for cloudflare version (vot-new.toil-dump.workers.dev || vot-worker.onrender.com)
 const yandexHmacKey = "bt8xH3VOlb4mqf0nqAibnDOoiPlXsisf";
 const yandexUserAgent =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 YaBrowser/24.1.5.825 Yowser/2.5 Safari/537.36";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 YaBrowser/24.4.0.0 Safari/537.36";
 const defaultAutoVolume = 0.15; // 0.0 - 1.0 (0% - 100%) - default volume of the video with the translation
 const defaultTranslationService = "yandex";
 const defaultDetectService = "yandex";
@@ -1566,48 +1566,44 @@ function cleanText(title, description) {
     .slice(0, 1000);
 }
 
-function GM_fetch(url, opt = {}) {
-  // https://github.com/ilyhalight/voice-over-translation/discussions/589
-  if (GM_info?.scriptHandler === "AdGuard" || !GM_xmlhttpRequest) {
-    console.error("GM_xmlhttpRequest is not available");
-    return fetch(url, opt);
+async function GM_fetch(url, opt = {}) {
+  try {
+    // Попытка выполнить запрос с помощью fetch
+    const response = await fetch(url, opt);
+    return response;
+  } catch (error) {
+    // Если fetch завершился ошибкой, используем GM_xmlhttpRequest
+    return new Promise((resolve, reject) => {
+      GM_xmlhttpRequest({
+        method: opt.method || "GET",
+        url: url,
+        responseType: "blob",
+        onload: (resp) => {
+          resolve(
+            new Response(resp.response, {
+              status: resp.status,
+              headers: Object.fromEntries(
+                resp.responseHeaders
+                  .trim()
+                  .split("\r\n")
+                  .map((line) => {
+                    let parts = line.split(": ");
+                    if (parts?.[0] === "set-cookie") {
+                      return;
+                    }
+                    return [parts.shift(), parts.join(": ")];
+                  })
+                  .filter((key) => key),
+              ),
+            }),
+          );
+        },
+        ontimeout: () => reject(new Error("fetch timeout")),
+        onerror: (error) => reject(error),
+        onabort: () => reject(new Error("fetch abort")),
+      });
+    });
   }
-
-  // https://greasyfork.org/ru/scripts/421384-gm-fetch/code
-  return new Promise((resolve, reject) => {
-    // https://www.tampermonkey.net/documentation.php?ext=dhdg#GM_xmlhttpRequest
-    // https://violentmonkey.github.io/api/gm/#gm_xmlhttprequest
-    opt.url = url;
-    opt.data = opt.body;
-    opt.responseType = "blob";
-    opt.onload = (resp) => {
-      resolve(
-        new Response(resp.response, {
-          status: resp.status,
-          // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders#examples
-          headers: Object.fromEntries(
-            resp.responseHeaders
-              .trim()
-              .split("\r\n")
-              .map((line) => {
-                let parts = line.split(": ");
-                // if don't do this, you will get an error on some sites
-                if (parts?.[0] === "set-cookie") {
-                  return;
-                }
-
-                return [parts.shift(), parts.join(": ")];
-              })
-              .filter((key) => key),
-          ),
-        }),
-      );
-    };
-    opt.ontimeout = () => reject("fetch timeout");
-    opt.onerror = (error) => reject(error);
-    opt.onabort = () => reject("fetch abort");
-    GM_xmlhttpRequest(opt);
-  });
 }
 
 
