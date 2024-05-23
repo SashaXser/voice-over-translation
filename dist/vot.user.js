@@ -20,9 +20,6 @@
 // @grant          GM_getValue
 // @grant          GM_xmlhttpRequest
 // @grant          GM_info
-// @grant          GM_xmlhttpRequest
-// @grant          GM.xmlHttpRequest
-// @require        https://cdn.jsdelivr.net/npm/@sec-ant/gm-fetch@latest/dist/index.iife.js
 // @require        https://cdn.jsdelivr.net/npm/protobufjs/dist/light/protobuf.min.js
 // @require        https://cdn.jsdelivr.net/npm/hls.js/dist/hls.light.min.js
 // @require        https://gist.githubusercontent.com/ilyhalight/6eb5bb4dffc7ca9e3c57d6933e2452f3/raw/7ab38af2228d0bed13912e503bc8a9ee4b11828d/gm-addstyle-polyfill.js
@@ -578,9 +575,9 @@ module.exports = function () {
 const workerHost = "api.browser.yandex.ru";
 const m3u8ProxyHost = "m3u8-proxy.toil.cc"; // used for striming
 const proxyWorkerHost = "vot.toil.cc"; // used for cloudflare version (vot-new.toil-dump.workers.dev || vot-worker.onrender.com)
-const yandexHmacKey = "xtGCyGdTY2Jy6OMEKdTuXev3Twhkamgm";
+const yandexHmacKey = "bt8xH3VOlb4mqf0nqAibnDOoiPlXsisf";
 const yandexUserAgent =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.1.1140 Yowser/2.5 Safari/537.36";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 YaBrowser/24.1.5.825 Yowser/2.5 Safari/537.36";
 const defaultAutoVolume = 0.15; // 0.0 - 1.0 (0% - 100%) - default volume of the video with the translation
 const defaultTranslationService = "yandex";
 const defaultDetectService = "yandex";
@@ -609,7 +606,9 @@ const translateUrls = {
 /* harmony export */ });
 const debug = {};
 debug.log = (...text) => {
-  if (false) {}
+  if (true) {
+    return;
+  }
   return console.log(
     "%c[VOT DEBUG]",
     "background: #F2452D; color: #fff; padding: 5px;",
@@ -1045,711 +1044,6 @@ const votStorage = new (class {
     return Promise.resolve(this.syncList());
   }
 })();
-
-;// CONCATENATED MODULE: ./src/localization/localizationProvider.js
-
-
-
-
-const localesVersion = 2;
-const localesUrl = `https://raw.githubusercontent.com/ilyhalight/voice-over-translation/${
-   false ? 0 : "master"
-}/src/localization/locales`;
-
-const availableLocales = [
-  "auto",
-  "en",
-  "ru",
-
-  "af",
-  "am",
-  "ar",
-  "az",
-  "bg",
-  "bn",
-  "bs",
-  "ca",
-  "cs",
-  "cy",
-  "da",
-  "de",
-  "el",
-  "es",
-  "et",
-  "eu",
-  "fa",
-  "fi",
-  "fr",
-  "gl",
-  "hi",
-  "hr",
-  "hu",
-  "hy",
-  "id",
-  "it",
-  "ja",
-  "jv",
-  "kk",
-  "km",
-  "kn",
-  "ko",
-  "lo",
-  "mk",
-  "ml",
-  "mn",
-  "ms",
-  "mt",
-  "my",
-  "ne",
-  "nl",
-  "pa",
-  "pl",
-  "pt",
-  "ro",
-  "si",
-  "sk",
-  "sl",
-  "sq",
-  "sr",
-  "su",
-  "sv",
-  "sw",
-  "tr",
-  "uk",
-  "ur",
-  "uz",
-  "vi",
-  "zh",
-  "zu",
-];
-
-const localizationProvider = new (class {
-  lang = "en";
-  locale = {};
-  gmValues = [
-    "locale-phrases",
-    "locale-lang",
-    "locale-version",
-    "locale-lang-override",
-  ];
-
-  constructor() {
-    const langOverride = votStorage.syncGet("locale-lang-override", "auto");
-    if (langOverride && langOverride !== "auto") {
-      this.lang = langOverride;
-    } else {
-      this.lang =
-        (navigator.language || navigator.userLanguage)
-          ?.substr(0, 2)
-          ?.toLowerCase() ?? "en";
-    }
-    this.setLocaleFromJsonString(votStorage.syncGet("locale-phrases", ""));
-  }
-
-  reset() {
-    this.gmValues.forEach((v) => votStorage.syncDelete(v));
-  }
-
-  async update(force = false) {
-    const localeVersion = await votStorage.get("locale-version", 0, true);
-    const localeLang = await votStorage.get("locale-lang");
-    if (
-      !force &&
-      localeVersion === localesVersion &&
-      localeLang === this.lang
-    ) {
-      return;
-    }
-
-    debug/* default */.A.log("Updating locale...");
-
-    try {
-      const response = await gmFetch(`${localesUrl}/${this.lang}.json`);
-      if (response.status !== 200) throw response.status;
-      const text = await response.text();
-      await votStorage.set("locale-phrases", text);
-      this.setLocaleFromJsonString(text);
-      const version = this.getFromLocale(this.locale, "__version__");
-      if (typeof version === "number")
-        await votStorage.set("locale-version", version);
-      await votStorage.set("locale-lang", this.lang);
-    } catch (error) {
-      console.error(
-        "[VOT] [localizationProvider] failed get locale, cause:",
-        error,
-      );
-      this.setLocaleFromJsonString(await votStorage.get("locale-phrases", ""));
-    }
-  }
-
-  setLocaleFromJsonString(json) {
-    try {
-      this.locale = JSON.parse(json) ?? {};
-    } catch (exception) {
-      console.error("[VOT] [localizationProvider]", exception);
-      this.locale = {};
-    }
-  }
-
-  getFromLocale(locale, key) {
-    const result = key.split(".").reduce((locale, key) => {
-      if (typeof locale === "object" && locale) return locale[key];
-      return undefined;
-    }, locale);
-    if (result === undefined) {
-      console.warn(
-        "[VOT] [localizationProvider] locale",
-        locale,
-        "doesn't contain key",
-        key,
-      );
-    }
-    return result;
-  }
-
-  getDefault(key) {
-    return this.getFromLocale(en_namespaceObject, key) ?? key;
-  }
-
-  get(key) {
-    return (
-      this.getFromLocale(this.locale, key) ??
-      this.getFromLocale(en_namespaceObject, key) ??
-      key
-    );
-  }
-})();
-
-// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js
-var injectStylesIntoStyleTag = __webpack_require__("./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-var injectStylesIntoStyleTag_default = /*#__PURE__*/__webpack_require__.n(injectStylesIntoStyleTag);
-// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/styleDomAPI.js
-var styleDomAPI = __webpack_require__("./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-var styleDomAPI_default = /*#__PURE__*/__webpack_require__.n(styleDomAPI);
-// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/insertBySelector.js
-var insertBySelector = __webpack_require__("./node_modules/style-loader/dist/runtime/insertBySelector.js");
-var insertBySelector_default = /*#__PURE__*/__webpack_require__.n(insertBySelector);
-// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js
-var setAttributesWithoutAttributes = __webpack_require__("./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-var setAttributesWithoutAttributes_default = /*#__PURE__*/__webpack_require__.n(setAttributesWithoutAttributes);
-// EXTERNAL MODULE: ./node_modules/webpack-monkey/lib/node/deps/style-loader-insertStyleElement.js
-var style_loader_insertStyleElement = __webpack_require__("./node_modules/webpack-monkey/lib/node/deps/style-loader-insertStyleElement.js");
-var style_loader_insertStyleElement_default = /*#__PURE__*/__webpack_require__.n(style_loader_insertStyleElement);
-// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/styleTagTransform.js
-var styleTagTransform = __webpack_require__("./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-var styleTagTransform_default = /*#__PURE__*/__webpack_require__.n(styleTagTransform);
-// EXTERNAL MODULE: ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/styles/main.scss
-var main = __webpack_require__("./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/styles/main.scss");
-;// CONCATENATED MODULE: ./src/styles/main.scss
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (styleTagTransform_default());
-options.setAttributes = (setAttributesWithoutAttributes_default());
-options.insert = insertBySelector_default().bind(null, "head");
-options.domAPI = (styleDomAPI_default());
-options.insertStyleElement = (style_loader_insertStyleElement_default());
-
-var update = injectStylesIntoStyleTag_default()(main/* default */.A, options);
-
-
-
-
-       /* harmony default export */ const styles_main = (main/* default */.A && main/* default */.A.locals ? main/* default */.A.locals : undefined);
-
-;// CONCATENATED MODULE: ./src/ui.js
-
-
-function createHeader(html, level = 4) {
-  const header = document.createElement("vot-block");
-  header.classList.add("vot-header");
-  header.classList.add(`vot-header-level-${level}`);
-  header.innerHTML = html;
-
-  return header;
-}
-
-function createInformation(html, valueHtml) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-info");
-
-  const header = document.createElement("vot-block");
-  header.innerHTML = html;
-
-  const value = document.createElement("vot-block");
-  value.innerHTML = valueHtml;
-
-  container.appendChild(header);
-  container.appendChild(value);
-
-  return {
-    container,
-    header,
-    value,
-  };
-}
-
-function createButton(html) {
-  const button = document.createElement("vot-block");
-  button.classList.add("vot-button");
-  button.innerHTML = html;
-
-  return button;
-}
-
-function createTextButton(html) {
-  const button = document.createElement("vot-block");
-  button.classList.add("vot-text-button");
-  button.innerHTML = html;
-
-  return button;
-}
-
-function createOutlinedButton(html) {
-  const button = document.createElement("vot-block");
-  button.classList.add("vot-outlined-button");
-  button.innerHTML = html;
-
-  return button;
-}
-
-function createIconButton(html) {
-  const button = document.createElement("vot-block");
-  button.classList.add("vot-icon-button");
-  button.innerHTML = html;
-
-  return button;
-}
-
-function createCheckbox(html, value = false) {
-  const container = document.createElement("label");
-  container.classList.add("vot-checkbox");
-
-  const input = document.createElement("input");
-  input.type = "checkbox";
-  input.checked = Boolean(value);
-
-  const label = document.createElement("span");
-  label.innerHTML = html;
-
-  container.appendChild(input);
-  container.appendChild(label);
-
-  return { container, input, label };
-}
-
-function updateSlider(input) {
-  const value = parseFloat(input.value);
-  const min = input.min === "" ? 0 : parseFloat(input.min);
-  const max = input.max === "" ? 100 : parseFloat(input.max);
-  const progress = (value - min) / (max - min);
-  input.parentElement.setAttribute("style", `--vot-progress: ${progress}`);
-}
-
-function createSlider(html, value = 50, min = 0, max = 100) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-slider");
-
-  const input = document.createElement("input");
-  input.type = "range";
-  input.min = min;
-  input.max = max;
-  input.value = value;
-
-  const label = document.createElement("span");
-  label.innerHTML = html;
-
-  container.appendChild(input);
-  container.appendChild(label);
-
-  input.addEventListener("input", (e) => updateSlider(e.target));
-  updateSlider(input);
-
-  return {
-    container,
-    input,
-    label,
-  };
-}
-
-function createTextfield(
-  html,
-  value = "",
-  placeholder = " ",
-  multiline = false,
-) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-textfield");
-
-  const input = document.createElement(multiline ? "textarea" : "input");
-  input.placeholder = placeholder;
-  input.value = value;
-
-  const label = document.createElement("span");
-  label.innerHTML = html;
-
-  container.appendChild(input);
-  container.appendChild(label);
-
-  return {
-    container,
-    input,
-    label,
-  };
-}
-
-function createDialog(html) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-dialog-container");
-  container.hidden = true;
-
-  const backdrop = document.createElement("vot-block");
-  backdrop.classList.add("vot-dialog-backdrop");
-
-  const dialog = document.createElement("vot-block");
-  dialog.classList.add("vot-dialog");
-
-  const contentWrapper = document.createElement("vot-block");
-  contentWrapper.classList.add("vot-dialog-content-wrapper");
-
-  const headerContainer = document.createElement("vot-block");
-  headerContainer.classList.add("vot-dialog-header-container");
-
-  const bodyContainer = document.createElement("vot-block");
-  bodyContainer.classList.add("vot-dialog-body-container");
-
-  const footerContainer = document.createElement("vot-block");
-  footerContainer.classList.add("vot-dialog-footer-container");
-
-  const titleContainer = document.createElement("vot-block");
-  titleContainer.classList.add("vot-dialog-title-container");
-
-  const closeButton = createIconButton(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="100%" viewBox="0 -960 960 960"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>`,
-  );
-  closeButton.classList.add("vot-dialog-close-button");
-
-  backdrop.onclick = closeButton.onclick = () => {
-    container.hidden = true;
-  };
-
-  const title = document.createElement("vot-block");
-  title.classList.add("vot-dialog-title");
-  title.innerHTML = html;
-
-  container.appendChild(backdrop);
-  container.appendChild(dialog);
-  dialog.appendChild(contentWrapper);
-  contentWrapper.appendChild(headerContainer);
-  contentWrapper.appendChild(bodyContainer);
-  contentWrapper.appendChild(footerContainer);
-  headerContainer.appendChild(titleContainer);
-  headerContainer.appendChild(closeButton);
-  titleContainer.appendChild(title);
-
-  return {
-    container,
-    backdrop,
-    dialog,
-    contentWrapper,
-    headerContainer,
-    bodyContainer,
-    footerContainer,
-    titleContainer,
-    closeButton,
-    title,
-  };
-}
-
-function createVOTButton(html) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-segmented-button");
-
-  const translateButton = document.createElement("vot-block");
-  translateButton.classList.add("vot-segment");
-  translateButton.classList.add("vot-translate-button");
-  translateButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m604-202-35 97q-4 11-14 18t-22 7q-20 0-32.5-16.5T496-133l152-402q5-11 15-18t22-7h30q12 0 22 7t15 18l152 403q8 19-4 35.5T868-80q-13 0-22.5-7.5T831-107l-33-95H604Zm24-70h144l-70-198h-4l-70 198ZM360-400 188-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l174-174q-38-42-66.5-87T190-640h84q18 36 38.5 65t49.5 61q44-48 73-98.5T484-720H80q-17 0-28.5-11.5T40-760q0-17 11.5-28.5T80-800h240v-40q0-17 11.5-28.5T360-880q17 0 28.5 11.5T400-840v40h240q17 0 28.5 11.5T680-760q0 17-11.5 28.5T640-720h-76q-21 71-57 138t-89 126l96 98-30 82-124-124Z"/></svg>`;
-
-  const separator = document.createElement("vot-block");
-  separator.classList.add("vot-separator");
-
-  const pipButton = document.createElement("vot-block");
-  pipButton.classList.add("vot-segment-only-icon");
-  pipButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M120-520q-17 0-28.5-11.5T80-560q0-17 11.5-28.5T120-600h104L80-743q-12-12-12-28.5T80-800q12-12 28.5-12t28.5 12l143 144v-104q0-17 11.5-28.5T320-800q17 0 28.5 11.5T360-760v200q0 17-11.5 28.5T320-520H120Zm40 360q-33 0-56.5-23.5T80-240v-160q0-17 11.5-28.5T120-440q17 0 28.5 11.5T160-400v160h280q17 0 28.5 11.5T480-200q0 17-11.5 28.5T440-160H160Zm680-280q-17 0-28.5-11.5T800-480v-240H480q-17 0-28.5-11.5T440-760q0-17 11.5-28.5T480-800h320q33 0 56.5 23.5T880-720v240q0 17-11.5 28.5T840-440ZM600-160q-17 0-28.5-11.5T560-200v-120q0-17 11.5-28.5T600-360h240q17 0 28.5 11.5T880-320v120q0 17-11.5 28.5T840-160H600Z"/></svg>`;
-
-  const separator2 = document.createElement("vot-block");
-  separator2.classList.add("vot-separator");
-
-  const menuButton = document.createElement("vot-block");
-  menuButton.classList.add("vot-segment-only-icon");
-  menuButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>`;
-
-  const label = document.createElement("span");
-  label.classList.add("vot-segment-label");
-  label.innerHTML = html;
-
-  container.appendChild(translateButton);
-  container.appendChild(separator);
-  container.appendChild(pipButton);
-  container.appendChild(separator2);
-  container.appendChild(menuButton);
-  translateButton.appendChild(label);
-
-  return {
-    container,
-    translateButton,
-    separator,
-    pipButton,
-    separator2,
-    menuButton,
-    label,
-  };
-}
-
-function createVOTMenu(html) {
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-menu");
-  container.hidden = true;
-
-  const contentWrapper = document.createElement("vot-block");
-  contentWrapper.classList.add("vot-menu-content-wrapper");
-
-  const headerContainer = document.createElement("vot-block");
-  headerContainer.classList.add("vot-menu-header-container");
-
-  const bodyContainer = document.createElement("vot-block");
-  bodyContainer.classList.add("vot-menu-body-container");
-
-  const footerContainer = document.createElement("vot-block");
-  footerContainer.classList.add("vot-menu-footer-container");
-
-  const titleContainer = document.createElement("vot-block");
-  titleContainer.classList.add("vot-menu-title-container");
-
-  const title = document.createElement("vot-block");
-  title.classList.add("vot-menu-title");
-  title.innerHTML = html;
-
-  container.appendChild(contentWrapper);
-  contentWrapper.appendChild(headerContainer);
-  contentWrapper.appendChild(bodyContainer);
-  contentWrapper.appendChild(footerContainer);
-  headerContainer.appendChild(titleContainer);
-  titleContainer.appendChild(title);
-
-  return {
-    container,
-    contentWrapper,
-    headerContainer,
-    bodyContainer,
-    footerContainer,
-    titleContainer,
-    title,
-  };
-}
-
-function createVOTSelectLabel(text) {
-  const label = document.createElement("span");
-  label.classList.add("vot-select-label");
-  label.innerText = text;
-  return label;
-}
-
-function createVOTSelect(selectTitle, dialogTitle, items, options = {}) {
-  const onSelectCb = options.onSelectCb || function () {};
-  const labelElement = options.labelElement || "";
-  let selectedItems = [];
-
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-select");
-
-  if (labelElement) {
-    container.appendChild(labelElement);
-  }
-
-  const outer = document.createElement("vot-block");
-  outer.classList.add("vot-select-outer");
-
-  const title = document.createElement("span");
-  title.classList.add("vot-select-title");
-  title.innerText = selectTitle;
-
-  if (selectTitle === undefined) {
-    title.innerText = items.find((i) => i.selected === true)?.label;
-  }
-
-  const arrowIcon = document.createElement("vot-block");
-  arrowIcon.classList.add("vot-select-arrow-icon");
-  arrowIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 14.975q-.2 0-.375-.062T11.3 14.7l-4.6-4.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l3.9 3.9l3.9-3.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062Z"/></svg>`;
-
-  outer.append(title, arrowIcon);
-  outer.onclick = () => {
-    const votSelectDialog = createDialog(dialogTitle);
-    votSelectDialog.container.classList.add("vot-dialog-temp");
-    votSelectDialog.container.hidden = false;
-    document.documentElement.appendChild(votSelectDialog.container);
-
-    const contentList = document.createElement("vot-block");
-    contentList.classList.add("vot-select-content-list");
-
-    for (const item of items) {
-      const contentItem = document.createElement("vot-block");
-      contentItem.classList.add("vot-select-content-item");
-      contentItem.innerText = item.label;
-      contentItem.dataset.votSelected = item.selected;
-      contentItem.dataset.votValue = item.value;
-      if (item.disabled) {
-        contentItem.inert = true;
-      }
-
-      contentItem.onclick = async (e) => {
-        if (e.target.inert) return;
-
-        // removing the selected value for updating
-        const contentItems = contentList.childNodes;
-        contentItems.forEach((ci) => (ci.dataset.votSelected = false));
-        // fixed selection after closing the modal and opening again
-        items.forEach((i) => (i.selected = i.value === item.value));
-
-        contentItem.dataset.votSelected = true;
-        title.innerText = item.label;
-
-        // !!! use e.target.dataset.votValue instead of e.target.value !!!
-        await onSelectCb(e);
-      };
-      contentList.appendChild(contentItem);
-    }
-
-    // search logic
-    const votSearchLangTextfield = createTextfield(
-      localizationProvider.get("searchField"),
-    );
-
-    votSearchLangTextfield.input.oninput = (e) => {
-      const searchText = e.target.value.toLowerCase();
-      // check if there are lovercase characters in the string. used for smarter search
-      Array.from(selectedItems).forEach(
-        (ci) => (ci.hidden = !ci.innerText.toLowerCase().includes(searchText)),
-      );
-    };
-
-    votSelectDialog.bodyContainer.append(
-      votSearchLangTextfield.container,
-      contentList,
-    );
-    selectedItems = contentList.childNodes;
-
-    // remove the modal so that they do not accumulate
-    votSelectDialog.backdrop.onclick = votSelectDialog.closeButton.onclick =
-      () => {
-        votSelectDialog.container.remove();
-        selectedItems = [];
-      };
-  };
-
-  container.append(outer);
-
-  const setTitle = (newTitle) => {
-    title.innerText = newTitle;
-  };
-
-  const setSelected = (val) => {
-    Array.from(selectedItems)
-      .filter((ci) => !ci.inert)
-      .forEach((ci) => (ci.dataset.votSelected = ci.dataset.votValue === val));
-    items.forEach((i) => (i.selected = String(i.value) === val));
-  };
-
-  const updateItems = (newItems) => {
-    items = newItems;
-  };
-
-  return {
-    container,
-    title,
-    arrowIcon,
-    labelElement,
-    setTitle,
-    setSelected,
-    updateItems,
-  };
-}
-
-function createVOTLanguageSelect(options) {
-  const fromTitle = options.fromTitle || "#UNDEFINED";
-  const fromDialogTitle = options.fromDialogTitle || "#UNDEFINED";
-  const fromItems = options.fromItems || [];
-  const fromOnSelectCB = options.fromOnSelectCB || function () {};
-  const toTitle = options.toTitle || "#UNDEFINED";
-  const toDialogTitle = options.toDialogTitle || "#UNDEFINED";
-  const toItems = options.toItems || [];
-  const toOnSelectCB = options.toOnSelectCB || function () {};
-
-  const container = document.createElement("vot-block");
-  container.classList.add("vot-lang-select");
-
-  const fromSelect = createVOTSelect(fromTitle, fromDialogTitle, fromItems, {
-    onSelectCb: fromOnSelectCB,
-  });
-
-  const icon = document.createElement("vot-block");
-  icon.classList.add("vot-lang-select-icon");
-  icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M647-440H200q-17 0-28.5-11.5T160-480q0-17 11.5-28.5T200-520h447L451-716q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l264 264q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L508-188q-11 11-27.5 11T452-188q-12-12-12-28.5t12-28.5l195-195Z"/></svg>`;
-
-  const toSelect = createVOTSelect(toTitle, toDialogTitle, toItems, {
-    onSelectCb: toOnSelectCB,
-  });
-
-  container.append(fromSelect.container, icon, toSelect.container);
-
-  return {
-    container,
-    fromSelect,
-    icon,
-    toSelect,
-  };
-}
-
-/* harmony default export */ const ui = ({
-  createHeader,
-  createInformation,
-  createButton,
-  createTextButton,
-  createOutlinedButton,
-  createIconButton,
-  createCheckbox,
-  createSlider,
-  createTextfield,
-  createDialog,
-  createVOTButton,
-  createVOTMenu,
-  createVOTSelectLabel,
-  createVOTSelect,
-  createVOTLanguageSelect,
-  updateSlider,
-});
-
-;// CONCATENATED MODULE: ./src/utils/VOTLocalizedError.js
-
-
-class VOTLocalizedError extends Error {
-  constructor(message) {
-    super(localizationProvider.getDefault(message));
-    this.name = "VOTLocalizedError";
-    this.unlocalizedMessage = message;
-    this.localizedMessage = localizationProvider.get(message);
-  }
-}
 
 ;// CONCATENATED MODULE: ./src/utils/translateApis.js
 
@@ -2365,7 +1659,7 @@ function secsToStrTime(secs) {
 }
 function langTo6391(lang) {
   // convert lang to ISO 639-1
-  return lang.toLowerCase().split(";")[0].trim().split("-")[0].split("_")[0];
+  return lang.toLowerCase().split(/[_;-]/)[0].trim();
 }
 
 function isPiPAvailable() {
@@ -2411,16 +1705,780 @@ function cleanText(title, description) {
         .join("")
     : "";
 
-  const cleanText = [title, cleanedDescription]
+  return [title, cleanedDescription]
     .join(" ")
     .replace(/[^\p{L}\s]/gu, " ")
     .trim()
     .replace(/\s+/g, " ")
     .slice(0, 1000);
-  return cleanText;
+}
+
+function GM_fetch(url, opt = {}) {
+  // https://github.com/ilyhalight/voice-over-translation/discussions/589
+  if (GM_info?.scriptHandler === "AdGuard" || !GM_xmlhttpRequest) {
+    console.error("GM_xmlhttpRequest is not available");
+    return fetch(url, opt);
+  }
+
+  // https://greasyfork.org/ru/scripts/421384-gm-fetch/code
+  return new Promise((resolve, reject) => {
+    // https://www.tampermonkey.net/documentation.php?ext=dhdg#GM_xmlhttpRequest
+    // https://violentmonkey.github.io/api/gm/#gm_xmlhttprequest
+    opt.url = url;
+    opt.data = opt.body;
+    opt.responseType = "blob";
+    opt.onload = (resp) => {
+      resolve(
+        new Response(resp.response, {
+          status: resp.status,
+          // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders#examples
+          headers: Object.fromEntries(
+            resp.responseHeaders
+              .trim()
+              .split("\r\n")
+              .map((line) => {
+                let parts = line.split(": ");
+                // if don't do this, you will get an error on some sites
+                if (parts?.[0] === "set-cookie") {
+                  return;
+                }
+
+                return [parts.shift(), parts.join(": ")];
+              })
+              .filter((key) => key),
+          ),
+        }),
+      );
+    };
+    opt.ontimeout = () => reject("fetch timeout");
+    opt.onerror = (error) => reject(error);
+    opt.onabort = () => reject("fetch abort");
+    GM_xmlhttpRequest(opt);
+  });
 }
 
 
+
+;// CONCATENATED MODULE: ./src/localization/localizationProvider.js
+
+
+
+
+
+const localesVersion = 2;
+const localesUrl = `https://raw.githubusercontent.com/ilyhalight/voice-over-translation/${
+   false ? 0 : "master"
+}/src/localization/locales`;
+
+const availableLocales = [
+  "auto",
+  "en",
+  "ru",
+
+  "af",
+  "am",
+  "ar",
+  "az",
+  "bg",
+  "bn",
+  "bs",
+  "ca",
+  "cs",
+  "cy",
+  "da",
+  "de",
+  "el",
+  "es",
+  "et",
+  "eu",
+  "fa",
+  "fi",
+  "fr",
+  "gl",
+  "hi",
+  "hr",
+  "hu",
+  "hy",
+  "id",
+  "it",
+  "ja",
+  "jv",
+  "kk",
+  "km",
+  "kn",
+  "ko",
+  "lo",
+  "mk",
+  "ml",
+  "mn",
+  "ms",
+  "mt",
+  "my",
+  "ne",
+  "nl",
+  "pa",
+  "pl",
+  "pt",
+  "ro",
+  "si",
+  "sk",
+  "sl",
+  "sq",
+  "sr",
+  "su",
+  "sv",
+  "sw",
+  "tr",
+  "uk",
+  "ur",
+  "uz",
+  "vi",
+  "zh",
+  "zu",
+];
+
+const localizationProvider = new (class {
+  lang = "en";
+  locale = {};
+  gmValues = [
+    "locale-phrases",
+    "locale-lang",
+    "locale-version",
+    "locale-lang-override",
+  ];
+
+  constructor() {
+    const langOverride = votStorage.syncGet("locale-lang-override", "auto");
+    if (langOverride && langOverride !== "auto") {
+      this.lang = langOverride;
+    } else {
+      this.lang =
+        (navigator.language || navigator.userLanguage)
+          ?.substr(0, 2)
+          ?.toLowerCase() ?? "en";
+    }
+    this.setLocaleFromJsonString(votStorage.syncGet("locale-phrases", ""));
+  }
+
+  reset() {
+    for (let i = 0; i < this.gmValues.length; i++) {
+      votStorage.syncDelete(this.gmValues[i]);
+    }
+  }
+
+  async update(force = false) {
+    const localeVersion = await votStorage.get("locale-version", 0, true);
+    const localeLang = await votStorage.get("locale-lang");
+    if (
+      !force &&
+      localeVersion === localesVersion &&
+      localeLang === this.lang
+    ) {
+      return;
+    }
+
+    debug/* default */.A.log("Updating locale...");
+
+    try {
+      const response = await GM_fetch(`${localesUrl}/${this.lang}.json`);
+      if (response.status !== 200) throw response.status;
+      const text = await response.text();
+      await votStorage.set("locale-phrases", text);
+      this.setLocaleFromJsonString(text);
+      const version = this.getFromLocale(this.locale, "__version__");
+      if (typeof version === "number")
+        await votStorage.set("locale-version", version);
+      await votStorage.set("locale-lang", this.lang);
+    } catch (error) {
+      console.error(
+        "[VOT] [localizationProvider] failed get locale, cause:",
+        error,
+      );
+      this.setLocaleFromJsonString(await votStorage.get("locale-phrases", ""));
+    }
+  }
+
+  setLocaleFromJsonString(json) {
+    try {
+      this.locale = JSON.parse(json) ?? {};
+    } catch (exception) {
+      console.error("[VOT] [localizationProvider]", exception);
+      this.locale = {};
+    }
+  }
+
+  getFromLocale(locale, key) {
+    const result = key.split(".").reduce((locale, key) => {
+      if (typeof locale === "object" && locale) return locale[key];
+      return undefined;
+    }, locale);
+    if (result === undefined) {
+      console.warn(
+        "[VOT] [localizationProvider] locale",
+        locale,
+        "doesn't contain key",
+        key,
+      );
+    }
+    return result;
+  }
+
+  getDefault(key) {
+    return this.getFromLocale(en_namespaceObject, key) ?? key;
+  }
+
+  get(key) {
+    return (
+      this.getFromLocale(this.locale, key) ??
+      this.getFromLocale(en_namespaceObject, key) ??
+      key
+    );
+  }
+})();
+
+// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js
+var injectStylesIntoStyleTag = __webpack_require__("./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+var injectStylesIntoStyleTag_default = /*#__PURE__*/__webpack_require__.n(injectStylesIntoStyleTag);
+// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/styleDomAPI.js
+var styleDomAPI = __webpack_require__("./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+var styleDomAPI_default = /*#__PURE__*/__webpack_require__.n(styleDomAPI);
+// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/insertBySelector.js
+var insertBySelector = __webpack_require__("./node_modules/style-loader/dist/runtime/insertBySelector.js");
+var insertBySelector_default = /*#__PURE__*/__webpack_require__.n(insertBySelector);
+// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js
+var setAttributesWithoutAttributes = __webpack_require__("./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+var setAttributesWithoutAttributes_default = /*#__PURE__*/__webpack_require__.n(setAttributesWithoutAttributes);
+// EXTERNAL MODULE: ./node_modules/webpack-monkey/lib/node/deps/style-loader-insertStyleElement.js
+var style_loader_insertStyleElement = __webpack_require__("./node_modules/webpack-monkey/lib/node/deps/style-loader-insertStyleElement.js");
+var style_loader_insertStyleElement_default = /*#__PURE__*/__webpack_require__.n(style_loader_insertStyleElement);
+// EXTERNAL MODULE: ./node_modules/style-loader/dist/runtime/styleTagTransform.js
+var styleTagTransform = __webpack_require__("./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+var styleTagTransform_default = /*#__PURE__*/__webpack_require__.n(styleTagTransform);
+// EXTERNAL MODULE: ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/styles/main.scss
+var main = __webpack_require__("./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/styles/main.scss");
+;// CONCATENATED MODULE: ./src/styles/main.scss
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (styleTagTransform_default());
+options.setAttributes = (setAttributesWithoutAttributes_default());
+options.insert = insertBySelector_default().bind(null, "head");
+options.domAPI = (styleDomAPI_default());
+options.insertStyleElement = (style_loader_insertStyleElement_default());
+
+var update = injectStylesIntoStyleTag_default()(main/* default */.A, options);
+
+
+
+
+       /* harmony default export */ const styles_main = (main/* default */.A && main/* default */.A.locals ? main/* default */.A.locals : undefined);
+
+;// CONCATENATED MODULE: ./src/ui.js
+
+
+function createHeader(html, level = 4) {
+  const header = document.createElement("vot-block");
+  header.classList.add("vot-header");
+  header.classList.add(`vot-header-level-${level}`);
+  header.innerHTML = html;
+
+  return header;
+}
+
+function createInformation(html, valueHtml) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-info");
+
+  const header = document.createElement("vot-block");
+  header.innerHTML = html;
+
+  const value = document.createElement("vot-block");
+  value.innerHTML = valueHtml;
+
+  container.appendChild(header);
+  container.appendChild(value);
+
+  return {
+    container,
+    header,
+    value,
+  };
+}
+
+function createButton(html) {
+  const button = document.createElement("vot-block");
+  button.classList.add("vot-button");
+  button.innerHTML = html;
+
+  return button;
+}
+
+function createTextButton(html) {
+  const button = document.createElement("vot-block");
+  button.classList.add("vot-text-button");
+  button.innerHTML = html;
+
+  return button;
+}
+
+function createOutlinedButton(html) {
+  const button = document.createElement("vot-block");
+  button.classList.add("vot-outlined-button");
+  button.innerHTML = html;
+
+  return button;
+}
+
+function createIconButton(html) {
+  const button = document.createElement("vot-block");
+  button.classList.add("vot-icon-button");
+  button.innerHTML = html;
+
+  return button;
+}
+
+function createCheckbox(html, value = false) {
+  const container = document.createElement("label");
+  container.classList.add("vot-checkbox");
+
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.checked = Boolean(value);
+
+  const label = document.createElement("span");
+  label.innerHTML = html;
+
+  container.appendChild(input);
+  container.appendChild(label);
+
+  return { container, input, label };
+}
+
+function updateSlider(input) {
+  const value = parseFloat(input.value);
+  const min = input.min === "" ? 0 : parseFloat(input.min);
+  const max = input.max === "" ? 100 : parseFloat(input.max);
+  const progress = (value - min) / (max - min);
+  input.parentElement.setAttribute("style", `--vot-progress: ${progress}`);
+}
+
+function createSlider(html, value = 50, min = 0, max = 100) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-slider");
+
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = min;
+  input.max = max;
+  input.value = value;
+
+  const label = document.createElement("span");
+  label.innerHTML = html;
+
+  container.appendChild(input);
+  container.appendChild(label);
+
+  input.addEventListener("input", (e) => updateSlider(e.target));
+  updateSlider(input);
+
+  return {
+    container,
+    input,
+    label,
+  };
+}
+
+function createTextfield(
+  html,
+  value = "",
+  placeholder = " ",
+  multiline = false,
+) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-textfield");
+
+  const input = document.createElement(multiline ? "textarea" : "input");
+  input.placeholder = placeholder;
+  input.value = value;
+
+  const label = document.createElement("span");
+  label.innerHTML = html;
+
+  container.appendChild(input);
+  container.appendChild(label);
+
+  return {
+    container,
+    input,
+    label,
+  };
+}
+
+function createDialog(html) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-dialog-container");
+  container.hidden = true;
+
+  const backdrop = document.createElement("vot-block");
+  backdrop.classList.add("vot-dialog-backdrop");
+
+  const dialog = document.createElement("vot-block");
+  dialog.classList.add("vot-dialog");
+
+  const contentWrapper = document.createElement("vot-block");
+  contentWrapper.classList.add("vot-dialog-content-wrapper");
+
+  const headerContainer = document.createElement("vot-block");
+  headerContainer.classList.add("vot-dialog-header-container");
+
+  const bodyContainer = document.createElement("vot-block");
+  bodyContainer.classList.add("vot-dialog-body-container");
+
+  const footerContainer = document.createElement("vot-block");
+  footerContainer.classList.add("vot-dialog-footer-container");
+
+  const titleContainer = document.createElement("vot-block");
+  titleContainer.classList.add("vot-dialog-title-container");
+
+  const closeButton = createIconButton(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="100%" viewBox="0 -960 960 960"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>`,
+  );
+  closeButton.classList.add("vot-dialog-close-button");
+
+  backdrop.onclick = closeButton.onclick = () => {
+    container.hidden = true;
+  };
+
+  const title = document.createElement("vot-block");
+  title.classList.add("vot-dialog-title");
+  title.innerHTML = html;
+
+  container.appendChild(backdrop);
+  container.appendChild(dialog);
+  dialog.appendChild(contentWrapper);
+  contentWrapper.appendChild(headerContainer);
+  contentWrapper.appendChild(bodyContainer);
+  contentWrapper.appendChild(footerContainer);
+  headerContainer.appendChild(titleContainer);
+  headerContainer.appendChild(closeButton);
+  titleContainer.appendChild(title);
+
+  return {
+    container,
+    backdrop,
+    dialog,
+    contentWrapper,
+    headerContainer,
+    bodyContainer,
+    footerContainer,
+    titleContainer,
+    closeButton,
+    title,
+  };
+}
+
+function createVOTButton(html) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-segmented-button");
+
+  const translateButton = document.createElement("vot-block");
+  translateButton.classList.add("vot-segment");
+  translateButton.classList.add("vot-translate-button");
+  translateButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m604-202-35 97q-4 11-14 18t-22 7q-20 0-32.5-16.5T496-133l152-402q5-11 15-18t22-7h30q12 0 22 7t15 18l152 403q8 19-4 35.5T868-80q-13 0-22.5-7.5T831-107l-33-95H604Zm24-70h144l-70-198h-4l-70 198ZM360-400 188-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l174-174q-38-42-66.5-87T190-640h84q18 36 38.5 65t49.5 61q44-48 73-98.5T484-720H80q-17 0-28.5-11.5T40-760q0-17 11.5-28.5T80-800h240v-40q0-17 11.5-28.5T360-880q17 0 28.5 11.5T400-840v40h240q17 0 28.5 11.5T680-760q0 17-11.5 28.5T640-720h-76q-21 71-57 138t-89 126l96 98-30 82-124-124Z"/></svg>`;
+
+  const separator = document.createElement("vot-block");
+  separator.classList.add("vot-separator");
+
+  const pipButton = document.createElement("vot-block");
+  pipButton.classList.add("vot-segment-only-icon");
+  pipButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M120-520q-17 0-28.5-11.5T80-560q0-17 11.5-28.5T120-600h104L80-743q-12-12-12-28.5T80-800q12-12 28.5-12t28.5 12l143 144v-104q0-17 11.5-28.5T320-800q17 0 28.5 11.5T360-760v200q0 17-11.5 28.5T320-520H120Zm40 360q-33 0-56.5-23.5T80-240v-160q0-17 11.5-28.5T120-440q17 0 28.5 11.5T160-400v160h280q17 0 28.5 11.5T480-200q0 17-11.5 28.5T440-160H160Zm680-280q-17 0-28.5-11.5T800-480v-240H480q-17 0-28.5-11.5T440-760q0-17 11.5-28.5T480-800h320q33 0 56.5 23.5T880-720v240q0 17-11.5 28.5T840-440ZM600-160q-17 0-28.5-11.5T560-200v-120q0-17 11.5-28.5T600-360h240q17 0 28.5 11.5T880-320v120q0 17-11.5 28.5T840-160H600Z"/></svg>`;
+
+  const separator2 = document.createElement("vot-block");
+  separator2.classList.add("vot-separator");
+
+  const menuButton = document.createElement("vot-block");
+  menuButton.classList.add("vot-segment-only-icon");
+  menuButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>`;
+
+  const label = document.createElement("span");
+  label.classList.add("vot-segment-label");
+  label.innerHTML = html;
+
+  container.appendChild(translateButton);
+  container.appendChild(separator);
+  container.appendChild(pipButton);
+  container.appendChild(separator2);
+  container.appendChild(menuButton);
+  translateButton.appendChild(label);
+
+  return {
+    container,
+    translateButton,
+    separator,
+    pipButton,
+    separator2,
+    menuButton,
+    label,
+  };
+}
+
+function createVOTMenu(html) {
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-menu");
+  container.hidden = true;
+
+  const contentWrapper = document.createElement("vot-block");
+  contentWrapper.classList.add("vot-menu-content-wrapper");
+
+  const headerContainer = document.createElement("vot-block");
+  headerContainer.classList.add("vot-menu-header-container");
+
+  const bodyContainer = document.createElement("vot-block");
+  bodyContainer.classList.add("vot-menu-body-container");
+
+  const footerContainer = document.createElement("vot-block");
+  footerContainer.classList.add("vot-menu-footer-container");
+
+  const titleContainer = document.createElement("vot-block");
+  titleContainer.classList.add("vot-menu-title-container");
+
+  const title = document.createElement("vot-block");
+  title.classList.add("vot-menu-title");
+  title.innerHTML = html;
+
+  container.appendChild(contentWrapper);
+  contentWrapper.appendChild(headerContainer);
+  contentWrapper.appendChild(bodyContainer);
+  contentWrapper.appendChild(footerContainer);
+  headerContainer.appendChild(titleContainer);
+  titleContainer.appendChild(title);
+
+  return {
+    container,
+    contentWrapper,
+    headerContainer,
+    bodyContainer,
+    footerContainer,
+    titleContainer,
+    title,
+  };
+}
+
+function createVOTSelectLabel(text) {
+  const label = document.createElement("span");
+  label.classList.add("vot-select-label");
+  label.innerText = text;
+  return label;
+}
+
+function createVOTSelect(selectTitle, dialogTitle, items, options = {}) {
+  const onSelectCb = options.onSelectCb || function () {};
+  const labelElement = options.labelElement || "";
+  let selectedItems = [];
+
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-select");
+
+  if (labelElement) {
+    container.appendChild(labelElement);
+  }
+
+  const outer = document.createElement("vot-block");
+  outer.classList.add("vot-select-outer");
+
+  const title = document.createElement("span");
+  title.classList.add("vot-select-title");
+  title.innerText = selectTitle;
+
+  if (selectTitle === undefined) {
+    title.innerText = items.find((i) => i.selected === true)?.label;
+  }
+
+  const arrowIcon = document.createElement("vot-block");
+  arrowIcon.classList.add("vot-select-arrow-icon");
+  arrowIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 14.975q-.2 0-.375-.062T11.3 14.7l-4.6-4.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l3.9 3.9l3.9-3.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-4.6 4.6q-.15.15-.325.213t-.375.062Z"/></svg>`;
+
+  outer.append(title, arrowIcon);
+  outer.onclick = () => {
+    const votSelectDialog = createDialog(dialogTitle);
+    votSelectDialog.container.classList.add("vot-dialog-temp");
+    votSelectDialog.container.hidden = false;
+    document.documentElement.appendChild(votSelectDialog.container);
+
+    const contentList = document.createElement("vot-block");
+    contentList.classList.add("vot-select-content-list");
+
+    for (const item of items) {
+      const contentItem = document.createElement("vot-block");
+      contentItem.classList.add("vot-select-content-item");
+      contentItem.innerText = item.label;
+      contentItem.dataset.votSelected = item.selected;
+      contentItem.dataset.votValue = item.value;
+      if (item.disabled) {
+        contentItem.inert = true;
+      }
+
+      contentItem.onclick = async (e) => {
+        if (e.target.inert) return;
+
+        // removing the selected value for updating
+        const contentItems = contentList.childNodes;
+        for (let ci of contentItems) {
+          ci.dataset.votSelected = false;
+        }
+        // fixed selection after closing the modal and opening again
+        for (let i of items) {
+          i.selected = i.value === item.value;
+        }
+
+        contentItem.dataset.votSelected = true;
+        title.innerText = item.label;
+
+        // !!! use e.target.dataset.votValue instead of e.target.value !!!
+        await onSelectCb(e);
+      };
+      contentList.appendChild(contentItem);
+    }
+
+    // search logic
+    const votSearchLangTextfield = createTextfield(
+      localizationProvider.get("searchField"),
+    );
+
+    votSearchLangTextfield.input.oninput = (e) => {
+      const searchText = e.target.value.toLowerCase();
+      // check if there are lovercase characters in the string. used for smarter search
+      for (let i = 0; i < selectedItems.length; i++) {
+        const ci = selectedItems[i];
+        ci.hidden = !ci.innerText.toLowerCase().includes(searchText);
+      }
+    };
+
+    votSelectDialog.bodyContainer.append(
+      votSearchLangTextfield.container,
+      contentList,
+    );
+    selectedItems = contentList.childNodes;
+
+    // remove the modal so that they do not accumulate
+    votSelectDialog.backdrop.onclick = votSelectDialog.closeButton.onclick =
+      () => {
+        votSelectDialog.container.remove();
+        selectedItems = [];
+      };
+  };
+
+  container.append(outer);
+
+  const setTitle = (newTitle) => {
+    title.innerText = newTitle;
+  };
+
+  const setSelected = (val) => {
+    const selectedItemsArray = Array.from(selectedItems).filter(
+      (ci) => !ci.inert,
+    );
+    for (let i = 0; i < selectedItemsArray.length; i++) {
+      const ci = selectedItemsArray[i];
+      ci.dataset.votSelected = ci.dataset.votValue === val;
+    }
+
+    for (let i = 0; i < items.length; i++) {
+      const currentItem = items[i];
+      currentItem.selected = String(currentItem.value) === val;
+    }
+  };
+
+  const updateItems = (newItems) => {
+    items = newItems;
+  };
+
+  return {
+    container,
+    title,
+    arrowIcon,
+    labelElement,
+    setTitle,
+    setSelected,
+    updateItems,
+  };
+}
+
+function createVOTLanguageSelect(options) {
+  const fromTitle = options.fromTitle || "#UNDEFINED";
+  const fromDialogTitle = options.fromDialogTitle || "#UNDEFINED";
+  const fromItems = options.fromItems || [];
+  const fromOnSelectCB = options.fromOnSelectCB || function () {};
+  const toTitle = options.toTitle || "#UNDEFINED";
+  const toDialogTitle = options.toDialogTitle || "#UNDEFINED";
+  const toItems = options.toItems || [];
+  const toOnSelectCB = options.toOnSelectCB || function () {};
+
+  const container = document.createElement("vot-block");
+  container.classList.add("vot-lang-select");
+
+  const fromSelect = createVOTSelect(fromTitle, fromDialogTitle, fromItems, {
+    onSelectCb: fromOnSelectCB,
+  });
+
+  const icon = document.createElement("vot-block");
+  icon.classList.add("vot-lang-select-icon");
+  icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M647-440H200q-17 0-28.5-11.5T160-480q0-17 11.5-28.5T200-520h447L451-716q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l264 264q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L508-188q-11 11-27.5 11T452-188q-12-12-12-28.5t12-28.5l195-195Z"/></svg>`;
+
+  const toSelect = createVOTSelect(toTitle, toDialogTitle, toItems, {
+    onSelectCb: toOnSelectCB,
+  });
+
+  container.append(fromSelect.container, icon, toSelect.container);
+
+  return {
+    container,
+    fromSelect,
+    icon,
+    toSelect,
+  };
+}
+
+/* harmony default export */ const ui = ({
+  createHeader,
+  createInformation,
+  createButton,
+  createTextButton,
+  createOutlinedButton,
+  createIconButton,
+  createCheckbox,
+  createSlider,
+  createTextfield,
+  createDialog,
+  createVOTButton,
+  createVOTMenu,
+  createVOTSelectLabel,
+  createVOTSelect,
+  createVOTLanguageSelect,
+  updateSlider,
+});
+
+;// CONCATENATED MODULE: ./src/utils/VOTLocalizedError.js
+
+
+class VOTLocalizedError extends Error {
+  constructor(message) {
+    super(localizationProvider.getDefault(message));
+    this.name = "VOTLocalizedError";
+    this.unlocalizedMessage = message;
+    this.localizedMessage = localizationProvider.get(message);
+  }
+}
 
 ;// CONCATENATED MODULE: ./src/utils/volume.js
 // element - audio / video element
@@ -2608,11 +2666,10 @@ const yandexProtobuf = {
 var es5 = __webpack_require__("./node_modules/bowser/es5.js");
 ;// CONCATENATED MODULE: ./src/getUUID.js
 function getUUID(isLower) {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(31));
+  let byteIndex = 0;
   const uuid = ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, (c) =>
-    (
-      c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-    ).toString(16),
+    (c ^ (randomBytes[byteIndex++] & (15 >> (c / 4)))).toString(16),
   );
   return isLower ? uuid : uuid.toUpperCase();
 }
@@ -2624,7 +2681,7 @@ function getUUID(isLower) {
 
 async function getSignature(body) {
   // Create a key from the HMAC secret
-  const utf8Encoder = new TextEncoder("utf-8");
+  const utf8Encoder = new TextEncoder();
   const key = await window.crypto.subtle.importKey(
     "raw",
     utf8Encoder.encode(config/* yandexHmacKey */.S7),
@@ -2635,9 +2692,10 @@ async function getSignature(body) {
   // Sign the body with the key
   const signature = await window.crypto.subtle.sign("HMAC", key, body);
   // Convert the signature to a hex string
-  return Array.from(new Uint8Array(signature), (x) =>
-    x.toString(16).padStart(2, "0"),
-  ).join("");
+  return new Uint8Array(signature).reduce(
+    (str, byte) => str + byte.toString(16).padStart(2, "0"),
+    "",
+  );
 }
 
 
@@ -2878,7 +2936,8 @@ function createSubtitlesTokens(line, previousLineLastToken) {
 function getSubtitlesTokens(subtitles, source) {
   const result = [];
   let lastToken;
-  for (const line of subtitles.subtitles) {
+  for (let i = 0; i < subtitles.subtitles.length; i++) {
+    const line = subtitles.subtitles[i];
     let tokens;
     if (line?.tokens?.length) {
       if (source === "yandex") {
@@ -2917,7 +2976,7 @@ function formatYoutubeSubtitles(subtitles) {
   for (let i = 0; i < subtitles.events.length; i++) {
     if (!subtitles.events[i].segs) continue;
     const text = subtitles.events[i].segs
-      .map((e) => e.utf8.replace(/^ +| +$/g, ""))
+      .map((e) => e.utf8.replace(/^( +| +)$/g, ""))
       .join(" ");
     let durationMs = subtitles.events[i].dDurationMs;
     if (
@@ -2953,7 +3012,7 @@ async function fetchSubtitles(subtitlesObject) {
 
   const fetchPromise = (async () => {
     try {
-      const response = await gmFetch(subtitlesObject.url);
+      const response = await GM_fetch(subtitlesObject.url);
       return await response.json();
     } catch (error) {
       console.error("[VOT] Failed to fetch subtitles. Reason:", error);
@@ -3244,7 +3303,8 @@ class SubtitlesWidget {
             }
             chunkEndIndex = i;
           }
-          for (const chunk of chunks) {
+          for (let index = 0; index < chunks.length; index++) {
+            const chunk = chunks[index];
             if (
               chunk.startMs < time &&
               time < chunk.startMs + chunk.durationMs
@@ -3254,7 +3314,8 @@ class SubtitlesWidget {
             }
           }
         }
-        for (let token of tokens) {
+        for (let i = 0; i < tokens.length; i++) {
+          const token = tokens[i];
           const passedMs = token.startMs + token.durationMs / 2;
           content += `<span ${
             time > passedMs ||
@@ -4236,16 +4297,20 @@ class VideoObserver {
     this.observer = new MutationObserver((mutationsList) => {
       window.requestIdleCallback(
         () => {
-          mutationsList.forEach((mutation) => {
-            if (mutation.type !== "childList") return;
+          for (let i = 0; i < mutationsList.length; i++) {
+            const mutation = mutationsList[i];
+            if (mutation.type !== "childList") continue;
 
-            filterVideoNodes(mutation.addedNodes).forEach(
-              this.handleVideoAddedBound,
-            );
-            filterVideoNodes(mutation.removedNodes).forEach(
-              this.handleVideoRemovedBound,
-            );
-          });
+            const addedNodes = filterVideoNodes(mutation.addedNodes);
+            for (let j = 0; j < addedNodes.length; j++) {
+              this.handleVideoAddedBound(addedNodes[j]);
+            }
+
+            const removedNodes = filterVideoNodes(mutation.removedNodes);
+            for (let k = 0; k < removedNodes.length; k++) {
+              this.handleVideoRemovedBound(removedNodes[k]);
+            }
+          }
         },
         { timeout: 1000 },
       );
@@ -4256,7 +4321,10 @@ class VideoObserver {
       childList: true,
       subtree: true,
     });
-    document.querySelectorAll("video").forEach(this.handleVideoAddedBound);
+    const videos = document.querySelectorAll("video");
+    for (let i = 0; i < videos.length; i++) {
+      this.handleVideoAddedBound(videos[i]);
+    }
   }
   disable() {
     this.observer.disconnect();
@@ -4505,6 +4573,27 @@ class VideoHandler {
     this.init();
   }
 
+  async autoTranslate() {
+    if (
+      !(
+        this.firstPlay &&
+        this.data.autoTranslate === 1 &&
+        this.videoData.videoId
+      )
+    )
+      return;
+    this.firstPlay = false;
+    try {
+      await this.translateExecutor(this.videoData.videoId);
+    } catch (err) {
+      console.error("[VOT]", err);
+      this.transformBtn(
+        "error",
+        err?.name === "VOTLocalizedError" ? err.localizedMessage : err,
+      );
+    }
+  }
+
   async init() {
     if (this.initialized) return;
 
@@ -4578,6 +4667,7 @@ class VideoHandler {
 
     await this.updateSubtitles();
     await this.changeSubtitlesLang("disabled");
+    await this.autoTranslate();
     this.translateToLang = this.data.responseLanguage ?? "ru";
 
     this.initExtraEvents();
@@ -5211,6 +5301,7 @@ class VideoHandler {
         (async () => {
           this.data.autoTranslate = Number(e.target.checked);
           await votStorage.set("autoTranslate", this.data.autoTranslate);
+          await this.autoTranslate();
           debug/* default */.A.log(
             "autoTranslate value changed. New value: ",
             this.data.autoTranslate,
@@ -5402,9 +5493,12 @@ class VideoHandler {
         (async () => {
           localizationProvider.reset();
           const valuesForClear = await votStorage.list();
-          valuesForClear
-            .filter((v) => !localizationProvider.gmValues.includes(v))
-            .forEach((v) => votStorage.syncDelete(v));
+          for (let i = 0; i < valuesForClear.length; i++) {
+            const v = valuesForClear[i];
+            if (!localizationProvider.gmValues.includes(v)) {
+              votStorage.syncDelete(v);
+            }
+          }
           window.location.reload();
         })();
       });
@@ -5421,9 +5515,12 @@ class VideoHandler {
       this.syncVolumeObserver?.disconnect();
     }
 
-    this.extraEvents?.forEach((e) => {
-      e.element.removeEventListener(e.event, e.handler);
-    });
+    if (this.extraEvents) {
+      for (let i = 0; i < this.extraEvents.length; i++) {
+        const e = this.extraEvents[i];
+        e.element.removeEventListener(e.event, e.handler);
+      }
+    }
   }
 
   initExtraEvents() {
@@ -5439,18 +5536,19 @@ class VideoHandler {
     };
 
     const addExtraEventListeners = (element, events, handler) => {
-      events.forEach((event) => {
+      for (const event of events) {
         addExtraEventListener(element, event, handler);
-      });
+      }
     };
 
     this.resizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((e) => {
+      for (let i = 0; i < entries.length; i++) {
+        const e = entries[i];
         this.votMenu.container.setAttribute(
           "style",
           `--vot-container-height: ${e.contentRect.height}px`,
         );
-      });
+      }
 
       const isBigWidth = this.video.clientWidth && this.video.clientWidth > 550;
 
@@ -5463,6 +5561,7 @@ class VideoHandler {
           ? "column"
           : "row";
     });
+
     this.resizeObserver.observe(this.video);
     this.votMenu.container.setAttribute(
       "style",
@@ -5486,7 +5585,8 @@ class VideoHandler {
           return;
         }
 
-        mutations.forEach((mutation) => {
+        for (let i = 0; i < mutations.length; i++) {
+          const mutation = mutations[i];
           if (
             mutation.type === "attributes" &&
             mutation.attributeName === "aria-valuenow"
@@ -5508,7 +5608,7 @@ class VideoHandler {
             this.audio.volume = this.data.defaultVolume / 100;
             this.syncVolumeWrapper("video", finalVolume);
           }
-        });
+        }
       });
 
       const ytpVolumePanel = document.querySelector(".ytp-volume-panel");
@@ -5608,12 +5708,14 @@ class VideoHandler {
         return;
       await this.handleSrcChanged();
       debug/* default */.A.log("lipsync mode is loadeddata");
+      await this.autoTranslate();
     });
 
     addExtraEventListener(this.video, "emptied", () => {
       if (getVideoId(this.site.host, this.video) === this.videoData.videoId)
         return;
       debug/* default */.A.log("lipsync mode is emptied");
+      this.videoData = "";
       this.stopTranslation();
     });
 
@@ -5622,31 +5724,6 @@ class VideoHandler {
         this.syncVideoVolumeSlider();
       });
     }
-
-    addExtraEventListener(this.video, "progress", async () => {
-      if (
-        !this.videoData.videoId ||
-        this.audio.src ||
-        !this.firstPlay ||
-        this.data.autoTranslate !== 1 ||
-        getVideoId(this.site.host, this.video) !== this.videoData.videoId
-      ) {
-        return;
-      }
-
-      try {
-        this.firstPlay = false;
-        await this.translateExecutor(this.videoData.videoId);
-      } catch (err) {
-        console.error("[VOT]", err);
-        if (err?.name === "VOTLocalizedError") {
-          this.transformBtn("error", err.localizedMessage);
-        } else {
-          this.transformBtn("error", err);
-        }
-        this.firstPlay = false;
-      }
-    });
   }
 
   logout(n) {
@@ -5944,15 +6021,15 @@ class VideoHandler {
       ) {
         throw new VOTLocalizedError("VOTDisableFromYourLang");
       }
-      // if (this.ytData.isPremiere) {
-      //   throw new VOTLocalizedError("VOTPremiere");
-      // }
-      // if (this.ytData.isLive) {
-      //   throw new VOTLocalizedError("VOTLiveNotSupported");
-      // }
-      if (!this.videoData.isStream && this.videoData.duration > 14_400) {
-        throw new VOTLocalizedError("VOTVideoIsTooLong");
-      }
+    }
+    // if (this.ytData.isPremiere) {
+    //   throw new VOTLocalizedError("VOTPremiere");
+    // }
+    // if (this.ytData.isLive) {
+    //   throw new VOTLocalizedError("VOTLiveNotSupported");
+    // }
+    if (!this.videoData.isStream && this.videoData.duration > 14_400) {
+      throw new VOTLocalizedError("VOTVideoIsTooLong");
     }
     return true;
   }
@@ -6017,9 +6094,9 @@ class VideoHandler {
 
   // Default actions on stop translate
   stopTranslate() {
-    videoLipSyncEvents.forEach((e) =>
-      this.video.removeEventListener(e, this.handleVideoEventBound),
-    );
+    for (const e of videoLipSyncEvents) {
+      this.video.removeEventListener(e, this.handleVideoEventBound);
+    }
     this.audio.pause();
     this.audio.src = "";
     this.audio.removeAttribute("src");
@@ -6034,6 +6111,7 @@ class VideoHandler {
     }
     this.volumeOnStart = "";
     clearInterval(this.streamPing);
+    clearTimeout(this.autoRetry);
     this.hls?.destroy();
     this.hls = initHls();
     this.firstSyncVolume = true;
@@ -6121,9 +6199,9 @@ class VideoHandler {
     }
 
     if (this.video && !this.video.paused) this.lipSync("play");
-    videoLipSyncEvents.forEach((e) =>
-      this.video.addEventListener(e, this.handleVideoEventBound),
-    );
+    for (const e of videoLipSyncEvents) {
+      this.video.addEventListener(e, this.handleVideoEventBound);
+    }
     this.transformBtn("success", localizationProvider.get("disableTranslate"));
     this.afterUpdateTranslation(audioUrl);
   }
@@ -6274,9 +6352,9 @@ class VideoHandler {
           }
 
           if (this.video && !this.video.paused) this.lipSync("play");
-          videoLipSyncEvents.forEach((e) =>
-            this.video.addEventListener(e, this.handleVideoEventBound),
-          );
+          for (const e of videoLipSyncEvents) {
+            this.video.addEventListener(e, this.handleVideoEventBound);
+          }
 
           this.afterUpdateTranslation(streamURL);
         },
@@ -6302,6 +6380,12 @@ class VideoHandler {
       debug/* default */.A.log("[translateFunc] A cached translate was received");
       return;
     }
+
+    const timeoutDuration = this.subtitlesList.some(
+      (item) => item.source === "yandex",
+    )
+      ? 20_000
+      : 30_000;
 
     translateVideo(
       videoURL,
@@ -6329,7 +6413,7 @@ class VideoHandler {
                   responseLang,
                   translationHelp,
                 ),
-              60_000,
+              timeoutDuration,
             );
           }
           console.error("[VOT]", urlOrError);
@@ -6337,7 +6421,13 @@ class VideoHandler {
         }
 
         this.updateTranslation(urlOrError);
-        if (!this.subtitlesList.some((item) => item.source === "yandex")) {
+        if (
+          !this.subtitlesList.some(
+            (item) =>
+              item.source === "yandex" &&
+              item.language === this.videoData.responseLanguage,
+          )
+        ) {
           this.subtitlesList = await subtitles_getSubtitles(
             this.site,
             this.videoData.videoId,
@@ -6405,22 +6495,26 @@ class VideoHandler {
 }
 
 function getSites() {
-  return config_sites.filter((e) => {
-    const isMathes = (match) => {
-      return (
-        (match instanceof RegExp && match.test(window.location.hostname)) ||
-        (typeof match === "string" &&
-          window.location.hostname.includes(match)) ||
-        (typeof match === "function" && match(new URL(window.location)))
-      );
-    };
-    if (
-      isMathes(e.match) ||
-      (e.match instanceof Array && e.match.some((e) => isMathes(e)))
-    ) {
-      return e.host && e.url;
+  const hostname = window.location.hostname;
+  const currentURL = new URL(window.location);
+
+  const isMathes = (match) => {
+    if (match instanceof RegExp) {
+      return match.test(hostname);
+    } else if (typeof match === "string") {
+      return hostname.includes(match);
+    } else if (typeof match === "function") {
+      return match(currentURL);
     }
     return false;
+  };
+
+  return config_sites.filter((e) => {
+    return (
+      (Array.isArray(e.match) ? e.match.some(isMathes) : isMathes(e.match)) &&
+      e.host &&
+      e.url
+    );
   });
 }
 
