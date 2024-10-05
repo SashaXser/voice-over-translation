@@ -1,8 +1,4 @@
 .vot-outlined-button {
-  &[hidden] {
-    display: none !important;
-  }
-
   --vot-helper-theme: var(
     --vot-theme-rgb,
     var(--vot-primary-rgb, 33, 150, 243)
@@ -37,6 +33,10 @@
   line-height: 34px;
   outline: none;
   cursor: pointer;
+
+  &[hidden] {
+    display: none !important;
+  }
 
   &::-moz-focus-inner {
     border: none;
@@ -85,7 +85,7 @@
     }
   }
 
-  &:disabled {
+  &[disabled="true"] {
     background-color: transparent;
     color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);
     cursor: initial;

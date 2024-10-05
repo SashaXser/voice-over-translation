@@ -1,8 +1,4 @@
 .vot-checkbox {
-  &[hidden] {
-    display: none !important;
-  }
-
   --vot-helper-theme: var(
     --vot-theme-rgb,
     var(--vot-primary-rgb, 33, 150, 243)
@@ -27,11 +23,15 @@
   line-height: 1.5;
   text-align: start;
 
+  &[hidden] {
+    display: none !important;
+  }
+
   & > input {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
-    z-index: 1;
+    z-index: 10000;
     position: absolute;
     display: block;
     -webkit-box-sizing: border-box;
@@ -59,6 +59,7 @@
       padding-left: 30px;
       width: inherit;
       cursor: pointer;
+      font-weight: normal;
 
       &::before {
         content: "";
@@ -80,7 +81,7 @@
 
       &::after {
         content: "";
-        z-index: 1;
+        z-index: 10000;
         display: block;
         position: absolute;
         top: 3px;
@@ -125,7 +126,7 @@
 
   &:active {
     & > input,
-    &:hover > input {
+    &:hover > input:not(:disabled) {
       border-color: rgb(var(--vot-helper-theme));
     }
 

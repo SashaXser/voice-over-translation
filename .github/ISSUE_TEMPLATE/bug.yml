@@ -63,7 +63,7 @@ body:
     attributes:
       label: Script version / Версия скрипта
       description: Enter the version of the voice-over-translation script / Введите версию скрипта voice-over-translation
-      placeholder: ex. 1.4.1
+      placeholder: ex. 1.5.3
     validations:
       required: true
   - type: textarea

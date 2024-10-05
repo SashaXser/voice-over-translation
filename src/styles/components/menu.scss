@@ -23,7 +23,7 @@
   line-height: 1.5;
   min-width: 300px;
   cursor: default;
-  z-index: 100;
+  z-index: 2147483647;
 
   visibility: visible;
   opacity: 1;
@@ -86,6 +86,7 @@
   &-title {
     flex: 1;
     font-size: 16px;
+    font-weight: 400;
     line-height: 1;
     padding-bottom: 16px;
     padding-inline-end: 16px;
@@ -142,5 +143,17 @@
     &:empty {
       padding: 16px 0 0 0;
     }
+  }
+
+  &[data-position="left"] {
+    // left: calc(14% + 32px + 16px);
+    left: 240px;
+    top: calc(25vh / 2);
+  }
+
+  &[data-position="right"] {
+    right: -80px;
+    left: auto;
+    top: calc(25vh / 2);
   }
 }

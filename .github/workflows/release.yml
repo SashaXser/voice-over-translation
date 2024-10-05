@@ -1,7 +1,9 @@
 # adopted from https://github.com/MihailRis/VoxelEngine-Cpp
-name: Build and Release
+name: Release
 
-on: [push]
+on:
+  push:
+    branches: [master, dev]
 
 permissions:
   contents: write
@@ -22,7 +24,7 @@ jobs:
           pattern: vot-*
           merge-multiple: true
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref }}
@@ -30,7 +32,4 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            vot/vot.user.js
-            vot/vot-min.user.js
-            vot/vot-cloudflare.user.js
-            vot/vot-cloudflare-min.user.js
+            vot/vot*.user.js

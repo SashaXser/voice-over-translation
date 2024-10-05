@@ -1,8 +1,4 @@
 .vot-lang-select {
-  &[hidden] {
-    display: none !important;
-  }
-
   --vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);
   --vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);
   display: flex;
@@ -10,6 +6,10 @@
   justify-content: space-between;
   color: var(--vot-helper-theme);
   fill: var(--vot-helper-theme);
+
+  &[hidden] {
+    display: none !important;
+  }
 
   &-icon {
     width: 32px;

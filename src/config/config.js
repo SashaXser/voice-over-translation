@@ -1,11 +1,14 @@
 // CONFIGURATION
 const workerHost = "api.browser.yandex.ru";
-const m3u8ProxyHost = "m3u8-proxy.toil.cc"; // used for striming
-const proxyWorkerHost = "vot.toil.cc"; // used for cloudflare version (vot-new.toil-dump.workers.dev || vot-worker.onrender.com)
-const yandexHmacKey = "xtGCyGdTY2Jy6OMEKdTuXev3Twhkamgm";
-const yandexUserAgent =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.1.1140 Yowser/2.5 Safari/537.36";
+const m3u8ProxyHost = "media-proxy.toil.cc/v1/proxy/m3u8"; // used for streaming
+const proxyWorkerHost = "vot-worker.toil.cc";
+const votBackendUrl = "https://vot.toil.cc/v1";
+const contentUrl =
+  "https://raw.githubusercontent.com/ilyhalight/voice-over-translation";
+const repositoryUrl = "https://github.com/ilyhalight/voice-over-translation";
+
 const defaultAutoVolume = 0.15; // 0.0 - 1.0 (0% - 100%) - default volume of the video with the translation
+const maxAudioVolume = 900;
 const defaultTranslationService = "yandex";
 const defaultDetectService = "yandex";
 
@@ -16,6 +19,7 @@ const detectUrls = {
 
 const translateUrls = {
   yandex: "https://translate.toil.cc/translate",
+  deepl: "https://translate-deepl.toil.cc/translate",
 };
 
 export {
@@ -23,10 +27,12 @@ export {
   m3u8ProxyHost,
   proxyWorkerHost,
   detectUrls,
+  votBackendUrl,
+  contentUrl,
+  repositoryUrl,
   translateUrls,
   defaultTranslationService,
   defaultDetectService,
-  yandexHmacKey,
-  yandexUserAgent,
   defaultAutoVolume,
+  maxAudioVolume,
 };

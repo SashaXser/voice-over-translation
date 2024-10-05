@@ -1,8 +1,4 @@
 .vot-select {
-  &[hidden] {
-    display: none !important;
-  }
-
   --vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0) !important;
   --vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87) !important;
   --vot-helper-safari1: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;
@@ -22,11 +18,16 @@
     -apple-system
   );
   font-size: 14px;
+  font-weight: normal;
   line-height: 1.5;
   text-align: start;
 
   color: var(--vot-helper-theme);
   fill: var(--vot-helper-theme);
+
+  &[hidden] {
+    display: none !important;
+  }
 
   &-label {
     font-size: 16px;

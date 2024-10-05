@@ -1,78 +1,17 @@
 import defaultLocale from "./locales/en.json";
+
 import debug from "../utils/debug.js";
+import { contentUrl } from "../config/config.js";
 import { votStorage } from "../utils/storage.js";
+import { getTimestamp, GM_fetch } from "../utils/utils.js";
 
-const localesVersion = 2;
-const localesUrl = `https://raw.githubusercontent.com/ilyhalight/voice-over-translation/${
+const localeCacheTTL = 7200;
+const localizationUrl = `${contentUrl}/${
   DEBUG_MODE || IS_BETA_VERSION ? "dev" : "master"
-}/src/localization/locales`;
+}/src/localization`;
 
-export const availableLocales = [
-  "auto",
-  "en",
-  "ru",
-
-  "af",
-  "am",
-  "ar",
-  "az",
-  "bg",
-  "bn",
-  "bs",
-  "ca",
-  "cs",
-  "cy",
-  "da",
-  "de",
-  "el",
-  "es",
-  "et",
-  "eu",
-  "fa",
-  "fi",
-  "fr",
-  "gl",
-  "hi",
-  "hr",
-  "hu",
-  "hy",
-  "id",
-  "it",
-  "ja",
-  "jv",
-  "kk",
-  "km",
-  "kn",
-  "ko",
-  "lo",
-  "mk",
-  "ml",
-  "mn",
-  "ms",
-  "mt",
-  "my",
-  "ne",
-  "nl",
-  "pa",
-  "pl",
-  "pt",
-  "ro",
-  "si",
-  "sk",
-  "sl",
-  "sq",
-  "sr",
-  "su",
-  "sv",
-  "sw",
-  "tr",
-  "uk",
-  "ur",
-  "uz",
-  "vi",
-  "zh",
-  "zu",
-];
+// TODO: add get from hashes.json or use DEFAULT_LOCALES
+export const availableLocales = AVAILABLE_LOCALES;
 
 export const localizationProvider = new (class {
   lang = "en";
@@ -98,42 +37,75 @@ export const localizationProvider = new (class {
   }
 
   reset() {
-    this.gmValues.forEach((v) => votStorage.syncDelete(v));
+    for (let i = 0; i < this.gmValues.length; i++) {
+      votStorage.syncDelete(this.gmValues[i]);
+    }
+  }
+
+  async checkUpdates() {
+    debug.log("Check locale updates...");
+    try {
+      const res = await GM_fetch(`${localizationUrl}/hashes.json`);
+      if (res.status !== 200) {
+        throw res.status;
+      }
+
+      const hashes = await res.json();
+      const localeHash = await votStorage.get("locale-hash");
+      const actualHash = hashes[this.lang];
+
+      return localeHash !== actualHash ? actualHash : false;
+    } catch (err) {
+      console.error(
+        "[VOT] [localizationProvider] Failed to get locales hash, cause:",
+        err,
+      );
+
+      return false;
+    }
   }
 
   async update(force = false) {
+    const localeUpdatedAt = await votStorage.get("locale-updated-at", 0);
+    const localeLang = await votStorage.get("locale-lang");
+    const timestamp = getTimestamp();
     if (
       !force &&
-      (await votStorage.get("locale-version", 0, true)) === localesVersion &&
-      (await votStorage.get("locale-lang")) === this.lang
+      localeUpdatedAt + localeCacheTTL > timestamp &&
+      localeLang === this.lang
     ) {
       return;
     }
 
-    debug.log("Updating locale...");
+    const hash = await this.checkUpdates();
+    await votStorage.set("locale-updated-at", timestamp);
+    if (!hash) {
+      return;
+    }
 
-    await fetch(`${localesUrl}/${this.lang}.json`)
-      .then((response) => {
-        if (response.status === 200) return response.text();
-        throw response.status;
-      })
-      .then(async (text) => {
-        await votStorage.set("locale-phrases", text);
-        this.setLocaleFromJsonString(text);
-        const version = this.getFromLocale(this.locale, "__version__");
-        if (typeof version === "number")
-          await votStorage.set("locale-version", version);
-        await votStorage.set("locale-lang", this.lang);
-      })
-      .catch(async (error) => {
-        console.error(
-          "[VOT] [localizationProvider] failed get locale, cause:",
-          error,
-        );
-        this.setLocaleFromJsonString(
-          await votStorage.get("locale-phrases", ""),
-        );
-      });
+    debug.log("Updating locale...");
+    try {
+      const res = await GM_fetch(
+        `${localizationUrl}/locales/${this.lang}.json`,
+      );
+      if (res.status !== 200) {
+        throw res.status;
+      }
+
+      // We use it .text() in order for there to be a single logic for GM_Storage and localStorage
+      const text = await res.text();
+      await votStorage.set("locale-phrases", text);
+      this.setLocaleFromJsonString(text);
+
+      await votStorage.set("locale-hash", hash);
+      await votStorage.set("locale-lang", this.lang);
+    } catch (err) {
+      console.error(
+        "[VOT] [localizationProvider] Failed to get locale, cause:",
+        err,
+      );
+      this.setLocaleFromJsonString(await votStorage.get("locale-phrases", ""));
+    }
   }
 
   setLocaleFromJsonString(json) {

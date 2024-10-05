@@ -12,6 +12,7 @@
 @import "./components/select.scss";
 @import "./components/header.scss";
 @import "./components/info.scss";
+@import "./components/details.scss";
 
 @import "./components/lang-select.scss";
 @import "./components/segmented-button.scss";
@@ -28,11 +29,12 @@
   --vot-surface-rgb: 32, 33, 36;
   --vot-onsurface-rgb: 227, 227, 227;
 
-  --vot-subtitles-background: rgba(var(--vot-surface-rgb, 46, 47, 52), 0.8);
   --vot-subtitles-color: rgb(var(--vot-onsurface-rgb, 227, 227, 227));
   --vot-subtitles-passed-color: rgb(var(--vot-primary-rgb, 33, 150, 243));
 }
 
 vot-block {
   display: block;
+  // for reddit
+  visibility: visible !important;
 }

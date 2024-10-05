@@ -1,8 +1,4 @@
 .vot-icon-button {
-  &[hidden] {
-    display: none !important;
-  }
-
   --vot-helper-onsurface: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.87);
   position: relative;
   display: inline-block;
@@ -34,6 +30,10 @@
   line-height: 36px;
   outline: none;
   cursor: pointer;
+
+  &[hidden] {
+    display: none !important;
+  }
 
   &::-moz-focus-inner {
     border: none;
@@ -84,7 +84,7 @@
     }
   }
 
-  &:disabled {
+  &[disabled="true"] {
     background-color: transparent;
     color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);
     fill: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);
