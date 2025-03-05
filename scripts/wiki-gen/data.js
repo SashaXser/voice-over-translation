@@ -17,8 +17,9 @@ const siteData = {
   vk: {
     paths: [
       "/video-xxxxxxxxx_xxxxxxxxx",
-      "?z=VIDEO_ID",
+      "?z=video-xxxxxxxxx_xxxxxxxxx",
       "/video_ext.php?oid=VIDEO_ID_PART_ONE&id=VIDEO_ID_PART_TWO",
+      ".../playlist/PLAYLIST_ID/video-xxxxxxxxx_xxxxxxxxx",
     ],
   },
   nine_gag: {

@@ -48,6 +48,11 @@
     background-color: transparent !important;
     cursor: pointer !important;
 
+    &:hover {
+      // odysee fix
+      box-shadow: none !important;
+    }
+
     /* Without Span */
     &:last-child {
       position: static !important;

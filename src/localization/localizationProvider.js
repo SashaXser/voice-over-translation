@@ -2,8 +2,8 @@ import defaultLocale from "./locales/en.json";
 
 import debug from "../utils/debug.ts";
 import { contentUrl } from "../config/config.js";
-import { votStorage } from "../utils/storage.js";
-import { getTimestamp, GM_fetch } from "../utils/utils.js";
+import { votStorage } from "../utils/storage.ts";
+import { getTimestamp, GM_fetch, lang } from "../utils/utils.js";
 
 const localeCacheTTL = 7200;
 const localizationUrl = `${contentUrl}/${
@@ -13,123 +13,106 @@ const localizationUrl = `${contentUrl}/${
 // TODO: add get from hashes.json or use DEFAULT_LOCALES
 export const availableLocales = AVAILABLE_LOCALES;
 
-export const localizationProvider = new (class {
-  lang = "en";
-  locale = {};
-  gmValues = [
-    "locale-phrases",
-    "locale-lang",
-    "locale-hash",
-    "locale-updated-at",
-    "locale-lang-override",
-  ];
-
+class LocalizationProvider {
   constructor() {
-    const langOverride = votStorage.syncGet("locale-lang-override", "auto");
-    this.lang =
-      langOverride && langOverride !== "auto"
-        ? langOverride
-        : (navigator.language || navigator.userLanguage)
-            ?.substr(0, 2)
-            ?.toLowerCase() ?? "en";
+    this.gmValues = [
+      "locale-phrases",
+      "locale-lang",
+      "locale-hash",
+      "locale-updated-at",
+      "locale-lang-override",
+    ];
+    this.lang = this.getLang();
+    this.locale = {};
     this.setLocaleFromJsonString(votStorage.syncGet("locale-phrases", ""));
   }
 
+  getLang() {
+    const langOverride = votStorage.syncGet("locale-lang-override", "auto");
+    return langOverride !== "auto" ? langOverride : lang;
+  }
+
   reset() {
-    for (let i = 0; i < this.gmValues.length; i++) {
-      votStorage.syncDelete(this.gmValues[i]);
+    for (const key of this.gmValues) {
+      votStorage.syncDelete(key);
     }
   }
 
-  async checkUpdates() {
+  async checkUpdates(force = false) {
     debug.log("Check locale updates...");
     try {
-      const res = await GM_fetch(`${localizationUrl}/hashes.json`);
-      if (res.status !== 200) {
-        throw res.status;
-      }
-
+      const res = await GM_fetch(
+        `${localizationUrl}/hashes.json${force ? `?timestamp=${getTimestamp()}` : ""}`,
+      );
+      if (!res.ok) throw res.status;
       const hashes = await res.json();
-      const localeHash = await votStorage.get("locale-hash");
-      const actualHash = hashes[this.lang];
-
-      return localeHash !== actualHash ? actualHash : false;
+      return (await votStorage.get("locale-hash")) !== hashes[this.lang]
+        ? hashes[this.lang]
+        : false;
     } catch (err) {
       console.error(
-        "[VOT] [localizationProvider] Failed to get locales hash, cause:",
+        "[VOT] [localizationProvider] Failed to get locales hash:",
         err,
       );
-
       return false;
     }
   }
 
   async update(force = false) {
     const localeUpdatedAt = await votStorage.get("locale-updated-at", 0);
-    const localeLang = await votStorage.get("locale-lang");
-    const timestamp = getTimestamp();
     if (
       !force &&
-      localeUpdatedAt + localeCacheTTL > timestamp &&
-      localeLang === this.lang
-    ) {
+      localeUpdatedAt + localeCacheTTL > getTimestamp() &&
+      (await votStorage.get("locale-lang")) === this.lang
+    )
       return;
-    }
 
-    const hash = await this.checkUpdates();
-    await votStorage.set("locale-updated-at", timestamp);
-    if (!hash) {
-      return;
-    }
+    const hash = await this.checkUpdates(force);
+    await votStorage.set("locale-updated-at", getTimestamp());
+    if (!hash) return;
 
     debug.log("Updating locale...");
     try {
       const res = await GM_fetch(
-        `${localizationUrl}/locales/${this.lang}.json`,
+        `${localizationUrl}/locales/${this.lang}.json${force ? `?timestamp=${getTimestamp()}` : ""}`,
       );
-      if (res.status !== 200) {
-        throw res.status;
-      }
-
+      if (!res.ok) throw res.status;
       // We use it .text() in order for there to be a single logic for GM_Storage and localStorage
       const text = await res.text();
       await votStorage.set("locale-phrases", text);
-      this.setLocaleFromJsonString(text);
-
       await votStorage.set("locale-hash", hash);
       await votStorage.set("locale-lang", this.lang);
+      this.setLocaleFromJsonString(text);
     } catch (err) {
-      console.error(
-        "[VOT] [localizationProvider] Failed to get locale, cause:",
-        err,
-      );
+      console.error("[VOT] [localizationProvider] Failed to get locale:", err);
       this.setLocaleFromJsonString(await votStorage.get("locale-phrases", ""));
     }
   }
 
   setLocaleFromJsonString(json) {
     try {
-      this.locale = JSON.parse(json) ?? {};
-    } catch (exception) {
-      console.error("[VOT] [localizationProvider]", exception);
+      this.locale = JSON.parse(json) || {};
+    } catch (err) {
+      console.error("[VOT] [localizationProvider]", err);
       this.locale = {};
     }
   }
 
   getFromLocale(locale, key) {
-    const result = key.split(".").reduce((locale, key) => {
-      if (typeof locale === "object" && locale) return locale[key];
-      return undefined;
-    }, locale);
-    if (result === undefined) {
-      console.warn(
-        "[VOT] [localizationProvider] locale",
-        locale,
-        "doesn't contain key",
-        key,
-      );
-    }
-    return result;
+    return (
+      key.split(".").reduce((acc, k) => acc?.[k], locale) ??
+      this.warnMissingKey(locale, key)
+    );
+  }
+
+  warnMissingKey(locale, key) {
+    console.warn(
+      "[VOT] [localizationProvider] locale",
+      locale,
+      "doesn't contain key",
+      key,
+    );
+    return undefined;
   }
 
   getDefault(key) {
@@ -137,10 +120,8 @@ export const localizationProvider = new (class {
   }
 
   get(key) {
-    return (
-      this.getFromLocale(this.locale, key) ??
-      this.getFromLocale(defaultLocale, key) ??
-      key
-    );
+    return this.getFromLocale(this.locale, key) ?? this.getDefault(key);
   }
-})();
+}
+
+export const localizationProvider = new LocalizationProvider();

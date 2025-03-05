@@ -131,12 +131,16 @@ Available (sub)domains:
 - `www.vk.ru`
 - `m.vk.com`
 - `m.vk.ru`
+- `vkvideo.ru`
+- `www.vkvideo.ru`
+- `m.vkvideo.ru`
 
 Available paths:
 
 - /video-xxxxxxxxx_xxxxxxxxx
-- ?z=VIDEO_ID
+- ?z=video-xxxxxxxxx_xxxxxxxxx
 - /video_ext.php?oid=VIDEO_ID_PART_ONE&id=VIDEO_ID_PART_TWO
+- .../playlist/PLAYLIST_ID/video-xxxxxxxxx_xxxxxxxxx
 
 ## 9GAG
 
@@ -214,6 +218,18 @@ Limitations:
 
 - The translation in the feed doesn't work (It only works in open videos)
 
+## Douyin
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `(www.)?douyin.com`
+
+Limitations:
+
+- To ensure that the script works, you need to [enable the "Bypass Media CSP" setting](https://github.com/ilyhalight/voice-over-translation/wiki/%5BEN%5D-FAQ) in the extension or delete the CSP in another way
+
 ## Vimeo
 
 Status: [✅] Working
@@ -239,6 +255,8 @@ Status: [✅] Working
 Available (sub)domains:
 
 - `(www.)?xvideos.com`
+- `(www.)?xvideos-ar.com`
+- `(www.)?xvideos\d\d\d.com`
 - `(www.)?xv-ru.com`
 
 Available paths:
@@ -447,7 +465,9 @@ Status: [✅] Working
 
 Available (sub)domains:
 
-- `disk.yandex.ru`
+- `disk.yandex.(ru|kz|com(\.am)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
+- `disk.yandex.(ru|kz|com(\.ge)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
+- `disk.yandex.(ru|kz|com(\.tr)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
 
 Available paths:
 
@@ -786,6 +806,57 @@ Available (sub)domains:
 Available paths:
 
 - /watch/VIDEO_ID
+
+## Dzen
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `dzen.ru`
+
+## Cloudflarestream
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `watch.cloudflarestream.com`
+- `embed.cloudflarestream.com`
+- `iframe.cloudflarestream.com`
+- `customer-[^.]+.cloudflarestream.com`
+
+## Loom
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `(www.)?loom.com`
+
+## Artstation
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `(www.)?artstation.com`
+
+## Rtnews
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `(www.)?rt.com`
+
+## Bitview
+
+Status: [✅] Working
+
+Available (sub)domains:
+
+- `(www.)?bitview.net`
 
 ## Direct link to MP4/WEBM
 

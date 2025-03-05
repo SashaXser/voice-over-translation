@@ -24,7 +24,7 @@
   text-align: start;
 
   &-sub {
-    padding-left: 16px;
+    padding-left: 16px !important;
   }
 
   &[hidden] {
@@ -41,13 +41,13 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    margin: 3px 1px;
-    padding: 0;
-    border: solid 2px;
+    margin: 3px 1px !important;
+    padding: 0 !important;
+    border: solid 2px !important;
     background: transparent;
     /* Safari */
-    border-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6);
-    border-radius: 2px;
+    border-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6) !important;
+    border-radius: 2px !important;
     width: 18px;
     height: 18px;
     outline: none;
@@ -61,8 +61,9 @@
       display: inline-block;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
+      font-family: inherit;
       box-sizing: border-box;
-      padding-left: 30px;
+      padding-left: 30px !important;
       width: inherit;
       cursor: pointer;
       font-weight: normal;
@@ -73,7 +74,7 @@
         left: -10px;
         top: -8px;
         display: block;
-        border-radius: 50%;
+        border-radius: 50% !important;
         width: 40px;
         height: 40px;
         background-color: rgb(var(--vot-onsurface-rgb, 0, 0, 0));
@@ -97,9 +98,9 @@
         box-sizing: content-box !important;
         width: 10px;
         height: 5px;
-        border: solid 2px transparent;
-        border-right-width: 0;
-        border-top-width: 0;
+        border: solid 2px transparent !important;
+        border-right-width: 0 !important;
+        border-top-width: 0 !important;
         pointer-events: none;
         transform: translate(3px, 4px) rotate(-45deg);
         transition: border-color 0.2s;
@@ -108,7 +109,7 @@
 
     &:checked,
     &:indeterminate {
-      border-color: rgb(var(--vot-helper-theme));
+      border-color: rgb(var(--vot-helper-theme)) !important;
       background-color: rgb(var(--vot-helper-theme));
 
       & + span::before {
@@ -116,12 +117,17 @@
       }
 
       & + span::after {
-        border-color: rgb(var(--vot-helper-ontheme, 255, 255, 255));
+        border-color: rgb(var(--vot-helper-ontheme, 255, 255, 255)) !important;
       }
     }
 
+    &:hover {
+      // fix odysee
+      box-shadow: none !important;
+    }
+
     &:indeterminate + span::after {
-      border-left-width: 0;
+      border-left-width: 0 !important;
       transform: translate(4px, 3px);
     }
   }
@@ -133,12 +139,12 @@
   &:active {
     & > input,
     &:hover > input:not(:disabled) {
-      border-color: rgb(var(--vot-helper-theme));
+      border-color: rgb(var(--vot-helper-theme)) !important;
     }
 
     & > input {
       &:checked {
-        border-color: transparent;
+        border-color: transparent !important;
         background-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.6);
       }
 
@@ -153,12 +159,12 @@
   }
 
   & > input:disabled {
-    border-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);
+    border-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38) !important;
     cursor: initial;
 
     &:checked,
     &:indeterminate {
-      border-color: transparent;
+      border-color: transparent !important;
       background-color: rgba(var(--vot-onsurface-rgb, 0, 0, 0), 0.38);
     }
 

@@ -1,0 +1,62 @@
+diff --git a/node_modules/@vot.js/core/dist/client.js b/node_modules/@vot.js/core/dist/client.js
+index 315f703..dc62faf 100644
+--- a/node_modules/@vot.js/core/dist/client.js
++++ b/node_modules/@vot.js/core/dist/client.js
+@@ -6,6 +6,8 @@ import { fetchWithTimeout, getTimestamp } from "@vot.js/shared/utils/utils";
+ import { YandexVOTProtobuf, YandexSessionProtobuf } from "./protobuf.js";
+ import { AudioDownloadType, VideoTranslationStatus } from "./types/yandex.js";
+ import { convertVOT } from "./utils/vot.js";
++import { VOTLocalizedError } from "../../../../src/utils/VOTLocalizedError.js";
++import debug from "../../../../src/utils/debug.ts";
+ export class VOTJSError extends Error {
+     data;
+     constructor(message, data = undefined) {
+@@ -185,18 +187,18 @@ export default class VOTClient extends MinimalClient {
+             ...headers,
+         });
+         if (!res.success) {
+-            throw new VOTJSError("Failed to request video translation", res);
++            throw new VOTLocalizedError("requestTranslationFailed");
+         }
+         const translationData = YandexVOTProtobuf.decodeTranslationResponse(res.data);
+         Logger.log("translateVideo", translationData);
+         const { status, translationId, } = translationData;
+         switch (status) {
+             case VideoTranslationStatus.FAILED:
+-                throw new VOTJSError("Yandex couldn't translate video", translationData);
++                throw translationData?.message ? new VOTJSError("Yandex couldn't translate video", translationData) : new VOTLocalizedError("requestTranslationFailed");
+             case VideoTranslationStatus.FINISHED:
+             case VideoTranslationStatus.PART_CONTENT:
+                 if (!translationData.url) {
+-                    throw new VOTJSError("Audio link wasn't received from Yandex response", translationData);
++                    throw new VOTLocalizedError("audioNotReceived");
+                 }
+                 return {
+                     translationId,
+@@ -254,7 +256,7 @@ export default class VOTClient extends MinimalClient {
+             ...headers,
+         });
+         if (!res.success) {
+-            throw new VOTJSError("Failed to request video translation", res);
++            throw new VOTLocalizedError("requestTranslationFailed");
+         }
+         const translationData = res.data;
+         switch (translationData.status) {
+@@ -262,7 +264,7 @@ export default class VOTClient extends MinimalClient {
+                 throw new VOTJSError("Yandex couldn't translate video", translationData);
+             case "success":
+                 if (!translationData.translated_url) {
+-                    throw new VOTJSError("Audio link wasn't received from VOT response", translationData);
++                    throw new VOTLocalizedError("audioNotReceived");
+                 }
+                 return {
+                     translationId: String(translationData.id),
+@@ -417,7 +419,7 @@ export default class VOTClient extends MinimalClient {
+     async translateStream({ videoData, requestLang = this.requestLang, responseLang = this.responseLang, headers = {}, }) {
+         const { url } = videoData;
+         if (this.isCustomLink(url)) {
+-            throw new VOTJSError("Unsupported video URL for getting stream translation");
++            throw new VOTLocalizedError("VOTStreamNotSupportedUrl");
+         }
+         const session = await this.getSession("video-translation");
+         const body = YandexVOTProtobuf.encodeStreamRequest(url, requestLang, responseLang);

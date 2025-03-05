@@ -16,7 +16,7 @@ import {
   sitesPeertube,
   sitesPoketube,
   sitesCoursehunterLike,
-} from "vot.js/alternativeUrls";
+} from "@vot.js/shared/alternativeUrls";
 import configShared from "./config.shared.js";
 
 import { repositoryUrl, contentUrl } from "../src/config/config.js";
@@ -145,8 +145,8 @@ export default (env) => {
         maxChunks: 1,
       }),
       new webpack.DefinePlugin({
-        // DEBUG_MODE: dev,
-        DEBUG_MODE: true,
+        DEBUG_MODE: dev,
+        // DEBUG_MODE: true,
         IS_BETA_VERSION: isBeta,
         AVAILABLE_LOCALES: JSON.stringify(availableLocales),
         ...(() => {
@@ -158,6 +158,9 @@ export default (env) => {
             };
           }
         })(),
+      }),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^node:crypto$/,
       }),
     ],
     optimization: {

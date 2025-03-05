@@ -1,0 +1,48 @@
+.vot-tooltip {
+  --vot-helper-theme-rgb: var(--vot-onsurface-rgb, 0, 0, 0);
+  --vot-helper-theme: rgba(var(--vot-helper-theme-rgb), 0.87);
+  --vot-helper-ondialog: rgb(var(--vot-ondialog-rgb, 37, 38, 40));
+  overflow: hidden;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  background: rgb(var(--vot-surface-rgb, 255, 255, 255));
+  color: var(--vot-helper-theme);
+  fill: var(--vot-helper-theme);
+  border-radius: 4px !important;
+  font-family: var(
+    --vot-font-family,
+    "Roboto",
+    "Segoe UI",
+    BlinkMacSystemFont,
+    system-ui,
+    -apple-system
+  );
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: default;
+  transition: opacity 0.5s;
+  position: absolute;
+  z-index: 2147483647;
+  inset: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  width: max-content;
+  max-width: calc(100vw - 10px);
+  height: max-content;
+  padding: 4px 8px !important;
+  opacity: 0;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  &[data-trigger="click"] {
+    user-select: text;
+  }
+
+  & * {
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+  }
+}

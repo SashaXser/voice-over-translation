@@ -5,10 +5,10 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  margin: 0;
-  border: none;
-  border-radius: 50%;
-  padding: 0;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
   width: 36px;
   height: 36px;
   vertical-align: middle;
@@ -36,14 +36,14 @@
   }
 
   &::-moz-focus-inner {
-    border: none;
+    border: none !important;
   }
 
   &::before,
   &::after {
     content: "";
     position: absolute;
-    border-radius: inherit;
+    border-radius: inherit !important;
     top: 0;
     right: 0;
     bottom: 0;

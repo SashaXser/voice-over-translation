@@ -12,9 +12,9 @@
     -apple-system
   );
   font-size: 16px;
-  border-radius: 0.5em;
-  padding: 0.5em;
-  margin: 0 -0.5em;
+  border-radius: 0.5em !important;
+  padding: 0.5em !important;
+  margin: 0 -0.5em !important;
   line-height: 1.5;
   text-align: start;
   cursor: pointer;

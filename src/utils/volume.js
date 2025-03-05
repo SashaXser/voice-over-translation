@@ -26,8 +26,4 @@ function syncVolume(element, sliderVolume, otherSliderVolume, tempVolume) {
   return finalValue;
 }
 
-// 0.00 - 1.00
-const percentToDecibels = (percent) => 20 * Math.log10(percent / 1);
-const decibelsToPercent = (dB) => Math.pow(10, dB / 20);
-
-export { syncVolume, percentToDecibels, decibelsToPercent };
+export { syncVolume };

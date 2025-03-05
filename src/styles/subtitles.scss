@@ -1,4 +1,38 @@
 .vot-subtitles {
+  --vot-subtitles-background: rgba(
+    var(--vot-surface-rgb, 46, 47, 52),
+    var(--vot-subtitles-opacity, 0.8)
+  );
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  width: max-content;
+  background: var(--vot-subtitles-background, rgba(46, 47, 52, 0.8));
+  color: var(--vot-subtitles-color, rgb(227, 227, 227));
+  border-radius: 0.5em !important;
+  pointer-events: all;
+  padding: 0.5em !important;
+  font-size: 20px;
+  font-family: var(
+    --vot-font-family,
+    "Roboto",
+    "Segoe UI",
+    BlinkMacSystemFont,
+    system-ui,
+    -apple-system
+  );
+  line-height: normal;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 3px;
+
   &-widget {
     display: flex;
     justify-content: center;
@@ -13,41 +47,67 @@
     pointer-events: none;
   }
 
-  & {
-    --vot-subtitles-background: rgba(
-      var(--vot-surface-rgb, 46, 47, 52),
-      var(--vot-subtitles-opacity, 0.8)
-    );
-    position: relative;
-    max-width: 100%;
-    max-height: 100%;
-    width: max-content;
-    background: var(--vot-subtitles-background, rgba(46, 47, 52, 0.8));
-    color: var(--vot-subtitles-color, rgb(227, 227, 227));
-    border-radius: 0.5em;
-    pointer-events: all;
-    padding: 0.5em;
-    font-size: 20px;
-    line-height: normal;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  &-info {
+    display: flex;
+    flex-direction: column;
+    padding: 6px !important;
+    gap: 2px;
+
+    &-service {
+      line-height: 1 !important;
+      font-size: 10px !important;
+      margin-bottom: 8px !important;
+      color: var(--vot-subtitles-context-color, rgb(134, 145, 155));
+    }
+
+    &-header {
+      line-height: 1 !important;
+      font-size: 20px !important;
+      font-weight: 500 !important;
+      margin-bottom: 6px !important;
+      color: var(--vot-subtitles-header-color, rgb(255, 255, 255));
+    }
+
+    &-context {
+      line-height: 1.2 !important;
+      font-size: 12px !important;
+      color: var(--vot-subtitles-context-color, rgb(134, 145, 155));
+    }
   }
 
   & span {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
+    position: relative;
+    cursor: pointer;
     font-size: inherit !important;
+    font-family: inherit !important;
     line-height: normal !important;
-  }
 
-  & .passed {
-    color: var(--vot-subtitles-passed-color, rgb(33, 150, 243));
+    &.passed {
+      color: var(--vot-subtitles-passed-color, rgb(33, 150, 243));
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      border-radius: 4px !important;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      inset: 2px -2px;
+      padding: 0 2px !important;
+    }
+
+    &:hover:before {
+      background: var(--vot-subtitles-hover-color, rgba(255, 255, 255, 0.55));
+    }
+
+    &.selected:before {
+      background: var(--vot-subtitles-passed-color, rgb(33, 150, 243));
+    }
   }
+}
+
+// max specificity for styles
+#vot-subtitles-info.vot-subtitles-info * {
+  user-select: text !important;
 }

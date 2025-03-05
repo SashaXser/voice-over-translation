@@ -2,7 +2,7 @@ import Bun from "bun";
 
 import * as path from "node:path";
 
-import sites from "vot.js/sites";
+import sites from "@vot.js/ext/sites";
 
 import locales from "./locales";
 import { siteData, extraData, sitesBlackList } from "./data";
@@ -62,16 +62,18 @@ function fixRegexStr(str) {
   brackets = brackets.map((bracket) => bracket[0]);
   const optionalBrackets = brackets.filter((bracket) => bracket.includes("?"));
   if (optionalBrackets.length) {
-    getDomainFromRegex(domain, optionalBrackets).map((dom) => domains.add(dom));
+    for (const dom of getDomainFromRegex(domain, optionalBrackets)) {
+      domains.add(dom);
+    }
   }
 
   for (const bracket of brackets) {
     const parts = bracket.replace(/[?()]+/g, "").split("|");
     for (const part of parts) {
       let partedDomain = domain.replace(bracket, part);
-      getDomainFromRegex(partedDomain, optionalBrackets).map((dom) =>
-        domains.add(dom),
-      );
+      for (const dom of getDomainFromRegex(partedDomain, optionalBrackets)) {
+        domains.add(dom);
+      }
     }
   }
 
@@ -80,7 +82,7 @@ function fixRegexStr(str) {
 
 function getDomains(match) {
   return Array.isArray(match)
-    ? match.map((s) => fixRegexStr(s).join("\n- "))
+    ? match.map((s) => fixRegexStr(s)).flat()
     : fixRegexStr(match);
 }
 
@@ -107,7 +109,7 @@ function genMarkdown(supportedSites, lang = "ru") {
 
   return removeDuplicatesKeepLast(sitesData, "host").map((site) => {
     const hasData = Object.hasOwn(siteData, site.host);
-    const limitsData = hasData ? siteData[site.host].limits ?? [] : [];
+    const limitsData = hasData ? (siteData[site.host].limits ?? []) : [];
     if (site.needBypassCSP && !limitsData.includes(locales.needBypassCSP)) {
       limitsData.push(locales.needBypassCSP);
     }

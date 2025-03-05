@@ -31,6 +31,7 @@
 
   &-label {
     font-size: 16px;
+    font-family: inherit;
   }
 
   &-outer {
@@ -39,10 +40,8 @@
     justify-content: space-between;
     max-width: 120px;
     width: 120px;
-    padding: 0 5px;
-    border-style: solid !important;
-    border-width: 1px !important;
-    border-color: var(--vot-helper-safari1) !important;
+    padding: 0 5px !important;
+    border: 1px solid var(--vot-helper-safari1) !important;
     border-radius: 4px !important;
     cursor: pointer;
     transition: border 0.2s !important;
@@ -55,6 +54,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-family: inherit;
   }
 
   &-arrow-icon {
@@ -70,8 +70,8 @@
     flex-direction: column;
 
     .vot-select-content-item {
-      padding: 5px 10px;
-      border-radius: 8px;
+      padding: 5px 10px !important;
+      border-radius: 8px !important;
       cursor: pointer;
       &:not([inert]):hover {
         // background-color: rgb(38, 40, 45);

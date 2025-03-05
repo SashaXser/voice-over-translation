@@ -131,12 +131,16 @@
 - `www.vk.ru`
 - `m.vk.com`
 - `m.vk.ru`
+- `vkvideo.ru`
+- `www.vkvideo.ru`
+- `m.vkvideo.ru`
 
 Доступные пути:
 
 - /video-xxxxxxxxx_xxxxxxxxx
-- ?z=VIDEO_ID
+- ?z=video-xxxxxxxxx_xxxxxxxxx
 - /video_ext.php?oid=VIDEO_ID_PART_ONE&id=VIDEO_ID_PART_TWO
+- .../playlist/PLAYLIST_ID/video-xxxxxxxxx_xxxxxxxxx
 
 ## 9GAG
 
@@ -214,6 +218,18 @@
 
 - Не работает перевод в ленте (Работает только в открытых видео)
 
+## Douyin
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `(www.)?douyin.com`
+
+Ограничения:
+
+- Для гарантированной работы скрипта необходимо [включить настройку "Обход Media CSP"](https://github.com/ilyhalight/voice-over-translation/wiki/%5BRU%5D-FAQ) в расширение или удалить CSP другим способом
+
 ## Vimeo
 
 Статус: [✅] Работает
@@ -239,6 +255,8 @@
 Доступные (под)домены:
 
 - `(www.)?xvideos.com`
+- `(www.)?xvideos-ar.com`
+- `(www.)?xvideos\d\d\d.com`
 - `(www.)?xv-ru.com`
 
 Доступные пути:
@@ -447,7 +465,9 @@
 
 Доступные (под)домены:
 
-- `disk.yandex.ru`
+- `disk.yandex.(ru|kz|com(\.am)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
+- `disk.yandex.(ru|kz|com(\.ge)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
+- `disk.yandex.(ru|kz|com(\.tr)?|by|az|co\.il|ee|lt|lv|md|net|tj|tm|uz)`
 
 Доступные пути:
 
@@ -786,6 +806,57 @@
 Доступные пути:
 
 - /watch/VIDEO_ID
+
+## Dzen
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `dzen.ru`
+
+## Cloudflarestream
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `watch.cloudflarestream.com`
+- `embed.cloudflarestream.com`
+- `iframe.cloudflarestream.com`
+- `customer-[^.]+.cloudflarestream.com`
+
+## Loom
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `(www.)?loom.com`
+
+## Artstation
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `(www.)?artstation.com`
+
+## Rtnews
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `(www.)?rt.com`
+
+## Bitview
+
+Статус: [✅] Работает
+
+Доступные (под)домены:
+
+- `(www.)?bitview.net`
 
 ## Direct link to MP4/WEBM
 

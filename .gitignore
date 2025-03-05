@@ -1,3 +1,5 @@
+tests/utils.test.js
+
 dist/test-ui.user.js
 dist/*.txt
 

@@ -12,6 +12,7 @@ export class VideoHandler {
   audioContext: AudioContext | undefined;
 
   dragging: boolean | undefined;
+  longWaitingResCount: number;
 
   // set in methods
   video: HTMLVideoElement;
