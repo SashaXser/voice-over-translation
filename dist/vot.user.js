@@ -6783,8 +6783,10 @@
 					h.log(`[ChaimuPlayer] Fetching audio from ${this._src}...`);
 					let d;
 					try {
-						let f = await this.fetch(this._src, this.fetchOpts), p = await f.arrayBuffer(), m = f.headers.get("content-type") || void 0, h = new Blob([p], m ? { type: m } : void 0);
-						d = URL.createObjectURL(h), this.audioBuffer = await this.chaimu.audioContext.decodeAudioData(p), this.blobUrl && URL.revokeObjectURL(this.blobUrl), this.blobUrl = d, d = void 0;
+						let f = await this.fetch(this._src, this.fetchOpts);
+						h.log("[ChaimuPlayer] Decoding fetched audio...");
+						let p = await f.arrayBuffer(), m = f.headers.get("content-type") || void 0, g = new Blob([p], m ? { type: m } : void 0);
+						d = URL.createObjectURL(g), this.audioBuffer = await this.chaimu.audioContext.decodeAudioData(p), this.blobUrl && URL.revokeObjectURL(this.blobUrl), this.blobUrl = d, d = void 0;
 					} catch (f) {
 						throw d && URL.revokeObjectURL(d), Error(`Failed to fetch audio file, because ${f.message}`);
 					}
@@ -6848,13 +6850,7 @@
 				async start() {
 					if (!this.chaimu.audioContext) throw Error("No audio context available");
 					if (!this.audioElement) throw Error("Audio element is missing");
-					if (this.isClearing) {
-						h.log("Waiting for cleaner to finish...");
-						let d = 0;
-						for (; this.isClearing && d < 50;) await new Promise((d) => setTimeout(d, 100)), d++;
-						if (this.isClearing) throw Error("Timed out waiting for cleaner to finish");
-					}
-					return h.log("starting audio via HTMLAudioElement"), await this.play(), this.chaimu.video && (this.audioElement.currentTime = this.chaimu.video.currentTime, this.audioElement.playbackRate = this.chaimu.video.playbackRate), this.audioElement.play().catch((d) => console.error("[ChaimuPlayer] audioElement.play() failed:", d)), this;
+					return this.isClearing ? (h.log("The other cleaner is still running, waiting..."), this) : (h.log("starting audio via HTMLAudioElement"), await this.play(), this.chaimu.video && (this.audioElement.currentTime = this.chaimu.video.currentTime, this.audioElement.playbackRate = this.chaimu.video.playbackRate), this.audioElement.play().catch((d) => console.error("[ChaimuPlayer] audioElement.play() failed:", d)), this);
 				}
 				async pause() {
 					if (!this.chaimu.audioContext) throw Error("No audio context available");
